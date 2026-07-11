@@ -1,0 +1,591 @@
+Mono path[0] = 'C:/Program Files (x86)/Steam/steamapps/common/Wildfrost/Modded/Wildfrost_Data/Managed'
+Mono config path = 'C:/Program Files (x86)/Steam/steamapps/common/Wildfrost/Modded/MonoBleedingEdge/etc'
+Loading player data from C:/Program Files (x86)/Steam/steamapps/common/Wildfrost/Modded/Wildfrost_Data/data.unity3d
+Initialize engine version: 2021.3.16f1 (4016570cf34f)
+[Subsystems] Discovering subsystems at path C:/Program Files (x86)/Steam/steamapps/common/Wildfrost/Modded/Wildfrost_Data/UnitySubsystems
+GfxDevice: creating device client; threaded=1; jobified=0
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: NVIDIA GeForce RTX 5070 (ID=0x2f04)
+    Vendor:   NVIDIA
+    VRAM:     11943 MB
+    Driver:   32.0.15.9186
+Begin MonoManager ReloadAssembly
+- Completed reload, in  0.064 seconds
+<RI> Initializing input.
+<RI> Input initialized.
+<RI> Initialized touch support.
+UnloadTime: 0.502800 ms
+SceneManager → Loading Scene "Camera"
+SceneManager → Loading Scene "Global"
+Curl error 6: Could not resolve host: config.uca.cloud.unity3d.com
+Setting Loaded [CameraSway = 1]
+Singleton<CardManager> Created
+Singleton<GameManager> Created
+Singleton<CustomCursor> Created
+Singleton<Names> Created
+Singleton<Config> Created
+v1.2.3 Build: 194
+Singleton<References> Created
+Singleton<StringReference> Created
+Singleton<ActionQueue> Created
+Setting Loaded [ShowFps = False]
+Singleton<Transition> Created
+> AssetLoader Loading Resources...
+> 3 Groups
+> 12 Assets
+> DONE (0ms)
+Singleton<FloatingTextManager> Created
+Steam Initialized oriolgomez (76561198983806636)
+Singleton<Curves> Created
+Setting Loaded [ScreenShake = 1]
+Group [CardType] loaded! (9 items)
+RELEASE = TRUE
+Addressables Init
+"Camera" Loaded
+"Global" Loaded
+Addressables Init Done
+SceneManager → Loading Scene "Saving"
+SceneManager → Loading Scene "Input"
+SceneManager → Loading Scene "Systems"
+SceneManager → Loading Scene "PauseScreen"
+Save Profile Set: Default
+[Save.sav] save file does not need converting
+[Campaign.sav] save file does not need converting
+[CampaignDemo.sav] save file does not need converting
+[Stats.sav] save file does not need converting
+Checking Save.sav for corrupt data...
+Checking Campaign.sav for corrupt data...
+Checking CampaignDemo.sav for corrupt data...
+Checking CampaignPressDemo.sav for corrupt data...
+Checking Battle.sav for corrupt data...
+Checking Stats.sav for corrupt data...
+Checking History.sav for corrupt data...
+~SAVE FILE CHECKER~
+Loading [Save.sav] (unlocked)...
+Loading Done! (1ms)
+ControllerManager → Assigning Player 0
+Assigning Rewired Player id 0 to Game Player 0
+Player 0 set as lead player
+Rewired: [Player0] controllers → Mouse, XInput Gamepad 1
+Singleton<UINavigationSystem> Created
+Singleton<Cursor3d> Created
+Singleton<VirtualPointer> Created
+Audio Settings System → Loading Banks
+Setting Loaded [VolumeMaster = 1]
+Setting Loaded [VolumeMusic = 1]
+Setting Loaded [VolumeSfx = 1]
+Setting Loaded [VolumeAmbience = 1]
+Setting Loaded [Blood = 0]
+Setting Loaded [BloodAmount = 1]
+Setting Loaded [HudAlpha = 1]
+Setting Loaded [HudAlpha = 1]
+Setting Loaded [DisplayMode = 2]
+Setting Loaded [Vsync = 1]
+Setting Loaded [TargetFramerate = 2]
+Loading [Save.sav] (cardsDiscovered)...
+Loading Done! (0ms)
+Loading [Save.sav] (charmsDiscovered)...
+Loading Done! (0ms)
+[General (WorldSpaceCanvasFitScreenSystem)] UPDATING ~World Space~ CANVAS SIZE
+New Size: (3840, 2160) Aspect: 1.777778
+UI Safe Area: (x:0.00, y:0.00, width:3840.00, height:2160.00)
+Loading [Save.sav] (frameLevels)...
+Loading Done! (0ms)
+Loading [Save.sav] (newFrameLevels)...
+Loading Done! (0ms)
+Setting Loaded [SpecialCardFrames = 1]
+Group [ChallengeData] loaded! (54 items)
+Loading [Save.sav] (completedChallenges)...
+Loading Done! (0ms)
+Loading [Save.sav] (completedChallenges)...
+Loading Done! (0ms)
+"Saving" Loaded
+"Input" Loaded
+"Systems" Loaded
+"PauseScreen" Loaded
+WindowsVideoMedia error unhandled Color Standard: 0  falling back to default this may result in rendering issues
+CardManager Loading Card Icon Prefabs
+31 icons loaded
+Fallback handler could not load library C:/Program Files (x86)/Steam/steamapps/common/Wildfrost/Modded/Wildfrost_Data/MonoBleedingEdge/data-0000025FE5AB3BF0.dll
+Group [BattleData] loaded! (30 items)
+Group [BossRewardData] loaded! (0 items)
+Group [CampaignNodeType] loaded! (32 items)
+Group [CardData] loaded! (382 items)
+Group [CardUpgradeData] loaded! (84 items)
+Group [ChallengeListener] loaded! (0 items)
+Group [ClassData] loaded! (4 items)
+Group [EyeData] loaded! (68 items)
+Group [GameMode] loaded! (6 items)
+Group [GameModifierData] loaded! (59 items)
+Group [KeywordData] loaded! (67 items)
+Group [StatusEffectData] loaded! (598 items)
+Group [BuildingPlotType] loaded! (0 items)
+Group [BuildingType] loaded! (0 items)
+Group [TraitData] loaded! (31 items)
+Group [UnlockData] loaded! (67 items)
+Ordering mod assemblies
+[HARMONY] [Info] ### Harmony id=accessibility.wildfrost.screenreader, version=2.5.2.0, location=C:\Program Files (x86)\Steam\steamapps\common\Wildfrost\Modded\Wildfrost_Data\Managed\0Harmony.dll, env/clr=4.0.30319.42000, platform=Win32NT
+### Started from static void HarmonyLib.Tools.Logger::Log(HarmonyLib.Tools.Logger+LogChannel channel, System.Func<string> message, bool forcePropagation), location C:\Program Files (x86)\Steam\steamapps\common\Wildfrost\Modded\Wildfrost_Data\Managed\0Harmony.dll
+### At 2026-03-29 12.14.55
+[HARMONY] [Info] ### Harmony id=accessibility.wildfrost.screenreader, version=2.5.2.0, location=C:\Program Files (x86)\Steam\steamapps\common\Wildfrost\Modded\Wildfrost_Data\Managed\0Harmony.dll, env/clr=4.0.30319.42000, platform=Win32NT
+### Started from static void HarmonyLib.Tools.Logger::Log(HarmonyLib.Tools.Logger+LogChannel channel, System.Func<string> message, bool forcePropagation), location C:\Program Files (x86)\Steam\steamapps\common\Wildfrost\Modded\Wildfrost_Data\Managed\0Harmony.dll
+### At 2026-03-29 12.14.55
+Properly loaded mod and added instance WildfrostAccessibility, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+Loading [Save.sav] (lastSavedMods)...
+Loading Done! (1ms)
+Setting Loaded [TransitionType = 0]
+SceneManager → Loading Scene "MainMenu"
+Loading [Save.sav] (townNew)...
+Loading Done! (1ms)
+~ ASSET PRELOADER: 3 group(s) to load
+~ ASSET PRELOADER: Loading Group [CardData]
+~ ASSET PRELOADER: Group [CardData] Loaded! (0ms)
+~ ASSET PRELOADER: Loading Group [CampaignNodeType]
+~ ASSET PRELOADER: Group [CampaignNodeType] Loaded! (0ms)
+~ ASSET PRELOADER: Loading Group [GameModifierData]
+~ ASSET PRELOADER: Group [GameModifierData] Loaded! (0ms)
+~ ASSET PRELOADER: Finished
+"MainMenu" Loaded
+Loading [Save.sav] (version)...
+Loading Done! (9ms)
+[General (WorldSpaceCanvasFitScreenSystem)] UPDATING ~World Space~ CANVAS SIZE
+New Size: (3840, 2160) Aspect: 1.777778
+UI Safe Area: (x:0.00, y:0.00, width:3840.00, height:2160.00)
+Loading [Save.sav] (version)...
+Loading Done! (10ms)
+Loading [Save.sav] (progress)...
+Loading Done! (0ms)
+UINavigationDefaultSystem → Finding Default Item
+UINavigationDefaultSystem → Default Item Set: PlayButton (UINavigationItem)
+ControllerButtonStyle Set: [Xbox Button Style]
+SceneManager → Loading Scene "Mods"
+Setting Loaded [HudAlpha = 1]
+UINavigationDefaultSystem → Finding Default Item
+UINavigationDefaultSystem → Default Item Set: Button (UINavigationItem)
+"Mods" Loaded
+[WildfrostAccessibility] Load() started
+[WildfrostAccessibility] base.Load() completed
+[WildfrostAccessibility] Setting DLL directory: C:\Program Files (x86)\Steam\steamapps\common\Wildfrost\Modded
+[WildfrostAccessibility] Calling Tolk_Load()...
+[WildfrostAccessibility] Tolk_Load() completed
+[WildfrostAccessibility] Tolk_HasSpeech: True
+[WildfrostAccessibility] ScreenReader initialized
+[WildfrostAccessibility] All systems initialized, attempting speech
+[accessibility.wildfrost.screenreader] Wildfrost Accessibility mod loaded.
+Saving [Save.sav] (lastSavedMods)...
+Saving Done! (9ms)
+SceneManager → Unloading Scene "Mods"
+[0] Cards returned to pool from [Mods] (0ms)
+UINavigationDefaultSystem → Finding Default Item
+UINavigationDefaultSystem → Default Item Set: PlayButton (UINavigationItem)
+Scene successfully unloaded
+>>>> GAME END <<<<
+Setting up 16 worker threads for Enlighten.
+Memory Statistics:
+[ALLOC_TEMP_TLS] TLS Allocator
+  StackAllocators : 
+    [ALLOC_TEMP_MAIN]
+      Peak usage frame count: [0-1.0 KB]: 8 frames, [4.0 KB-8.0 KB]: 3 frames, [8.0 KB-16.0 KB]: 397 frames, [16.0 KB-32.0 KB]: 2 frames, [32.0 KB-64.0 KB]: 4 frames, [64.0 KB-128.0 KB]: 6 frames, [2.0 MB-4.0 MB]: 1 frames, [4.0 MB-8.0 MB]: 1 frames
+      Initial Block Size 4.0 MB
+      Current Block Size 7.6 MB
+      Peak Allocated Bytes 5.9 MB
+      Overflow Count 0
+    [ALLOC_TEMP_Job.Worker 18]
+      Initial Block Size 256.0 KB
+      Current Block Size 256.0 KB
+      Peak Allocated Bytes 42.5 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Loading.PreloadManager]
+      Initial Block Size 256.0 KB
+      Current Block Size 0.5 MB
+      Peak Allocated Bytes 511.7 KB
+      Overflow Count 144
+    [ALLOC_TEMP_Background Job.Worker 8]
+      Initial Block Size 32.0 KB
+      Current Block Size 32.0 KB
+      Peak Allocated Bytes 0.6 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Background Job.Worker 10]
+      Initial Block Size 32.0 KB
+      Current Block Size 36.0 KB
+      Peak Allocated Bytes 34.5 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Job.Worker 16]
+      Initial Block Size 256.0 KB
+      Current Block Size 256.0 KB
+      Peak Allocated Bytes 42.5 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Background Job.Worker 6]
+      Initial Block Size 32.0 KB
+      Current Block Size 36.0 KB
+      Peak Allocated Bytes 32.0 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Job.Worker 4]
+      Initial Block Size 256.0 KB
+      Current Block Size 256.0 KB
+      Peak Allocated Bytes 42.5 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Job.Worker 27]
+      Initial Block Size 256.0 KB
+      Current Block Size 256.0 KB
+      Peak Allocated Bytes 42.5 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Job.Worker 14]
+      Initial Block Size 256.0 KB
+      Current Block Size 256.0 KB
+      Peak Allocated Bytes 42.5 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Job.Worker 17]
+      Initial Block Size 256.0 KB
+      Current Block Size 256.0 KB
+      Peak Allocated Bytes 42.5 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Job.Worker 3]
+      Initial Block Size 256.0 KB
+      Current Block Size 256.0 KB
+      Peak Allocated Bytes 42.5 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Background Job.Worker 12]
+      Initial Block Size 32.0 KB
+      Current Block Size 36.0 KB
+      Peak Allocated Bytes 32.0 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Background Job.Worker 1]
+      Initial Block Size 32.0 KB
+      Current Block Size 32.0 KB
+      Peak Allocated Bytes 0.7 KB
+      Overflow Count 0
+    [ALLOC_TEMP_AssetGarbageCollectorHelper] x 31
+      Initial Block Size 64.0 KB
+      Current Block Size 64.0 KB
+      Peak Allocated Bytes 0 B
+      Overflow Count 0
+    [ALLOC_TEMP_Background Job.Worker 5]
+      Initial Block Size 32.0 KB
+      Current Block Size 32.0 KB
+      Peak Allocated Bytes 0.6 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Background Job.Worker 13]
+      Initial Block Size 32.0 KB
+      Current Block Size 32.0 KB
+      Peak Allocated Bytes 0.6 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Background Job.Worker 11]
+      Initial Block Size 32.0 KB
+      Current Block Size 32.0 KB
+      Peak Allocated Bytes 0.6 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Job.Worker 2]
+      Initial Block Size 256.0 KB
+      Current Block Size 256.0 KB
+      Peak Allocated Bytes 42.5 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Background Job.Worker 3]
+      Initial Block Size 32.0 KB
+      Current Block Size 32.0 KB
+      Peak Allocated Bytes 0.6 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Background Job.Worker 0]
+      Initial Block Size 32.0 KB
+      Current Block Size 36.0 KB
+      Peak Allocated Bytes 32.0 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Job.Worker 20]
+      Initial Block Size 256.0 KB
+      Current Block Size 256.0 KB
+      Peak Allocated Bytes 42.5 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Job.Worker 11]
+      Initial Block Size 256.0 KB
+      Current Block Size 256.0 KB
+      Peak Allocated Bytes 42.5 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Background Job.Worker 4]
+      Initial Block Size 32.0 KB
+      Current Block Size 32.0 KB
+      Peak Allocated Bytes 1.6 KB
+      Overflow Count 0
+    [ALLOC_TEMP_BatchDeleteObjects]
+      Initial Block Size 64.0 KB
+      Current Block Size 64.0 KB
+      Peak Allocated Bytes 54 B
+      Overflow Count 0
+    [ALLOC_TEMP_Job.Worker 30]
+      Initial Block Size 256.0 KB
+      Current Block Size 256.0 KB
+      Peak Allocated Bytes 42.5 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Job.Worker 6]
+      Initial Block Size 256.0 KB
+      Current Block Size 256.0 KB
+      Peak Allocated Bytes 42.5 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Job.Worker 0]
+      Initial Block Size 256.0 KB
+      Current Block Size 256.0 KB
+      Peak Allocated Bytes 42.5 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Job.Worker 26]
+      Initial Block Size 256.0 KB
+      Current Block Size 256.0 KB
+      Peak Allocated Bytes 42.5 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Job.Worker 21]
+      Initial Block Size 256.0 KB
+      Current Block Size 256.0 KB
+      Peak Allocated Bytes 42.5 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Job.Worker 5]
+      Initial Block Size 256.0 KB
+      Current Block Size 256.0 KB
+      Peak Allocated Bytes 42.5 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Background Job.Worker 14]
+      Initial Block Size 32.0 KB
+      Current Block Size 36.0 KB
+      Peak Allocated Bytes 32.0 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Job.Worker 25]
+      Initial Block Size 256.0 KB
+      Current Block Size 256.0 KB
+      Peak Allocated Bytes 42.5 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Background Job.Worker 9]
+      Initial Block Size 32.0 KB
+      Current Block Size 32.0 KB
+      Peak Allocated Bytes 0.6 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Job.Worker 29]
+      Initial Block Size 256.0 KB
+      Current Block Size 256.0 KB
+      Peak Allocated Bytes 42.5 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Job.Worker 13]
+      Initial Block Size 256.0 KB
+      Current Block Size 256.0 KB
+      Peak Allocated Bytes 42.5 KB
+      Overflow Count 0
+    [ALLOC_TEMP_EnlightenWorker] x 16
+      Initial Block Size 64.0 KB
+      Current Block Size 64.0 KB
+      Peak Allocated Bytes 54 B
+      Overflow Count 0
+    [ALLOC_TEMP_Background Job.Worker 15]
+      Initial Block Size 32.0 KB
+      Current Block Size 32.0 KB
+      Peak Allocated Bytes 0.6 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Background Job.Worker 2]
+      Initial Block Size 32.0 KB
+      Current Block Size 32.0 KB
+      Peak Allocated Bytes 0.6 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Job.Worker 28]
+      Initial Block Size 256.0 KB
+      Current Block Size 256.0 KB
+      Peak Allocated Bytes 42.5 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Job.Worker 22]
+      Initial Block Size 256.0 KB
+      Current Block Size 256.0 KB
+      Peak Allocated Bytes 42.5 KB
+      Overflow Count 0
+    [ALLOC_TEMP_UnityGfxDeviceWorker]
+      Initial Block Size 256.0 KB
+      Current Block Size 256.0 KB
+      Peak Allocated Bytes 6.0 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Background Job.Worker 7]
+      Initial Block Size 32.0 KB
+      Current Block Size 32.0 KB
+      Peak Allocated Bytes 0.6 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Job.Worker 9]
+      Initial Block Size 256.0 KB
+      Current Block Size 256.0 KB
+      Peak Allocated Bytes 42.5 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Job.Worker 8]
+      Initial Block Size 256.0 KB
+      Current Block Size 256.0 KB
+      Peak Allocated Bytes 42.5 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Job.Worker 7]
+      Initial Block Size 256.0 KB
+      Current Block Size 256.0 KB
+      Peak Allocated Bytes 42.5 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Job.Worker 23]
+      Initial Block Size 256.0 KB
+      Current Block Size 256.0 KB
+      Peak Allocated Bytes 42.5 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Job.Worker 1]
+      Initial Block Size 256.0 KB
+      Current Block Size 256.0 KB
+      Peak Allocated Bytes 42.5 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Job.Worker 10]
+      Initial Block Size 256.0 KB
+      Current Block Size 256.0 KB
+      Peak Allocated Bytes 42.5 KB
+      Overflow Count 0
+    [ALLOC_TEMP_CloudJob.Worker 0]
+      Initial Block Size 32.0 KB
+      Current Block Size 32.0 KB
+      Peak Allocated Bytes 3.1 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Job.Worker 24]
+      Initial Block Size 256.0 KB
+      Current Block Size 256.0 KB
+      Peak Allocated Bytes 42.5 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Job.Worker 15]
+      Initial Block Size 256.0 KB
+      Current Block Size 256.0 KB
+      Peak Allocated Bytes 42.5 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Job.Worker 19]
+      Initial Block Size 256.0 KB
+      Current Block Size 256.0 KB
+      Peak Allocated Bytes 42.5 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Job.Worker 12]
+      Initial Block Size 256.0 KB
+      Current Block Size 256.0 KB
+      Peak Allocated Bytes 42.5 KB
+      Overflow Count 0
+    [ALLOC_TEMP_Loading.AsyncRead]
+      Initial Block Size 64.0 KB
+      Current Block Size 124.0 KB
+      Peak Allocated Bytes 123.0 KB
+      Overflow Count 0
+[ALLOC_DEFAULT] Dual Thread Allocator
+  Peak main deferred allocation count 1384
+    [ALLOC_BUCKET]
+      Large Block size 4.0 MB
+      Used Block count 1
+      Peak Allocated bytes 4.0 MB
+      Failed Allocations. Bucket layout:
+        16B: 8 Subsections = 8192 buckets. Failed count: 12531
+        32B: 28 Subsections = 14336 buckets. Failed count: 17645
+        48B: 43 Subsections = 14677 buckets. Failed count: 18139
+        64B: 40 Subsections = 10240 buckets. Failed count: 5755
+        80B: 32 Subsections = 6553 buckets. Failed count: 1358
+        96B: 42 Subsections = 7168 buckets. Failed count: 2635
+        112B: 43 Subsections = 6290 buckets. Failed count: 7224
+        128B: 20 Subsections = 2560 buckets. Failed count: 9805
+    [ALLOC_DEFAULT_MAIN]
+      Peak usage frame count: [8.0 MB-16.0 MB]: 82 frames, [16.0 MB-32.0 MB]: 340 frames
+      Requested Block Size 16.0 MB
+      Peak Block count 2
+      Peak Allocated memory 17.4 MB
+      Peak Large allocation bytes 0 B
+    [ALLOC_DEFAULT_THREAD]
+      Peak usage frame count: [16.0 MB-32.0 MB]: 5 frames, [32.0 MB-64.0 MB]: 411 frames, [64.0 MB-128.0 MB]: 2 frames, [128.0 MB-256.0 MB]: 3 frames, [256.0 MB-0.50 GB]: 1 frames
+      Requested Block Size 16.0 MB
+      Peak Block count 3
+      Peak Allocated memory 295.0 MB
+      Peak Large allocation bytes 272.0 MB
+[ALLOC_TEMP_JOB_1_FRAME]
+  Initial Block Size 2.0 MB
+  Used Block Count 1
+  Overflow Count (too large) 0
+  Overflow Count (full) 0
+[ALLOC_TEMP_JOB_2_FRAMES]
+  Initial Block Size 2.0 MB
+  Used Block Count 1
+  Overflow Count (too large) 0
+  Overflow Count (full) 0
+[ALLOC_TEMP_JOB_4_FRAMES (JobTemp)]
+  Initial Block Size 2.0 MB
+  Used Block Count 2
+  Overflow Count (too large) 0
+  Overflow Count (full) 0
+[ALLOC_TEMP_JOB_ASYNC (Background)]
+  Initial Block Size 1.0 MB
+  Used Block Count 12
+  Overflow Count (too large) 33
+  Overflow Count (full) 0
+[ALLOC_GFX] Dual Thread Allocator
+  Peak main deferred allocation count 5
+    [ALLOC_BUCKET]
+      Large Block size 4.0 MB
+      Used Block count 1
+      Peak Allocated bytes 4.0 MB
+      Failed Allocations. Bucket layout:
+        16B: 8 Subsections = 8192 buckets. Failed count: 12531
+        32B: 28 Subsections = 14336 buckets. Failed count: 17645
+        48B: 43 Subsections = 14677 buckets. Failed count: 18139
+        64B: 40 Subsections = 10240 buckets. Failed count: 5755
+        80B: 32 Subsections = 6553 buckets. Failed count: 1358
+        96B: 42 Subsections = 7168 buckets. Failed count: 2635
+        112B: 43 Subsections = 6290 buckets. Failed count: 7224
+        128B: 20 Subsections = 2560 buckets. Failed count: 9805
+    [ALLOC_GFX_MAIN]
+      Peak usage frame count: [32.0 KB-64.0 KB]: 89 frames, [64.0 KB-128.0 KB]: 329 frames, [128.0 KB-256.0 KB]: 1 frames, [256.0 KB-0.5 MB]: 3 frames
+      Requested Block Size 16.0 MB
+      Peak Block count 1
+      Peak Allocated memory 366.6 KB
+      Peak Large allocation bytes 0 B
+    [ALLOC_GFX_THREAD]
+      Peak usage frame count: [32.0 KB-64.0 KB]: 5 frames, [64.0 MB-128.0 MB]: 5 frames, [128.0 MB-256.0 MB]: 412 frames
+      Requested Block Size 16.0 MB
+      Peak Block count 1
+      Peak Allocated memory 136.8 MB
+      Peak Large allocation bytes 128.0 MB
+[ALLOC_CACHEOBJECTS] Dual Thread Allocator
+  Peak main deferred allocation count 1978
+    [ALLOC_BUCKET]
+      Large Block size 4.0 MB
+      Used Block count 1
+      Peak Allocated bytes 4.0 MB
+      Failed Allocations. Bucket layout:
+        16B: 8 Subsections = 8192 buckets. Failed count: 12531
+        32B: 28 Subsections = 14336 buckets. Failed count: 17645
+        48B: 43 Subsections = 14677 buckets. Failed count: 18139
+        64B: 40 Subsections = 10240 buckets. Failed count: 5755
+        80B: 32 Subsections = 6553 buckets. Failed count: 1358
+        96B: 42 Subsections = 7168 buckets. Failed count: 2635
+        112B: 43 Subsections = 6290 buckets. Failed count: 7224
+        128B: 20 Subsections = 2560 buckets. Failed count: 9805
+    [ALLOC_CACHEOBJECTS_MAIN]
+      Peak usage frame count: [16.0 MB-32.0 MB]: 421 frames, [32.0 MB-64.0 MB]: 1 frames
+      Requested Block Size 4.0 MB
+      Peak Block count 10
+      Peak Allocated memory 36.1 MB
+      Peak Large allocation bytes 12.1 MB
+    [ALLOC_CACHEOBJECTS_THREAD]
+      Peak usage frame count: [0.5 MB-1.0 MB]: 5 frames, [32.0 MB-64.0 MB]: 5 frames, [64.0 MB-128.0 MB]: 412 frames
+      Requested Block Size 4.0 MB
+      Peak Block count 6
+      Peak Allocated memory 96.7 MB
+      Peak Large allocation bytes 77.5 MB
+[ALLOC_TYPETREE] Dual Thread Allocator
+  Peak main deferred allocation count 0
+    [ALLOC_BUCKET]
+      Large Block size 4.0 MB
+      Used Block count 1
+      Peak Allocated bytes 4.0 MB
+      Failed Allocations. Bucket layout:
+        16B: 8 Subsections = 8192 buckets. Failed count: 12531
+        32B: 28 Subsections = 14336 buckets. Failed count: 17645
+        48B: 43 Subsections = 14677 buckets. Failed count: 18139
+        64B: 40 Subsections = 10240 buckets. Failed count: 5755
+        80B: 32 Subsections = 6553 buckets. Failed count: 1358
+        96B: 42 Subsections = 7168 buckets. Failed count: 2635
+        112B: 43 Subsections = 6290 buckets. Failed count: 7224
+        128B: 20 Subsections = 2560 buckets. Failed count: 9805
+    [ALLOC_TYPETREE_MAIN]
+      Peak usage frame count: [4.0 KB-8.0 KB]: 10 frames, [8.0 KB-16.0 KB]: 338 frames, [32.0 KB-64.0 KB]: 74 frames
+      Requested Block Size 2.0 MB
+      Peak Block count 1
+      Peak Allocated memory 33.9 KB
+      Peak Large allocation bytes 0 B
+    [ALLOC_TYPETREE_THREAD]
+      Peak usage frame count: [2.0 KB-4.0 KB]: 5 frames, [16.0 KB-32.0 KB]: 1 frames, [256.0 KB-0.5 MB]: 4 frames, [2.0 MB-4.0 MB]: 72 frames, [4.0 MB-8.0 MB]: 340 frames
+      Requested Block Size 2.0 MB
+      Peak Block count 4
+      Peak Allocated memory 6.3 MB
+      Peak Large allocation bytes 0 B

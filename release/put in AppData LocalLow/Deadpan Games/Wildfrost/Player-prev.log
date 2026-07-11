@@ -1,0 +1,177 @@
+Mono path[0] = 'C:/Program Files (x86)/Steam/steamapps/common/Wildfrost/Modded/Wildfrost_Data/Managed'
+Mono config path = 'C:/Program Files (x86)/Steam/steamapps/common/Wildfrost/Modded/MonoBleedingEdge/etc'
+Loading player data from C:/Program Files (x86)/Steam/steamapps/common/Wildfrost/Modded/Wildfrost_Data/data.unity3d
+Initialize engine version: 2021.3.16f1 (4016570cf34f)
+[Subsystems] Discovering subsystems at path C:/Program Files (x86)/Steam/steamapps/common/Wildfrost/Modded/Wildfrost_Data/UnitySubsystems
+GfxDevice: creating device client; threaded=1; jobified=0
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: NVIDIA GeForce RTX 5070 (ID=0x2f04)
+    Vendor:   NVIDIA
+    VRAM:     11943 MB
+    Driver:   32.0.15.9186
+Begin MonoManager ReloadAssembly
+- Completed reload, in  0.063 seconds
+<RI> Initializing input.
+<RI> Input initialized.
+<RI> Initialized touch support.
+UnloadTime: 0.485500 ms
+SceneManager → Loading Scene "Camera"
+SceneManager → Loading Scene "Global"
+Curl error 6: Could not resolve host: config.uca.cloud.unity3d.com
+Setting Loaded [CameraSway = 1]
+Singleton<CardManager> Created
+Singleton<GameManager> Created
+Singleton<CustomCursor> Created
+Singleton<Names> Created
+Singleton<Config> Created
+v1.2.3 Build: 194
+Singleton<References> Created
+Singleton<StringReference> Created
+Singleton<ActionQueue> Created
+Setting Loaded [ShowFps = False]
+Singleton<Transition> Created
+> AssetLoader Loading Resources...
+> 3 Groups
+> 12 Assets
+> DONE (0ms)
+Singleton<FloatingTextManager> Created
+Steam Initialized oriolgomez (76561198983806636)
+Singleton<Curves> Created
+Setting Loaded [ScreenShake = 1]
+Group [CardType] loaded! (9 items)
+RELEASE = TRUE
+Addressables Init
+"Camera" Loaded
+"Global" Loaded
+Addressables Init Done
+SceneManager → Loading Scene "Saving"
+SceneManager → Loading Scene "Input"
+SceneManager → Loading Scene "Systems"
+SceneManager → Loading Scene "PauseScreen"
+Save Profile Set: Default
+[Save.sav] save file does not need converting
+[Campaign.sav] save file does not need converting
+[CampaignDemo.sav] save file does not need converting
+[Stats.sav] save file does not need converting
+Checking Save.sav for corrupt data...
+Checking Campaign.sav for corrupt data...
+Checking CampaignDemo.sav for corrupt data...
+Checking CampaignPressDemo.sav for corrupt data...
+Checking Battle.sav for corrupt data...
+Checking Stats.sav for corrupt data...
+Checking History.sav for corrupt data...
+~SAVE FILE CHECKER~
+Loading [Save.sav] (unlocked)...
+Loading Done! (1ms)
+ControllerManager → Assigning Player 0
+Assigning Rewired Player id 0 to Game Player 0
+Player 0 set as lead player
+Rewired: [Player0] controllers → Mouse, XInput Gamepad 1
+Singleton<UINavigationSystem> Created
+Singleton<Cursor3d> Created
+Singleton<VirtualPointer> Created
+Audio Settings System → Loading Banks
+Setting Loaded [VolumeMaster = 1]
+Setting Loaded [VolumeMusic = 1]
+Setting Loaded [VolumeSfx = 1]
+Setting Loaded [VolumeAmbience = 1]
+Setting Loaded [Blood = 0]
+Setting Loaded [BloodAmount = 1]
+Setting Loaded [HudAlpha = 1]
+Setting Loaded [HudAlpha = 1]
+Setting Loaded [DisplayMode = 2]
+Setting Loaded [Vsync = 1]
+Setting Loaded [TargetFramerate = 2]
+Loading [Save.sav] (cardsDiscovered)...
+Loading Done! (1ms)
+Loading [Save.sav] (charmsDiscovered)...
+Loading Done! (1ms)
+[General (WorldSpaceCanvasFitScreenSystem)] UPDATING ~World Space~ CANVAS SIZE
+New Size: (3840, 2160) Aspect: 1.777778
+UI Safe Area: (x:0.00, y:0.00, width:3840.00, height:2160.00)
+Loading [Save.sav] (frameLevels)...
+Loading Done! (1ms)
+Loading [Save.sav] (newFrameLevels)...
+Loading Done! (1ms)
+Setting Loaded [SpecialCardFrames = 1]
+Group [ChallengeData] loaded! (54 items)
+Loading [Save.sav] (completedChallenges)...
+Loading Done! (1ms)
+Loading [Save.sav] (completedChallenges)...
+Loading Done! (1ms)
+"Saving" Loaded
+"Input" Loaded
+"Systems" Loaded
+"PauseScreen" Loaded
+WindowsVideoMedia error unhandled Color Standard: 0  falling back to default this may result in rendering issues
+CardManager Loading Card Icon Prefabs
+31 icons loaded
+Fallback handler could not load library C:/Program Files (x86)/Steam/steamapps/common/Wildfrost/Modded/Wildfrost_Data/MonoBleedingEdge/data-0000022A1E45A0C0.dll
+Group [BattleData] loaded! (30 items)
+Group [BossRewardData] loaded! (0 items)
+Group [CampaignNodeType] loaded! (32 items)
+Group [CardData] loaded! (382 items)
+Group [CardUpgradeData] loaded! (84 items)
+Group [ChallengeListener] loaded! (0 items)
+Group [ClassData] loaded! (4 items)
+Group [EyeData] loaded! (68 items)
+Group [GameMode] loaded! (6 items)
+Group [GameModifierData] loaded! (59 items)
+Group [KeywordData] loaded! (67 items)
+Group [StatusEffectData] loaded! (598 items)
+Group [BuildingPlotType] loaded! (0 items)
+Group [BuildingType] loaded! (0 items)
+Group [TraitData] loaded! (31 items)
+Group [UnlockData] loaded! (67 items)
+Ordering mod assemblies
+[HARMONY] [Info] ### Harmony id=accessibility.wildfrost.screenreader, version=2.5.2.0, location=C:\Program Files (x86)\Steam\steamapps\common\Wildfrost\Modded\Wildfrost_Data\Managed\0Harmony.dll, env/clr=4.0.30319.42000, platform=Win32NT
+### Started from static void HarmonyLib.Tools.Logger::Log(HarmonyLib.Tools.Logger+LogChannel channel, System.Func<string> message, bool forcePropagation), location C:\Program Files (x86)\Steam\steamapps\common\Wildfrost\Modded\Wildfrost_Data\Managed\0Harmony.dll
+### At 2026-03-29 12.09.38
+[HARMONY] [Info] ### Harmony id=accessibility.wildfrost.screenreader, version=2.5.2.0, location=C:\Program Files (x86)\Steam\steamapps\common\Wildfrost\Modded\Wildfrost_Data\Managed\0Harmony.dll, env/clr=4.0.30319.42000, platform=Win32NT
+### Started from static void HarmonyLib.Tools.Logger::Log(HarmonyLib.Tools.Logger+LogChannel channel, System.Func<string> message, bool forcePropagation), location C:\Program Files (x86)\Steam\steamapps\common\Wildfrost\Modded\Wildfrost_Data\Managed\0Harmony.dll
+### At 2026-03-29 12.09.38
+Properly loaded mod and added instance WildfrostAccessibility, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+Loading [Save.sav] (lastSavedMods)...
+Loading Done! (0ms)
+Setting Loaded [TransitionType = 0]
+SceneManager → Loading Scene "MainMenu"
+Loading [Save.sav] (townNew)...
+Loading Done! (1ms)
+~ ASSET PRELOADER: 3 group(s) to load
+~ ASSET PRELOADER: Loading Group [CardData]
+~ ASSET PRELOADER: Group [CardData] Loaded! (0ms)
+~ ASSET PRELOADER: Loading Group [CampaignNodeType]
+~ ASSET PRELOADER: Group [CampaignNodeType] Loaded! (0ms)
+~ ASSET PRELOADER: Loading Group [GameModifierData]
+~ ASSET PRELOADER: Group [GameModifierData] Loaded! (0ms)
+~ ASSET PRELOADER: Finished
+"MainMenu" Loaded
+Loading [Save.sav] (version)...
+Loading Done! (7ms)
+[General (WorldSpaceCanvasFitScreenSystem)] UPDATING ~World Space~ CANVAS SIZE
+New Size: (3840, 2160) Aspect: 1.777778
+UI Safe Area: (x:0.00, y:0.00, width:3840.00, height:2160.00)
+Loading [Save.sav] (version)...
+Loading Done! (9ms)
+Loading [Save.sav] (progress)...
+Loading Done! (0ms)
+UINavigationDefaultSystem → Finding Default Item
+UINavigationDefaultSystem → Default Item Set: PlayButton (UINavigationItem)
+ControllerButtonStyle Set: [Xbox Button Style]
+SceneManager → Loading Scene "Credits"
+"Credits" Loaded
+SceneManager → Unloading Scene "Credits"
+[0] Cards returned to pool from [Credits] (0ms)
+UINavigationDefaultSystem → Finding Default Item
+UINavigationDefaultSystem → Default Item Set: CreditsButton (UINavigationItem)
+Scene successfully unloaded
+SceneManager → Loading Scene "Mods"
+Setting Loaded [HudAlpha = 1]
+UINavigationDefaultSystem → Finding Default Item
+UINavigationDefaultSystem → Default Item Set: Button (UINavigationItem)
+"Mods" Loaded
+[WildfrostAccessibility] Load() started
+[WildfrostAccessibility] base.Load() completed
+[WildfrostAccessibility] Setting DLL directory: C:\Program Files (x86)\Steam\steamapps\common\Wildfrost\Modded
+[WildfrostAccessibility] Tolk.dll pre-loaded: True
