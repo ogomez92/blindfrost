@@ -1,6 +1,0 @@
-
-
-[29/03/2026 12:11:56] Exception: Failed to load mod C:\Program Files (x86)\Steam\steamapps\common\Wildfrost\Modded\Wildfrost_Data\StreamingAssets\Mods\WildfrostAccessibility\nvdaControllerClient64.dll with message: Invalid Image: C:\Program Files (x86)\Steam\steamapps\common\Wildfrost\Modded\Wildfrost_Data\StreamingAssets\Mods\WildfrostAccessibility\nvdaControllerClient64.dll
-Bootstrap+<ModsSetup>d__44.MoveNext () (at <501619ff825341128b8eaca07c5419c0>:0)
-UnityEngine.SetupCoroutine.InvokeMoveNext (System.Collections.IEnumerator enumerator, System.IntPtr returnValueAddress) (at <684fd32169ff40798327c75e99cfb4f0>:0)
-

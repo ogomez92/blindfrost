@@ -546,7 +546,59 @@ Events.OnEntityHover += (Entity entity) =>
 
 ---
 
-## 13. Change History
+## 13. Town Scene
+
+- **No `Gate` class.** The gate is a `Building` prefab ("Gate(Clone)") + `BuildingInteraction` (pointer handler, calls `Town.SelectBuilding(building)`) + `UINavigationItem`.
+- `Building`: `type` (BuildingType), `built`, `buildStarted`, `canSelect`, `HasUncheckedUnlocks`, private `onSelect` UnityEvent (wired in scene YAML).
+- `BuildingType`: `titleKey` (LocalizedString, name), `helpKey` (LocalizedString, packed `title|body|note` — split on `'|'`), `helpEmoteType`.
+- **Gate action logic** (`Menu.StartGameOrContinue`): tutorial run in progress → ContinueRun; `tutorialProgress <= 1` → tutorial offer; `Campaign.CheckContinue(GameModeNormal)` → ContinueRun; else `StartGame` (new run).
+- `Campaign.CheckContinue(gameMode)`: save exists + result == None + "data" exists.
+- Buildings: TribeHut, PetHut, InventorHut, IcebreakerHut, ChallengeShrine, Balloon (daily, `BuildingBalloon`), TownHall.
+- Town tutorial uses `HelpPanelShower` → `HelpPanelSystem.Show(key)` — **text is set before activation** (safe to read on activation). One-shot via `tutorialTownDone`.
+- **"Apply 10 Snow" trap:** inactive tooltip/prompt widgets (Tooltip, CardTooltip, HelpPanelSystem, Prompt, CardInspector) retain stale TMP text — never scrape scene TMP text heuristically for titles.
+
+## 14. Overlay Scenes (Temporary, do NOT change ActiveSceneKey)
+
+`SceneType.Temporary` scenes load on top of the active scene; `SceneManager.ActiveSceneKey` stays unchanged. Detect via `SceneManager.IsLoaded(key)`:
+- **"ContinueRun"** (over Town), **"BossReward"**, **"BattleWin"**, **"CampaignEnd"** (over Battle), **"TownUnlocks"**, **"Credits"**.
+
+## 15. ContinueRun Screen
+
+- Controller: `ContinueScreen` (all fields private serialized → reflection): `cardContainer` (CardContainer with the deck entities), `titleText`, `dateText` (start date, set by code), `progressText` (never assigned), `continueButton` ("Let's Go!"), `backButton` (active if `GameMode.canGoBack`), `missingDataDisplay`, `giveUpHelpShower`.
+- Deck loads async in `Start()` — wait until `cardContainer.Count > 0`.
+- **Leader** = deck card with `data.cardType.miniboss == true` (same rule as `References.LeaderData`).
+- Buttons: `Continue()` → `menu.GoTo("Campaign")`; `Close()` → unload scene; `PromptGiveUp()` → confirm panel → deletes campaign.
+
+## 16. Campaign Map (scenes "Campaign" + "MapNew")
+
+- Data model: `Campaign.instance.nodes` (`List<CampaignNode>`, id == index). Visual: `References.Map` (MapNew); `References.Map.FindNode(campaignNode)` → `MapNode`.
+- Player position: `Campaign.FindCharacterNode(References.Player)`.
+- `CampaignNode`: `id, tier, positionIndex, areaIndex, position, connections (List<Connection>{otherId}), revealed, cleared, glow, finalNode, characters, data (Dictionary<string,object>), type (CampaignNodeType)`. `GetDesc()` = reward tooltip text.
+- `CampaignNodeType`: `letter` ("battle", "area1"...), `zoneName` (plain string, NOT localized), flags `isBattle, isBoss, mustClear, canSkip, interactable, startRevealed`. Category via subclass name (`CampaignNodeTypeShop` etc.).
+- **Valid move** = target is current node or in `current.connections`, AND (current.cleared or !current.type.mustClear). `MapNode.reachable` (public) = BFS-reachable.
+- **Node display name:** authored in prefab — read TMP under `MapNodeLabel` (private `label` field; `GetComponentInChildren<MapNodeLabel>(true)`). Battle nodes: `node.data["battle"]` → `AddressableLoader.Get<BattleData>("BattleData", name)` → `nameRef` (LocalizedString), `waveCounter`.
+- **Enemy roster:** `node.data.GetSaveCollection<BattleWaveManager.WaveData>("waves")` → per wave `.Count` + `.PeekCardData(j)`.
+- **Zone name:** on non-interactable label nodes (`type.letter.StartsWith("area")`, match `areaIndex`) — read their MapNode's TMP text.
+- Events: `Events.OnMapNodeHover/UnHover/Select/Reveal(MapNode)`, `Events.PostBattle(CampaignNode)`.
+- Map HUD comes from persistent "UI" scene: `CharacterDisplay` (goldDisplay, deckDisplay, handOverlay). Gold: `References.Player.data.inventory.gold.Value` (SafeInt — reference DeadSafe.dll!).
+
+## 17. Battle Interaction (playing cards)
+
+- Controller: `Battle.instance.playerCardController` (public field, runtime type `CardControllerBattle`).
+- Public fields: `hoverEntity`, `dragging`, `hoverContainer`, `hoverSlot`. Protected: `pressEntity`, `Press()`, `Release()` (reflection needed).
+- **Pickup flow:** focus card nav item (sets hoverEntity via event system Hover cascade) → set `pressEntity` = entity → invoke `Press()` → `dragging != null` = picked up, game enters `NavigationStateCard` (only valid targets/slots selectable).
+- **Place flow:** focus target (sets hoverSlot/hoverEntity) → invoke `Release()` → dispatches by `playType` (Place → ActionMove; Play → ActionTrigger/Against) + `ActionEndTurn`.
+- Cards in hand: `battle.player.handContainer` (iterate for entities, `entity.uINavigationItem`).
+- Board: `Battle.instance.GetRow(character, 0|1)` returns `CardContainer` (actually `CardSlotLane`, `.slots` List<CardSlot>, `slot.GetTop()`).
+- **Redraw bell:** `RedrawBellSystem` (FindObjectOfType) — `counter` (Stat), `IsCharged` (counter.current <= 0 = free ring), `interactable` (Play phase only), `Activate()` public, `RedrawBellSystem.nav` static.
+- **Waves:** `References.Battle.enemy.GetComponent<BattleWaveManager>().list` — `Wave { counter, units (List<CardData>), isBossWave, spawned }`. HUD: `WaveDeploySystem` (private `counter` int = turns to next deploy; `WaveDeploySystem.nav` static). No player-facing "skip wave" — early deploy is automatic when enemy board empty.
+- **No End Turn button** — turn ends via card play / recall / bell (each enqueues `ActionEndTurn`). Programmatic: `ActionQueue.Add(new ActionEndTurn(Battle.instance.player))`.
+- Events: `Events.OnBattlePhaseStart(Battle.Phase)`, `OnBattleTurnStart/End(int)`, `OnRedrawBellHit(RedrawBellSystem)`, `OnBattleStart/End`, `OnBattleWin`.
+- **Status effects:** `entity.statusEffects` (List<StatusEffectData>) — `visible`, `count`, `GetAmount()`, name via `AddressableLoader.Get<KeywordData>("KeywordData", effect.keyword).title`. Attack payload: `entity.attackEffects` (StatusEffectStacks: data + count).
+- Post-win flow: optional "BossReward" → "BattleWin" (both Temporary); lose/end → "CampaignEnd".
+
+## 18. Change History
 
 - 2026-03-29: Initial creation with structure overview
 - 2026-03-29: Complete Tier 1 analysis — input system, UI navigation, singletons, scenes, cards, battle, localization
+- 2026-07-11: Town, ContinueRun, overlay scenes, campaign map, battle interaction, status effects (sections 13-17)

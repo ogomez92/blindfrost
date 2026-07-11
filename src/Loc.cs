@@ -46,6 +46,24 @@ namespace WildfrostAccessibility
         }
 
         /// <summary>
+        /// Try to get a localized string. Returns false if the key is unknown
+        /// in both the current language and the English fallback.
+        /// </summary>
+        public static bool TryGet(string key, out string text)
+        {
+            string langCode = GetCurrentLanguageCode();
+
+            if (_strings.TryGetValue(langCode, out var langDict) && langDict.TryGetValue(key, out text))
+                return true;
+
+            if (_strings.TryGetValue("en", out var enDict) && enDict.TryGetValue(key, out text))
+                return true;
+
+            text = null;
+            return false;
+        }
+
+        /// <summary>
         /// Get a localized string with template parameters.
         /// Use {0}, {1}, etc. as placeholders.
         /// </summary>
@@ -291,6 +309,491 @@ namespace WildfrostAccessibility
 
             // More languages can be added as needed.
             // The game supports many more locales; they will fall back to English until translated.
+
+            RegisterHandlerStrings();
+        }
+
+        /// <summary>
+        /// Strings for the dedicated screen handlers (Town, ContinueRun, Map, Battle)
+        /// and shared item descriptions. English, German, Spanish and French;
+        /// other locales fall back to English until translated.
+        /// </summary>
+        private static void RegisterHandlerStrings()
+        {
+            // ----- English -----------------------------------------------------
+
+            // Shared stats and items
+            Add("en", "stat_health", "{0} health");
+            Add("en", "stat_attack", "{0} attack");
+            Add("en", "stat_counter", "counter {0}");
+            Add("en", "pocket_draw", "Draw pile, {0} cards");
+            Add("en", "pocket_draw_one", "Draw pile, 1 card");
+            Add("en", "pocket_discard", "Discard pile, {0} cards");
+            Add("en", "pocket_discard_one", "Discard pile, 1 card");
+            Add("en", "card_count_multiple", "{0}, {1} copies");
+            Add("en", "no_item_focused", "Nothing is focused.");
+            Add("en", "no_info_available", "No information available.");
+            Add("en", "gold_amount", "Gold: {0}.");
+
+            // Scene names for the generic fallback handler
+            Add("en", "scene_CharacterSelect", "Character select screen.");
+            Add("en", "scene_Cards", "Card collection screen.");
+            Add("en", "scene_Mods", "Mods screen.");
+            Add("en", "scene_Credits", "Credits.");
+            Add("en", "scene_TownUnlocks", "Town unlocks.");
+            Add("en", "scene_Event", "Event.");
+            Add("en", "scene_BossReward", "Boss reward selection.");
+            Add("en", "scene_BattleWin", "Battle won! Victory screen.");
+            Add("en", "scene_CampaignEnd", "Journey over.");
+
+            // Main menu
+            Add("en", "help_main_menu", "Main menu. Up and down arrows move between buttons, Enter selects. F1 repeats this help, F10 toggles debug mode.");
+
+            // Town
+            Add("en", "screen_town", "Town, your base camp.");
+            Add("en", "town_hint", "Arrow keys move between buildings, Enter selects, I describes the focused building. F1 for help.");
+            Add("en", "gate_continue_tutorial", "Your tutorial journey is in progress. Press Enter to continue it");
+            Add("en", "gate_start_tutorial", "Starts your first journey. The game will offer you the tutorial");
+            Add("en", "gate_continue_run", "Your journey is in progress. Press Enter to continue it");
+            Add("en", "gate_start_run", "Starts a new journey");
+            Add("en", "help_town", "Town. Your base between journeys. Buildings unlock new cards and challenges. Arrow keys move between buildings, I reads what a building does, Enter opens it. The Gate starts or continues your journey.");
+
+            // ContinueRun
+            Add("en", "screen_continue_run", "Continue journey. You have a journey in progress.");
+            Add("en", "continue_missing_data", "This journey uses missing content and cannot be continued.");
+            Add("en", "continue_started", "Started on {0}.");
+            Add("en", "continue_leader", "Your leader: {0}.");
+            Add("en", "continue_deck", "Deck of {0} cards: {1}.");
+            Add("en", "continue_hint", "Arrow keys review the cards and buttons. Enter on Let's Go continues the journey.");
+            Add("en", "continue_button_desc", "Continues your journey");
+            Add("en", "continue_back_desc", "Returns to town");
+            Add("en", "help_continue_run", "Continue journey screen. It shows the run in progress: leader, deck, and start date. Enter on the continue button resumes the journey. The back button returns to town. Give up abandons the run.");
+
+            // Campaign map
+            Add("en", "screen_map", "Campaign map.");
+            Add("en", "map_zone", "Zone: {0}.");
+            Add("en", "map_you_are_at", "You are at {0}.");
+            Add("en", "map_destinations", "{0} destinations: {1}.");
+            Add("en", "map_hint", "Left and right arrows move along the path, Enter travels. M reads the whole map, I reads details, G reads gold.");
+            Add("en", "map_node_here", "you are here");
+            Add("en", "map_node_enter", "press Enter to enter");
+            Add("en", "map_only_location", "This is the only revealed location right now.");
+            Add("en", "map_no_controls", "Nothing else on this screen.");
+            Add("en", "map_node_cleared", "cleared");
+            Add("en", "map_node_available", "available, press Enter to travel here");
+            Add("en", "map_node_available_short", "available");
+            Add("en", "map_node_ahead", "further ahead");
+            Add("en", "map_node_not_reachable", "not reachable");
+            Add("en", "map_battle_waves", "{0} waves");
+            Add("en", "map_not_ready", "The map is not ready yet.");
+            Add("en", "map_overview", "Map overview, {0} known locations.");
+            Add("en", "map_hidden_nodes", "{0} more locations not yet revealed");
+            Add("en", "map_wave_enemies", "Wave {0}: {1}");
+            Add("en", "help_map", "Campaign map. Your journey is a path of locations. Left and right arrows move between locations. Enter travels to an available location. Up and down arrows reach your deck piles and other controls. M reads the whole map, I reads details of the focused location including enemies, G reads your gold.");
+
+            // Map node categories
+            Add("en", "node_type_boss", "boss battle");
+            Add("en", "node_type_battle", "battle");
+            Add("en", "node_type_shop", "shop");
+            Add("en", "node_type_gnomeshop", "gnome shop");
+            Add("en", "node_type_charm", "charm event");
+            Add("en", "node_type_gold", "treasure");
+            Add("en", "node_type_item", "item event");
+            Add("en", "node_type_companion", "companion event");
+            Add("en", "node_type_copyitem", "item copy event");
+            Add("en", "node_type_curseitems", "curse event");
+            Add("en", "node_type_injuredcompanion", "injured companion");
+            Add("en", "node_type_journalpage", "journal page");
+            Add("en", "node_type_charmshop", "charm shop");
+            Add("en", "node_type_clunkshop", "clunk shop");
+            Add("en", "node_type_muncher", "muncher");
+            Add("en", "node_type_event", "event");
+
+            // Battle
+            Add("en", "screen_battle", "Battle!");
+            Add("en", "battle_wave_total", "{0} enemy waves.");
+            Add("en", "battle_hand_count", "{0} cards in hand.");
+            Add("en", "battle_hint", "Up and down arrows switch between hand, boards, bell and piles. Left and right move within. Enter picks up and places cards. F1 for battle help.");
+            Add("en", "battle_your_turn", "Your turn. {0} cards in hand.");
+            Add("en", "battle_resolving", "Turn resolving.");
+            Add("en", "battle_over", "Battle over.");
+            Add("en", "battle_turn", "Turn {0}.");
+            Add("en", "battle_bell_rung", "Redraw bell rung. Drawing a new hand.");
+            Add("en", "battle_group_empty", "{0} is empty.");
+            Add("en", "battle_nothing_to_focus", "Nothing to focus.");
+            Add("en", "group_hand", "Hand");
+            Add("en", "group_your_board", "Your board");
+            Add("en", "group_enemy_board", "Enemy board");
+            Add("en", "group_system", "Bell and piles");
+            Add("en", "battle_card_picked_up", "{0} picked up.");
+            Add("en", "battle_pickup_hint", "Arrow keys choose a target, Enter places it.");
+            Add("en", "battle_card_released", "{0} placed.");
+            Add("en", "battle_invalid_target", "Not a valid target.");
+            Add("en", "battle_cannot_play", "Cannot play that card right now.");
+            Add("en", "battle_bell_not_ready", "The redraw bell is not available right now.");
+            Add("en", "battle_hand_empty", "Your hand is empty.");
+            Add("en", "battle_acts_in", "acts in {0}");
+            Add("en", "battle_no_waves", "No wave information.");
+            Add("en", "battle_wave_n", "Wave {0}: {1}");
+            Add("en", "battle_boss_wave", "boss wave");
+            Add("en", "battle_all_waves_spawned", "All waves have spawned.");
+            Add("en", "battle_next_wave", "Next wave in {0} turns.");
+            Add("en", "battle_bell_charged", "Redraw bell is charged. Ringing it redraws your hand for free.");
+            Add("en", "battle_bell_charging", "Redraw bell is ready in {0} turns. Ringing it now will use your turn.");
+            Add("en", "battle_phase_play", "Your move.");
+            Add("en", "battle_phase_other", "Waiting.");
+            Add("en", "battle_hit", "{0} hits {1} for {2}.");
+            Add("en", "battle_takes_damage", "{0} takes {1} damage.");
+            Add("en", "battle_healed", "{0} recovers {1} health.");
+            Add("en", "battle_dodged", "{0} dodged.");
+            Add("en", "battle_destroyed", "{0} destroyed.");
+            Add("en", "battle_status_applied", "{0} {1} applied to {2}.");
+            Add("en", "help_battle", "Battle. Up and down arrows switch groups: hand, your board, enemy board, bell and piles. Left and right arrows move within a group. Enter on a hand card picks it up, arrows choose a target, Enter places it. Playing a card or ringing the bell ends your turn. Readout keys: H hand, B board, W waves, R bell, T turn, G gold.");
+
+            // ----- German -------------------------------------------------------
+
+            Add("de", "stat_health", "{0} Leben");
+            Add("de", "stat_attack", "{0} Angriff");
+            Add("de", "stat_counter", "Zaehler {0}");
+            Add("de", "pocket_draw", "Nachziehstapel, {0} Karten");
+            Add("de", "pocket_draw_one", "Nachziehstapel, 1 Karte");
+            Add("de", "pocket_discard", "Ablagestapel, {0} Karten");
+            Add("de", "pocket_discard_one", "Ablagestapel, 1 Karte");
+            Add("de", "card_count_multiple", "{0}, {1} mal");
+            Add("de", "no_item_focused", "Nichts fokussiert.");
+            Add("de", "no_info_available", "Keine Informationen verfuegbar.");
+            Add("de", "gold_amount", "Gold: {0}.");
+            Add("de", "scene_CharacterSelect", "Charakterauswahl.");
+            Add("de", "scene_Cards", "Kartensammlung.");
+            Add("de", "scene_Mods", "Mods.");
+            Add("de", "scene_Credits", "Mitwirkende.");
+            Add("de", "scene_TownUnlocks", "Stadt-Freischaltungen.");
+            Add("de", "scene_Event", "Ereignis.");
+            Add("de", "scene_BossReward", "Boss-Belohnung.");
+            Add("de", "scene_BattleWin", "Kampf gewonnen! Siegesbildschirm.");
+            Add("de", "scene_CampaignEnd", "Reise beendet.");
+            Add("de", "help_main_menu", "Hauptmenue. Pfeiltasten hoch und runter wechseln die Knoepfe, Enter waehlt aus. F1 wiederholt diese Hilfe, F10 schaltet den Debug-Modus um.");
+            Add("de", "screen_town", "Stadt, dein Lager.");
+            Add("de", "town_hint", "Pfeiltasten wechseln zwischen Gebaeuden, Enter waehlt aus, I beschreibt das fokussierte Gebaeude. F1 fuer Hilfe.");
+            Add("de", "gate_continue_tutorial", "Deine Tutorial-Reise laeuft. Enter setzt sie fort");
+            Add("de", "gate_start_tutorial", "Startet deine erste Reise. Das Spiel bietet dir das Tutorial an");
+            Add("de", "gate_continue_run", "Deine Reise laeuft. Enter setzt sie fort");
+            Add("de", "gate_start_run", "Startet eine neue Reise");
+            Add("de", "help_town", "Stadt. Dein Lager zwischen den Reisen. Gebaeude schalten neue Karten und Herausforderungen frei. Pfeiltasten wechseln zwischen Gebaeuden, I liest die Funktion vor, Enter oeffnet. Das Tor startet deine Reise oder setzt sie fort.");
+            Add("de", "screen_continue_run", "Reise fortsetzen. Du hast eine laufende Reise.");
+            Add("de", "continue_missing_data", "Diese Reise nutzt fehlende Inhalte und kann nicht fortgesetzt werden.");
+            Add("de", "continue_started", "Gestartet am {0}.");
+            Add("de", "continue_leader", "Dein Anfuehrer: {0}.");
+            Add("de", "continue_deck", "Deck mit {0} Karten: {1}.");
+            Add("de", "continue_hint", "Pfeiltasten gehen durch Karten und Knoepfe. Enter auf Los geht's setzt die Reise fort.");
+            Add("de", "continue_button_desc", "Setzt deine Reise fort");
+            Add("de", "continue_back_desc", "Zurueck zur Stadt");
+            Add("de", "help_continue_run", "Reise-fortsetzen-Bildschirm. Zeigt die laufende Reise: Anfuehrer, Deck und Startdatum. Enter auf dem Fortsetzen-Knopf setzt die Reise fort. Der Zurueck-Knopf fuehrt zur Stadt. Aufgeben verwirft die Reise.");
+            Add("de", "screen_map", "Reisekarte.");
+            Add("de", "map_zone", "Zone: {0}.");
+            Add("de", "map_you_are_at", "Du bist bei {0}.");
+            Add("de", "map_destinations", "{0} Ziele: {1}.");
+            Add("de", "map_hint", "Pfeiltasten links und rechts bewegen sich auf dem Pfad, Enter reist. M liest die ganze Karte, I liest Details, G liest Gold.");
+            Add("de", "map_node_here", "du bist hier");
+            Add("de", "map_node_enter", "Enter betritt den Ort");
+            Add("de", "map_only_location", "Das ist gerade der einzige aufgedeckte Ort.");
+            Add("de", "map_no_controls", "Sonst nichts auf diesem Bildschirm.");
+            Add("de", "map_node_cleared", "abgeschlossen");
+            Add("de", "map_node_available", "verfuegbar, Enter reist hierher");
+            Add("de", "map_node_available_short", "verfuegbar");
+            Add("de", "map_node_ahead", "weiter voraus");
+            Add("de", "map_node_not_reachable", "nicht erreichbar");
+            Add("de", "map_battle_waves", "{0} Wellen");
+            Add("de", "map_not_ready", "Die Karte ist noch nicht bereit.");
+            Add("de", "map_overview", "Kartenuebersicht, {0} bekannte Orte.");
+            Add("de", "map_hidden_nodes", "{0} weitere Orte noch nicht aufgedeckt");
+            Add("de", "map_wave_enemies", "Welle {0}: {1}");
+            Add("de", "help_map", "Reisekarte. Deine Reise ist ein Pfad aus Orten. Pfeiltasten links und rechts wechseln zwischen Orten. Enter reist zu einem verfuegbaren Ort. Hoch und runter erreichen Kartenstapel und weitere Elemente. M liest die ganze Karte, I liest Details samt Gegnern, G liest dein Gold.");
+            Add("de", "node_type_boss", "Bosskampf");
+            Add("de", "node_type_battle", "Kampf");
+            Add("de", "node_type_shop", "Laden");
+            Add("de", "node_type_gnomeshop", "Gnomladen");
+            Add("de", "node_type_charm", "Talisman-Ereignis");
+            Add("de", "node_type_gold", "Schatz");
+            Add("de", "node_type_item", "Gegenstand-Ereignis");
+            Add("de", "node_type_companion", "Gefaehrten-Ereignis");
+            Add("de", "node_type_copyitem", "Gegenstand-Kopier-Ereignis");
+            Add("de", "node_type_curseitems", "Fluch-Ereignis");
+            Add("de", "node_type_injuredcompanion", "verletzter Gefaehrte");
+            Add("de", "node_type_journalpage", "Journalseite");
+            Add("de", "node_type_charmshop", "Talisman-Laden");
+            Add("de", "node_type_clunkshop", "Klunker-Laden");
+            Add("de", "node_type_muncher", "Muncher");
+            Add("de", "node_type_event", "Ereignis");
+            Add("de", "screen_battle", "Kampf!");
+            Add("de", "battle_wave_total", "{0} Gegnerwellen.");
+            Add("de", "battle_hand_count", "{0} Karten auf der Hand.");
+            Add("de", "battle_hint", "Hoch und runter wechseln zwischen Hand, Feldern, Glocke und Stapeln. Links und rechts bewegen sich innerhalb. Enter nimmt Karten auf und legt sie ab. F1 fuer Kampfhilfe.");
+            Add("de", "battle_your_turn", "Dein Zug. {0} Karten auf der Hand.");
+            Add("de", "battle_resolving", "Zug wird ausgefuehrt.");
+            Add("de", "battle_over", "Kampf vorbei.");
+            Add("de", "battle_turn", "Runde {0}.");
+            Add("de", "battle_bell_rung", "Nachziehglocke gelaeutet. Neue Hand wird gezogen.");
+            Add("de", "battle_group_empty", "{0} ist leer.");
+            Add("de", "battle_nothing_to_focus", "Nichts zu fokussieren.");
+            Add("de", "group_hand", "Hand");
+            Add("de", "group_your_board", "Dein Feld");
+            Add("de", "group_enemy_board", "Gegnerfeld");
+            Add("de", "group_system", "Glocke und Stapel");
+            Add("de", "battle_card_picked_up", "{0} aufgenommen.");
+            Add("de", "battle_pickup_hint", "Pfeiltasten waehlen ein Ziel, Enter legt ab.");
+            Add("de", "battle_card_released", "{0} abgelegt.");
+            Add("de", "battle_invalid_target", "Kein gueltiges Ziel.");
+            Add("de", "battle_cannot_play", "Diese Karte kann gerade nicht gespielt werden.");
+            Add("de", "battle_bell_not_ready", "Die Nachziehglocke ist gerade nicht verfuegbar.");
+            Add("de", "battle_hand_empty", "Deine Hand ist leer.");
+            Add("de", "battle_acts_in", "handelt in {0}");
+            Add("de", "battle_no_waves", "Keine Welleninformationen.");
+            Add("de", "battle_wave_n", "Welle {0}: {1}");
+            Add("de", "battle_boss_wave", "Bosswelle");
+            Add("de", "battle_all_waves_spawned", "Alle Wellen sind erschienen.");
+            Add("de", "battle_next_wave", "Naechste Welle in {0} Runden.");
+            Add("de", "battle_bell_charged", "Nachziehglocke ist aufgeladen. Laeuten zieht kostenlos eine neue Hand.");
+            Add("de", "battle_bell_charging", "Nachziehglocke ist in {0} Runden bereit. Jetzt laeuten verbraucht deinen Zug.");
+            Add("de", "battle_phase_play", "Du bist dran.");
+            Add("de", "battle_phase_other", "Warten.");
+            Add("de", "battle_hit", "{0} trifft {1} fuer {2}.");
+            Add("de", "battle_takes_damage", "{0} erleidet {1} Schaden.");
+            Add("de", "battle_healed", "{0} heilt {1} Leben.");
+            Add("de", "battle_dodged", "{0} ist ausgewichen.");
+            Add("de", "battle_destroyed", "{0} zerstoert.");
+            Add("de", "battle_status_applied", "{0} {1} auf {2} angewendet.");
+            Add("de", "help_battle", "Kampf. Hoch und runter wechseln die Gruppen: Hand, dein Feld, Gegnerfeld, Glocke und Stapel. Links und rechts bewegen sich innerhalb einer Gruppe. Enter auf einer Handkarte nimmt sie auf, Pfeiltasten waehlen ein Ziel, Enter legt ab. Eine Karte spielen oder die Glocke laeuten beendet deinen Zug. Vorlesetasten: H Hand, B Feld, W Wellen, R Glocke, T Runde, G Gold.");
+
+            // ----- Spanish ------------------------------------------------------
+
+            Add("es", "stat_health", "{0} de vida");
+            Add("es", "stat_attack", "{0} de ataque");
+            Add("es", "stat_counter", "contador {0}");
+            Add("es", "pocket_draw", "Mazo de robo, {0} cartas");
+            Add("es", "pocket_draw_one", "Mazo de robo, 1 carta");
+            Add("es", "pocket_discard", "Pila de descarte, {0} cartas");
+            Add("es", "pocket_discard_one", "Pila de descarte, 1 carta");
+            Add("es", "card_count_multiple", "{0}, {1} copias");
+            Add("es", "no_item_focused", "Nada seleccionado.");
+            Add("es", "no_info_available", "No hay informacion disponible.");
+            Add("es", "gold_amount", "Oro: {0}.");
+            Add("es", "scene_CharacterSelect", "Seleccion de personaje.");
+            Add("es", "scene_Cards", "Coleccion de cartas.");
+            Add("es", "scene_Mods", "Mods.");
+            Add("es", "scene_Credits", "Creditos.");
+            Add("es", "scene_TownUnlocks", "Desbloqueos del pueblo.");
+            Add("es", "scene_Event", "Evento.");
+            Add("es", "scene_BossReward", "Recompensa de jefe.");
+            Add("es", "scene_BattleWin", "Batalla ganada! Pantalla de victoria.");
+            Add("es", "scene_CampaignEnd", "Fin del viaje.");
+            Add("es", "help_main_menu", "Menu principal. Flechas arriba y abajo cambian de boton, Enter selecciona. F1 repite esta ayuda, F10 alterna el modo de depuracion.");
+            Add("es", "screen_town", "Pueblo, tu campamento base.");
+            Add("es", "town_hint", "Las flechas cambian de edificio, Enter selecciona, I describe el edificio seleccionado. F1 para ayuda.");
+            Add("es", "gate_continue_tutorial", "Tu viaje de tutorial esta en curso. Pulsa Enter para continuarlo");
+            Add("es", "gate_start_tutorial", "Comienza tu primer viaje. El juego te ofrecera el tutorial");
+            Add("es", "gate_continue_run", "Tu viaje esta en curso. Pulsa Enter para continuarlo");
+            Add("es", "gate_start_run", "Comienza un nuevo viaje");
+            Add("es", "help_town", "Pueblo. Tu base entre viajes. Los edificios desbloquean cartas y desafios. Las flechas cambian de edificio, I lee su funcion, Enter lo abre. La Puerta comienza o continua tu viaje.");
+            Add("es", "screen_continue_run", "Continuar viaje. Tienes un viaje en curso.");
+            Add("es", "continue_missing_data", "Este viaje usa contenido que falta y no puede continuarse.");
+            Add("es", "continue_started", "Comenzado el {0}.");
+            Add("es", "continue_leader", "Tu lider: {0}.");
+            Add("es", "continue_deck", "Mazo de {0} cartas: {1}.");
+            Add("es", "continue_hint", "Las flechas repasan cartas y botones. Enter en Vamos continua el viaje.");
+            Add("es", "continue_button_desc", "Continua tu viaje");
+            Add("es", "continue_back_desc", "Vuelve al pueblo");
+            Add("es", "help_continue_run", "Pantalla de continuar viaje. Muestra el viaje en curso: lider, mazo y fecha de inicio. Enter en el boton de continuar reanuda el viaje. El boton de volver regresa al pueblo. Rendirse abandona el viaje.");
+            Add("es", "screen_map", "Mapa del viaje.");
+            Add("es", "map_zone", "Zona: {0}.");
+            Add("es", "map_you_are_at", "Estas en {0}.");
+            Add("es", "map_destinations", "{0} destinos: {1}.");
+            Add("es", "map_hint", "Flechas izquierda y derecha recorren el camino, Enter viaja. M lee todo el mapa, I lee detalles, G lee el oro.");
+            Add("es", "map_node_here", "estas aqui");
+            Add("es", "map_node_enter", "Enter para entrar");
+            Add("es", "map_only_location", "Este es el unico lugar revelado por ahora.");
+            Add("es", "map_no_controls", "No hay nada mas en esta pantalla.");
+            Add("es", "map_node_cleared", "completado");
+            Add("es", "map_node_available", "disponible, pulsa Enter para viajar aqui");
+            Add("es", "map_node_available_short", "disponible");
+            Add("es", "map_node_ahead", "mas adelante");
+            Add("es", "map_node_not_reachable", "no accesible");
+            Add("es", "map_battle_waves", "{0} oleadas");
+            Add("es", "map_not_ready", "El mapa aun no esta listo.");
+            Add("es", "map_overview", "Resumen del mapa, {0} lugares conocidos.");
+            Add("es", "map_hidden_nodes", "{0} lugares mas sin revelar");
+            Add("es", "map_wave_enemies", "Oleada {0}: {1}");
+            Add("es", "help_map", "Mapa del viaje. Tu viaje es un camino de lugares. Flechas izquierda y derecha cambian de lugar. Enter viaja a un lugar disponible. Arriba y abajo alcanzan los mazos y otros controles. M lee todo el mapa, I lee detalles del lugar seleccionado incluidos enemigos, G lee tu oro.");
+            Add("es", "node_type_boss", "batalla de jefe");
+            Add("es", "node_type_battle", "batalla");
+            Add("es", "node_type_shop", "tienda");
+            Add("es", "node_type_gnomeshop", "tienda de gnomos");
+            Add("es", "node_type_charm", "evento de amuleto");
+            Add("es", "node_type_gold", "tesoro");
+            Add("es", "node_type_item", "evento de objeto");
+            Add("es", "node_type_companion", "evento de companero");
+            Add("es", "node_type_copyitem", "evento de copia de objeto");
+            Add("es", "node_type_curseitems", "evento de maldicion");
+            Add("es", "node_type_injuredcompanion", "companero herido");
+            Add("es", "node_type_journalpage", "pagina del diario");
+            Add("es", "node_type_charmshop", "tienda de amuletos");
+            Add("es", "node_type_clunkshop", "tienda de trastos");
+            Add("es", "node_type_muncher", "muncher");
+            Add("es", "node_type_event", "evento");
+            Add("es", "screen_battle", "Batalla!");
+            Add("es", "battle_wave_total", "{0} oleadas enemigas.");
+            Add("es", "battle_hand_count", "{0} cartas en mano.");
+            Add("es", "battle_hint", "Arriba y abajo cambian entre mano, tableros, campana y pilas. Izquierda y derecha se mueven dentro. Enter coge y coloca cartas. F1 para ayuda de batalla.");
+            Add("es", "battle_your_turn", "Tu turno. {0} cartas en mano.");
+            Add("es", "battle_resolving", "Resolviendo el turno.");
+            Add("es", "battle_over", "Batalla terminada.");
+            Add("es", "battle_turn", "Turno {0}.");
+            Add("es", "battle_bell_rung", "Campana de robo tocada. Robando una mano nueva.");
+            Add("es", "battle_group_empty", "{0} esta vacio.");
+            Add("es", "battle_nothing_to_focus", "Nada que seleccionar.");
+            Add("es", "group_hand", "Mano");
+            Add("es", "group_your_board", "Tu tablero");
+            Add("es", "group_enemy_board", "Tablero enemigo");
+            Add("es", "group_system", "Campana y pilas");
+            Add("es", "battle_card_picked_up", "{0} en mano.");
+            Add("es", "battle_pickup_hint", "Las flechas eligen objetivo, Enter la coloca.");
+            Add("es", "battle_card_released", "{0} colocada.");
+            Add("es", "battle_invalid_target", "Objetivo no valido.");
+            Add("es", "battle_cannot_play", "No se puede jugar esa carta ahora.");
+            Add("es", "battle_bell_not_ready", "La campana de robo no esta disponible ahora.");
+            Add("es", "battle_hand_empty", "Tu mano esta vacia.");
+            Add("es", "battle_acts_in", "actua en {0}");
+            Add("es", "battle_no_waves", "Sin informacion de oleadas.");
+            Add("es", "battle_wave_n", "Oleada {0}: {1}");
+            Add("es", "battle_boss_wave", "oleada de jefe");
+            Add("es", "battle_all_waves_spawned", "Todas las oleadas han aparecido.");
+            Add("es", "battle_next_wave", "Proxima oleada en {0} turnos.");
+            Add("es", "battle_bell_charged", "La campana de robo esta cargada. Tocarla roba una mano nueva gratis.");
+            Add("es", "battle_bell_charging", "La campana de robo estara lista en {0} turnos. Tocarla ahora gasta tu turno.");
+            Add("es", "battle_phase_play", "Te toca.");
+            Add("es", "battle_phase_other", "Esperando.");
+            Add("es", "battle_hit", "{0} golpea a {1} por {2}.");
+            Add("es", "battle_takes_damage", "{0} recibe {1} de dano.");
+            Add("es", "battle_healed", "{0} recupera {1} de vida.");
+            Add("es", "battle_dodged", "{0} esquivo el golpe.");
+            Add("es", "battle_destroyed", "{0} destruido.");
+            Add("es", "battle_status_applied", "{0} de {1} aplicado a {2}.");
+            Add("es", "help_battle", "Batalla. Arriba y abajo cambian de grupo: mano, tu tablero, tablero enemigo, campana y pilas. Izquierda y derecha se mueven dentro del grupo. Enter en una carta de la mano la coge, las flechas eligen objetivo, Enter la coloca. Jugar una carta o tocar la campana termina tu turno. Teclas de lectura: H mano, B tablero, W oleadas, R campana, T turno, G oro.");
+
+            // ----- French -------------------------------------------------------
+
+            Add("fr", "stat_health", "{0} points de vie");
+            Add("fr", "stat_attack", "{0} d'attaque");
+            Add("fr", "stat_counter", "compteur {0}");
+            Add("fr", "pocket_draw", "Pioche, {0} cartes");
+            Add("fr", "pocket_draw_one", "Pioche, 1 carte");
+            Add("fr", "pocket_discard", "Defausse, {0} cartes");
+            Add("fr", "pocket_discard_one", "Defausse, 1 carte");
+            Add("fr", "card_count_multiple", "{0}, {1} exemplaires");
+            Add("fr", "no_item_focused", "Rien de selectionne.");
+            Add("fr", "no_info_available", "Aucune information disponible.");
+            Add("fr", "gold_amount", "Or: {0}.");
+            Add("fr", "scene_CharacterSelect", "Selection du personnage.");
+            Add("fr", "scene_Cards", "Collection de cartes.");
+            Add("fr", "scene_Mods", "Mods.");
+            Add("fr", "scene_Credits", "Credits.");
+            Add("fr", "scene_TownUnlocks", "Deblocages du village.");
+            Add("fr", "scene_Event", "Evenement.");
+            Add("fr", "scene_BossReward", "Recompense de boss.");
+            Add("fr", "scene_BattleWin", "Bataille gagnee! Ecran de victoire.");
+            Add("fr", "scene_CampaignEnd", "Fin du voyage.");
+            Add("fr", "help_main_menu", "Menu principal. Fleches haut et bas pour changer de bouton, Entree pour selectionner. F1 repete cette aide, F10 bascule le mode debogage.");
+            Add("fr", "screen_town", "Village, votre camp de base.");
+            Add("fr", "town_hint", "Les fleches changent de batiment, Entree selectionne, I decrit le batiment selectionne. F1 pour l'aide.");
+            Add("fr", "gate_continue_tutorial", "Votre voyage tutoriel est en cours. Appuyez sur Entree pour le continuer");
+            Add("fr", "gate_start_tutorial", "Commence votre premier voyage. Le jeu vous proposera le tutoriel");
+            Add("fr", "gate_continue_run", "Votre voyage est en cours. Appuyez sur Entree pour le continuer");
+            Add("fr", "gate_start_run", "Commence un nouveau voyage");
+            Add("fr", "help_town", "Village. Votre base entre les voyages. Les batiments debloquent cartes et defis. Les fleches changent de batiment, I lit sa fonction, Entree l'ouvre. La Porte commence ou continue votre voyage.");
+            Add("fr", "screen_continue_run", "Continuer le voyage. Vous avez un voyage en cours.");
+            Add("fr", "continue_missing_data", "Ce voyage utilise du contenu manquant et ne peut pas continuer.");
+            Add("fr", "continue_started", "Commence le {0}.");
+            Add("fr", "continue_leader", "Votre chef: {0}.");
+            Add("fr", "continue_deck", "Deck de {0} cartes: {1}.");
+            Add("fr", "continue_hint", "Les fleches parcourent cartes et boutons. Entree sur C'est parti continue le voyage.");
+            Add("fr", "continue_button_desc", "Continue votre voyage");
+            Add("fr", "continue_back_desc", "Retourne au village");
+            Add("fr", "help_continue_run", "Ecran de reprise du voyage. Il montre le voyage en cours: chef, deck et date de depart. Entree sur le bouton continuer reprend le voyage. Le bouton retour ramene au village. Abandonner supprime le voyage.");
+            Add("fr", "screen_map", "Carte du voyage.");
+            Add("fr", "map_zone", "Zone: {0}.");
+            Add("fr", "map_you_are_at", "Vous etes a {0}.");
+            Add("fr", "map_destinations", "{0} destinations: {1}.");
+            Add("fr", "map_hint", "Fleches gauche et droite parcourent le chemin, Entree voyage. M lit toute la carte, I lit les details, G lit l'or.");
+            Add("fr", "map_node_here", "vous etes ici");
+            Add("fr", "map_node_enter", "Entree pour y entrer");
+            Add("fr", "map_only_location", "C'est le seul lieu revele pour le moment.");
+            Add("fr", "map_no_controls", "Rien d'autre sur cet ecran.");
+            Add("fr", "map_node_cleared", "termine");
+            Add("fr", "map_node_available", "disponible, appuyez sur Entree pour y aller");
+            Add("fr", "map_node_available_short", "disponible");
+            Add("fr", "map_node_ahead", "plus loin");
+            Add("fr", "map_node_not_reachable", "inaccessible");
+            Add("fr", "map_battle_waves", "{0} vagues");
+            Add("fr", "map_not_ready", "La carte n'est pas encore prete.");
+            Add("fr", "map_overview", "Apercu de la carte, {0} lieux connus.");
+            Add("fr", "map_hidden_nodes", "{0} autres lieux non reveles");
+            Add("fr", "map_wave_enemies", "Vague {0}: {1}");
+            Add("fr", "help_map", "Carte du voyage. Votre voyage est un chemin de lieux. Fleches gauche et droite changent de lieu. Entree voyage vers un lieu disponible. Haut et bas atteignent les piles de cartes et autres controles. M lit toute la carte, I lit les details du lieu selectionne, ennemis compris, G lit votre or.");
+            Add("fr", "node_type_boss", "combat de boss");
+            Add("fr", "node_type_battle", "combat");
+            Add("fr", "node_type_shop", "boutique");
+            Add("fr", "node_type_gnomeshop", "boutique gnome");
+            Add("fr", "node_type_charm", "evenement de charme");
+            Add("fr", "node_type_gold", "tresor");
+            Add("fr", "node_type_item", "evenement d'objet");
+            Add("fr", "node_type_companion", "evenement de compagnon");
+            Add("fr", "node_type_copyitem", "evenement de copie d'objet");
+            Add("fr", "node_type_curseitems", "evenement de malediction");
+            Add("fr", "node_type_injuredcompanion", "compagnon blesse");
+            Add("fr", "node_type_journalpage", "page de journal");
+            Add("fr", "node_type_charmshop", "boutique de charmes");
+            Add("fr", "node_type_clunkshop", "boutique de bidules");
+            Add("fr", "node_type_muncher", "muncher");
+            Add("fr", "node_type_event", "evenement");
+            Add("fr", "screen_battle", "Bataille!");
+            Add("fr", "battle_wave_total", "{0} vagues ennemies.");
+            Add("fr", "battle_hand_count", "{0} cartes en main.");
+            Add("fr", "battle_hint", "Haut et bas changent entre main, plateaux, cloche et piles. Gauche et droite se deplacent a l'interieur. Entree prend et pose les cartes. F1 pour l'aide de bataille.");
+            Add("fr", "battle_your_turn", "Votre tour. {0} cartes en main.");
+            Add("fr", "battle_resolving", "Resolution du tour.");
+            Add("fr", "battle_over", "Bataille terminee.");
+            Add("fr", "battle_turn", "Tour {0}.");
+            Add("fr", "battle_bell_rung", "Cloche de pioche sonnee. Nouvelle main.");
+            Add("fr", "battle_group_empty", "{0} est vide.");
+            Add("fr", "battle_nothing_to_focus", "Rien a selectionner.");
+            Add("fr", "group_hand", "Main");
+            Add("fr", "group_your_board", "Votre plateau");
+            Add("fr", "group_enemy_board", "Plateau ennemi");
+            Add("fr", "group_system", "Cloche et piles");
+            Add("fr", "battle_card_picked_up", "{0} en main.");
+            Add("fr", "battle_pickup_hint", "Les fleches choisissent une cible, Entree la pose.");
+            Add("fr", "battle_card_released", "{0} posee.");
+            Add("fr", "battle_invalid_target", "Cible non valide.");
+            Add("fr", "battle_cannot_play", "Impossible de jouer cette carte maintenant.");
+            Add("fr", "battle_bell_not_ready", "La cloche de pioche n'est pas disponible maintenant.");
+            Add("fr", "battle_hand_empty", "Votre main est vide.");
+            Add("fr", "battle_acts_in", "agit dans {0}");
+            Add("fr", "battle_no_waves", "Pas d'informations de vagues.");
+            Add("fr", "battle_wave_n", "Vague {0}: {1}");
+            Add("fr", "battle_boss_wave", "vague de boss");
+            Add("fr", "battle_all_waves_spawned", "Toutes les vagues sont apparues.");
+            Add("fr", "battle_next_wave", "Prochaine vague dans {0} tours.");
+            Add("fr", "battle_bell_charged", "La cloche de pioche est chargee. La sonner pioche une nouvelle main gratuitement.");
+            Add("fr", "battle_bell_charging", "La cloche de pioche sera prete dans {0} tours. La sonner maintenant utilise votre tour.");
+            Add("fr", "battle_phase_play", "A vous de jouer.");
+            Add("fr", "battle_phase_other", "En attente.");
+            Add("fr", "battle_hit", "{0} frappe {1} pour {2}.");
+            Add("fr", "battle_takes_damage", "{0} subit {1} degats.");
+            Add("fr", "battle_healed", "{0} recupere {1} points de vie.");
+            Add("fr", "battle_dodged", "{0} a esquive.");
+            Add("fr", "battle_destroyed", "{0} detruit.");
+            Add("fr", "battle_status_applied", "{0} {1} applique a {2}.");
+            Add("fr", "help_battle", "Bataille. Haut et bas changent de groupe: main, votre plateau, plateau ennemi, cloche et piles. Gauche et droite se deplacent dans le groupe. Entree sur une carte de la main la prend, les fleches choisissent une cible, Entree la pose. Jouer une carte ou sonner la cloche termine votre tour. Touches de lecture: H main, B plateau, W vagues, R cloche, T tour, G or.");
         }
     }
 }

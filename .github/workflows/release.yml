@@ -1,0 +1,30 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pandoc
+        run: sudo apt-get update && sudo apt-get install -y pandoc
+
+      - name: Generate release/readme.html from README.md
+        run: pandoc -f gfm -t html -s --metadata title="Wildfrost Accessibility Mod" README.md -o release/readme.html
+
+      - name: Create zip
+        run: cd release && zip -r ../WildfrostAccessibility-${{ github.ref_name }}.zip .
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: WildfrostAccessibility-${{ github.ref_name }}.zip
+          generate_release_notes: true

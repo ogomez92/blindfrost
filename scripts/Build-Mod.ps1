@@ -50,6 +50,17 @@ if (Test-Path $dll) {
     # Try to find it
     $found = Get-ChildItem -Path (Join-Path $ProjectDir "bin") -Recurse -Filter "WildfrostAccessibility.dll" | Select-Object -First 1
     if ($found) {
-        Write-Host "Found DLL at: $($found.FullName)" -ForegroundColor Green
+        $dll = $found.FullName
+        Write-Host "Found DLL at: $dll" -ForegroundColor Green
     }
+}
+
+# Copy to the release folder so it always contains the latest build
+if (Test-Path $dll) {
+    $releaseModDir = Join-Path $PSScriptRoot "..\release\put in game folder\Modded\Wildfrost_Data\StreamingAssets\Mods\WildfrostAccessibility"
+    if (-not (Test-Path $releaseModDir)) {
+        New-Item -ItemType Directory -Path $releaseModDir -Force | Out-Null
+    }
+    Copy-Item -Path $dll -Destination $releaseModDir -Force
+    Write-Host "Copied to release: $releaseModDir" -ForegroundColor Green
 }

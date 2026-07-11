@@ -9,53 +9,121 @@ Screen reader accessibility mod for Wildfrost, enabling blind players to navigat
 - Wildfrost (Steam version)
 - NVDA screen reader
 
-### Files in release/
+### What is in the release zip
 
-- WildfrostAccessibility.dll - the mod
-- Tolk.dll - screen reader bridge
-- nvdaControllerClient64.dll - NVDA integration
+- `Install-Mod.ps1` - installer script that does all the steps below for you
+- `put in game folder\` - the mod DLL plus the Tolk screen reader DLLs, already laid out in the game's own folder structure
+- `put in AppData LocalLow\` - a fresh save file with the mod already enabled, so you do not need sighted help to turn it on
+- `readme.html` - this document as a web page
 
-### Step 1: Copy Tolk DLLs
+### Easy install: run the script (recommended)
 
-Copy these two files to your Wildfrost **Modded** directory (NOT the mod folder):
+1. Extract the zip somewhere.
+2. Open PowerShell in the extracted folder and run:
 
-    Tolk.dll -> C:\Program Files (x86)\Steam\steamapps\common\Wildfrost\Modded\
-    nvdaControllerClient64.dll -> C:\Program Files (x86)\Steam\steamapps\common\Wildfrost\Modded\
+       powershell -ExecutionPolicy Bypass -File .\Install-Mod.ps1
 
-IMPORTANT: Do NOT put these in the WildfrostAccessibility mod folder. The game tries to load all DLLs in mod folders as .NET assemblies and will crash on native DLLs.
+The script copies everything into place and tells you what it did. Options:
 
-### Step 2: Copy the mod DLL
+- Game installed somewhere else: `-GamePath "D:\Path\To\Wildfrost"`
+- You have progress you want to keep: `-KeepSave` (skips the pre-enabled save; you then enable the mod once manually, see Step 2 below). Without it, the script asks before replacing an existing save and always makes a backup copy first.
 
-Create the mod folder and copy ONLY the mod DLL:
+If the script succeeds, skip to Step 3: Verify. The manual steps below do the same thing by hand.
 
-    WildfrostAccessibility.dll -> C:\Program Files (x86)\Steam\steamapps\common\Wildfrost\Modded\Wildfrost_Data\StreamingAssets\Mods\WildfrostAccessibility\
+### Step 1: Copy "put in game folder" into the game folder
 
-If the WildfrostAccessibility folder does not exist, create it.
+Copy the **contents** of the `put in game folder` folder into your Wildfrost installation folder, merging with the existing `Modded` folder:
 
-### Step 3: Enable the mod (first time only)
+    C:\Program Files (x86)\Steam\steamapps\common\Wildfrost
 
-1. Launch Wildfrost (it will use the Modded runtime automatically)
+After copying, these files must exist:
+
+    C:\Program Files (x86)\Steam\steamapps\common\Wildfrost\Modded\Tolk.dll
+    C:\Program Files (x86)\Steam\steamapps\common\Wildfrost\Modded\nvdaControllerClient64.dll
+    C:\Program Files (x86)\Steam\steamapps\common\Wildfrost\Modded\Wildfrost_Data\StreamingAssets\Mods\WildfrostAccessibility\WildfrostAccessibility.dll
+
+If you install by hand instead: Tolk.dll and nvdaControllerClient64.dll go directly in the `Modded` folder, NOT in the WildfrostAccessibility mod folder. The game tries to load every DLL in a mod folder as a .NET assembly and crashes on native DLLs.
+
+### Step 2: Copy "put in AppData LocalLow" into AppData\LocalLow
+
+Enabling a mod for the first time normally requires clicking through the game's Mods menu with a mouse or gamepad, which is not accessible. The release ships a fresh save file with the mod already enabled so you can skip that.
+
+Copy the **contents** of the `put in AppData LocalLow` folder into:
+
+    C:\Users\<your username>\AppData\LocalLow
+
+(You can paste `%USERPROFILE%\AppData\LocalLow` into the File Explorer address bar to get there.)
+
+After copying, this file must exist:
+
+    C:\Users\<your username>\AppData\LocalLow\Deadpan Games\Wildfrost\Profiles\Default\Save.sav
+
+WARNING: this overwrites your existing Wildfrost save. If you already have progress you want to keep, skip this step and enable the mod manually instead:
+
+1. Launch Wildfrost (it uses the Modded runtime automatically)
 2. On the main menu, use a gamepad or mouse to navigate to "Mods"
 3. Click on "Wildfrost Accessibility" to enable it
 4. Go back to the main menu
 
-After this one-time step, the mod auto-loads on every future launch.
+Either way this is a one-time step; afterwards the mod auto-loads on every launch.
 
-### Step 4: Verify
+### Step 3: Verify
 
-You should hear "Wildfrost Accessibility loaded. Press F1 for help." from NVDA.
+Launch Wildfrost. You should hear "Wildfrost Accessibility loaded. Press F1 for help." from NVDA.
+
+## What the mod does
+
+Every screen announces itself when it opens, and every focused element is described. Tutorial popups and help panels are read aloud, with drag-and-drop instructions rephrased for keyboard play.
+
+- **Main menu** - up/down arrows move between buttons, Enter selects.
+- **Town (base camp)** - arrow keys move between buildings. Each building is announced with its name and state. The Gate says what Enter will do: start a new journey, continue the one in progress, or begin the tutorial.
+- **Continue journey screen** - announces your run in progress: start date, leader with health and attack, and the full deck list with duplicate counts. The Let's Go and Back buttons explain what they do.
+- **Campaign map** - announces the zone, where you are, and which destinations you can travel to. Locations are announced with their name, category (battle, shop, boss...), and state (you are here, cleared, available, further ahead, not reachable). Battle locations include their wave count; details include the exact enemies per wave.
+- **Battle** - announces turns, phases, and the redraw bell. Cards are read with stats, status effects (Snow, Frost...), and fully expanded keyword descriptions. Cards are played with Enter: pick up, choose a target with the arrows (only valid targets are reachable), Enter again to place.
+- **Deck piles** - draw and discard piles announce their card counts everywhere they appear.
 
 ## Controls
 
-- F1: Help
-- F10: Toggle debug mode
+### Global
+
+- F1: context help - explains the current screen and its keys
+- F10: toggle debug mode
+- Arrow keys: navigate
+- Enter: activate / pick up / place
+
+### Town
+
+- I: describe the focused building
+
+### Campaign map
+
+- Left/Right: move along the journey path, location by location
+- Up/Down: reach the deck piles and other controls
+- Enter: travel to an available location
+- M: read the whole map
+- I: read details of the focused location, including enemies and rewards
+- G: read your gold
+
+### Battle
+
+- Up/Down: switch group - hand, your board, enemy board, bell and piles
+- Left/Right: move within the group
+- Enter: pick up a hand card / place it on the focused target
+- H: read your hand
+- B: read the full board with stats and status effects
+- W: read incoming enemy waves
+- R: read the redraw bell state
+- T: read the turn and phase
+- G: read your gold
 
 ## Supported Languages
 
-The mod detects the game's language automatically. Currently translated:
-English, German, French, Spanish, Italian, Portuguese, Russian, Polish, Turkish, Japanese, Korean, Simplified Chinese, Traditional Chinese.
+The mod detects the game's language automatically.
 
-Other languages fall back to English.
+- Core announcements: English, German, French, Spanish, Italian, Portuguese, Russian, Polish, Turkish, Japanese, Korean, Simplified Chinese, Traditional Chinese.
+- Screen-specific announcements (Town, map, battle, continue screen): English, German, Spanish, French for now.
+
+Anything not yet translated falls back to English.
 
 ## Building from Source
 
@@ -63,3 +131,9 @@ Requires .NET SDK 6.0+.
 
     scripts\Build-Mod.ps1
     scripts\Deploy-Mod.ps1 -BuildFirst
+
+Build-Mod.ps1 also copies the built DLL into `release\put in game folder\...` so the release folder always contains the latest build.
+
+## Releasing
+
+Push a tag like `v1.0.0`. GitHub Actions converts this README to `release/readme.html` with pandoc, zips the `release` folder, and publishes it as a GitHub release.

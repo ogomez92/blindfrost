@@ -31,7 +31,15 @@ namespace WildfrostAccessibility
 
             // Register handlers for each game screen
             Register("MainMenu", new MainMenuHandler());
-            // More handlers will be registered here as they are implemented
+            Register("Town", new TownHandler());
+            Register("ContinueRun", new ContinueRunHandler());
+            Register("Battle", new BattleHandler());
+
+            // The campaign map spans two scenes: "Campaign" loads the systems,
+            // "MapNew" is the visible map. One handler serves both.
+            var mapHandler = new MapHandler();
+            Register("Campaign", mapHandler);
+            Register("MapNew", mapHandler);
         }
 
         /// <summary>
@@ -97,10 +105,25 @@ namespace WildfrostAccessibility
             }
         }
 
+        /// <summary>
+        /// Temporary scenes that overlay the active scene without changing
+        /// ActiveSceneKey (e.g. ContinueRun opens on top of Town).
+        /// When one is loaded, it takes priority for handler routing.
+        /// </summary>
+        private static readonly string[] _overlayScenes =
+        {
+            "ContinueRun", "BossReward", "BattleWin", "CampaignEnd", "TownUnlocks"
+        };
+
         private static string GetCurrentSceneKey()
         {
             try
             {
+                foreach (string overlay in _overlayScenes)
+                {
+                    if (SceneManager.IsLoaded(overlay))
+                        return overlay;
+                }
                 return SceneManager.ActiveSceneKey;
             }
             catch

@@ -121,7 +121,8 @@ namespace WildfrostAccessibility
 
         private void AnnounceHelp()
         {
-            ScreenReader.Say(Loc.Get("help_text"), interrupt: true);
+            string help = ScreenManager.ActiveHandler?.GetHelpText() ?? Loc.Get("help_text");
+            ScreenReader.Say(help, interrupt: true);
         }
     }
 

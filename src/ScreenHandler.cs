@@ -98,10 +98,34 @@ namespace WildfrostAccessibility
         public abstract void OnUpdate();
 
         /// <summary>
+        /// Help text announced when the user presses F1 on this screen.
+        /// Override to explain what the screen is for and which controls work here.
+        /// </summary>
+        public virtual string GetHelpText()
+        {
+            return Loc.Get("help_text");
+        }
+
+        // Hint keys already spoken this game session (hints repeat only via F1)
+        private static readonly HashSet<string> _spokenHints = new HashSet<string>();
+
+        /// <summary>
+        /// Returns the localized hint the first time it is requested this session,
+        /// null afterwards. Keeps navigation instructions from repeating on every
+        /// screen entry — F1 always has the full help.
+        /// </summary>
+        protected static string HintOnce(string locKey)
+        {
+            if (!_spokenHints.Add(locKey))
+                return null;
+            return Loc.Get(locKey);
+        }
+
+        /// <summary>
         /// Get a readable text label from a UINavigationItem.
         /// Uses a thorough search: text content, hierarchy names, component types, sprites.
         /// </summary>
-        protected string GetButtonText(UINavigationItem item)
+        protected internal string GetButtonText(UINavigationItem item)
         {
             if (item == null) return null;
 
@@ -317,7 +341,7 @@ namespace WildfrostAccessibility
         /// <summary>
         /// Clean a GameObject name for speech (remove (Clone), underscores, CamelCase split).
         /// </summary>
-        protected string CleanName(string name)
+        protected internal static string CleanName(string name)
         {
             if (string.IsNullOrEmpty(name)) return "unknown";
             name = name.Replace("(Clone)", "").Trim();

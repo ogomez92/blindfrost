@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc 3.10" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Wildfrost Accessibility Mod</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      white-space: pre-wrap;
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Wildfrost Accessibility Mod</h1>
+</header>
+<h1 id="wildfrost-accessibility-mod">Wildfrost Accessibility Mod</h1>
+<p>Screen reader accessibility mod for Wildfrost, enabling blind players
+to navigate menus, read cards, play battles, and explore the campaign
+map via NVDA.</p>
+<h2 id="installation">Installation</h2>
+<h3 id="requirements">Requirements</h3>
+<ul>
+<li>Wildfrost (Steam version)</li>
+<li>NVDA screen reader</li>
+</ul>
+<h3 id="what-is-in-the-release-zip">What is in the release zip</h3>
+<ul>
+<li><code>Install-Mod.ps1</code> - installer script that does all the
+steps below for you</li>
+<li><code>put in game folder\</code> - the mod DLL plus the Tolk screen
+reader DLLs, already laid out in the game's own folder structure</li>
+<li><code>put in AppData LocalLow\</code> - a fresh save file with the
+mod already enabled, so you do not need sighted help to turn it on</li>
+<li><code>readme.html</code> - this document as a web page</li>
+</ul>
+<h3 id="easy-install-run-the-script-recommended">Easy install: run the
+script (recommended)</h3>
+<ol type="1">
+<li><p>Extract the zip somewhere.</p></li>
+<li><p>Open PowerShell in the extracted folder and run:</p>
+<pre><code>powershell -ExecutionPolicy Bypass -File .\Install-Mod.ps1</code></pre></li>
+</ol>
+<p>The script copies everything into place and tells you what it did.
+Options:</p>
+<ul>
+<li>Game installed somewhere else:
+<code>-GamePath "D:\Path\To\Wildfrost"</code></li>
+<li>You have progress you want to keep: <code>-KeepSave</code> (skips
+the pre-enabled save; you then enable the mod once manually, see Step 2
+below). Without it, the script asks before replacing an existing save
+and always makes a backup copy first.</li>
+</ul>
+<p>If the script succeeds, skip to Step 3: Verify. The manual steps
+below do the same thing by hand.</p>
+<h3 id="step-1-copy-put-in-game-folder-into-the-game-folder">Step 1:
+Copy "put in game folder" into the game folder</h3>
+<p>Copy the <strong>contents</strong> of the
+<code>put in game folder</code> folder into your Wildfrost installation
+folder, merging with the existing <code>Modded</code> folder:</p>
+<pre><code>C:\Program Files (x86)\Steam\steamapps\common\Wildfrost</code></pre>
+<p>After copying, these files must exist:</p>
+<pre><code>C:\Program Files (x86)\Steam\steamapps\common\Wildfrost\Modded\Tolk.dll
+C:\Program Files (x86)\Steam\steamapps\common\Wildfrost\Modded\nvdaControllerClient64.dll
+C:\Program Files (x86)\Steam\steamapps\common\Wildfrost\Modded\Wildfrost_Data\StreamingAssets\Mods\WildfrostAccessibility\WildfrostAccessibility.dll</code></pre>
+<p>If you install by hand instead: Tolk.dll and
+nvdaControllerClient64.dll go directly in the <code>Modded</code>
+folder, NOT in the WildfrostAccessibility mod folder. The game tries to
+load every DLL in a mod folder as a .NET assembly and crashes on native
+DLLs.</p>
+<h3 id="step-2-copy-put-in-appdata-locallow-into-appdatalocallow">Step
+2: Copy "put in AppData LocalLow" into AppData\LocalLow</h3>
+<p>Enabling a mod for the first time normally requires clicking through
+the game's Mods menu with a mouse or gamepad, which is not accessible.
+The release ships a fresh save file with the mod already enabled so you
+can skip that.</p>
+<p>Copy the <strong>contents</strong> of the
+<code>put in AppData LocalLow</code> folder into:</p>
+<pre><code>C:\Users\&lt;your username&gt;\AppData\LocalLow</code></pre>
+<p>(You can paste <code>%USERPROFILE%\AppData\LocalLow</code> into the
+File Explorer address bar to get there.)</p>
+<p>After copying, this file must exist:</p>
+<pre><code>C:\Users\&lt;your username&gt;\AppData\LocalLow\Deadpan Games\Wildfrost\Profiles\Default\Save.sav</code></pre>
+<p>WARNING: this overwrites your existing Wildfrost save. If you already
+have progress you want to keep, skip this step and enable the mod
+manually instead:</p>
+<ol type="1">
+<li>Launch Wildfrost (it uses the Modded runtime automatically)</li>
+<li>On the main menu, use a gamepad or mouse to navigate to "Mods"</li>
+<li>Click on "Wildfrost Accessibility" to enable it</li>
+<li>Go back to the main menu</li>
+</ol>
+<p>Either way this is a one-time step; afterwards the mod auto-loads on
+every launch.</p>
+<h3 id="step-3-verify">Step 3: Verify</h3>
+<p>Launch Wildfrost. You should hear "Wildfrost Accessibility loaded.
+Press F1 for help." from NVDA.</p>
+<h2 id="what-the-mod-does">What the mod does</h2>
+<p>Every screen announces itself when it opens, and every focused
+element is described. Tutorial popups and help panels are read aloud,
+with drag-and-drop instructions rephrased for keyboard play.</p>
+<ul>
+<li><strong>Main menu</strong> - up/down arrows move between buttons,
+Enter selects.</li>
+<li><strong>Town (base camp)</strong> - arrow keys move between
+buildings. Each building is announced with its name and state. The Gate
+says what Enter will do: start a new journey, continue the one in
+progress, or begin the tutorial.</li>
+<li><strong>Continue journey screen</strong> - announces your run in
+progress: start date, leader with health and attack, and the full deck
+list with duplicate counts. The Let's Go and Back buttons explain what
+they do.</li>
+<li><strong>Campaign map</strong> - announces the zone, where you are,
+and which destinations you can travel to. Locations are announced with
+their name, category (battle, shop, boss...), and state (you are here,
+cleared, available, further ahead, not reachable). Battle locations
+include their wave count; details include the exact enemies per
+wave.</li>
+<li><strong>Battle</strong> - announces turns, phases, and the redraw
+bell. Cards are read with stats, status effects (Snow, Frost...), and
+fully expanded keyword descriptions. Cards are played with Enter: pick
+up, choose a target with the arrows (only valid targets are reachable),
+Enter again to place.</li>
+<li><strong>Deck piles</strong> - draw and discard piles announce their
+card counts everywhere they appear.</li>
+</ul>
+<h2 id="controls">Controls</h2>
+<h3 id="global">Global</h3>
+<ul>
+<li>F1: context help - explains the current screen and its keys</li>
+<li>F10: toggle debug mode</li>
+<li>Arrow keys: navigate</li>
+<li>Enter: activate / pick up / place</li>
+</ul>
+<h3 id="town">Town</h3>
+<ul>
+<li>I: describe the focused building</li>
+</ul>
+<h3 id="campaign-map">Campaign map</h3>
+<ul>
+<li>Left/Right: move along the journey path, location by location</li>
+<li>Up/Down: reach the deck piles and other controls</li>
+<li>Enter: travel to an available location</li>
+<li>M: read the whole map</li>
+<li>I: read details of the focused location, including enemies and
+rewards</li>
+<li>G: read your gold</li>
+</ul>
+<h3 id="battle">Battle</h3>
+<ul>
+<li>Up/Down: switch group - hand, your board, enemy board, bell and
+piles</li>
+<li>Left/Right: move within the group</li>
+<li>Enter: pick up a hand card / place it on the focused target</li>
+<li>H: read your hand</li>
+<li>B: read the full board with stats and status effects</li>
+<li>W: read incoming enemy waves</li>
+<li>R: read the redraw bell state</li>
+<li>T: read the turn and phase</li>
+<li>G: read your gold</li>
+</ul>
+<h2 id="supported-languages">Supported Languages</h2>
+<p>The mod detects the game's language automatically.</p>
+<ul>
+<li>Core announcements: English, German, French, Spanish, Italian,
+Portuguese, Russian, Polish, Turkish, Japanese, Korean, Simplified
+Chinese, Traditional Chinese.</li>
+<li>Screen-specific announcements (Town, map, battle, continue screen):
+English, German, Spanish, French for now.</li>
+</ul>
+<p>Anything not yet translated falls back to English.</p>
+<h2 id="building-from-source">Building from Source</h2>
+<p>Requires .NET SDK 6.0+.</p>
+<pre><code>scripts\Build-Mod.ps1
+scripts\Deploy-Mod.ps1 -BuildFirst</code></pre>
+<p>Build-Mod.ps1 also copies the built DLL into
+<code>release\put in game folder\...</code> so the release folder always
+contains the latest build.</p>
+<h2 id="releasing">Releasing</h2>
+<p>Push a tag like <code>v1.0.0</code>. GitHub Actions converts this
+README to <code>release/readme.html</code> with pandoc, zips the
+<code>release</code> folder, and publishes it as a GitHub release.</p>
+</body>
+</html>

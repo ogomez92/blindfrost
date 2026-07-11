@@ -30,6 +30,10 @@
       <HintPath>$(GameManagedDir)\DeadExtensions.dll</HintPath>
       <Private>false</Private>
     </Reference>
+    <Reference Include="DeadSafe">
+      <HintPath>$(GameManagedDir)\DeadSafe.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
 
     <!-- Unity assemblies -->
     <Reference Include="UnityEngine">
