@@ -440,6 +440,7 @@ namespace WildfrostAccessibility
             Add("en", "battle_next_wave", "Next wave in {0} turns.");
             Add("en", "battle_bell_charged", "Redraw bell is charged. Ringing it redraws your hand for free.");
             Add("en", "battle_bell_charging", "Redraw bell is ready in {0} turns. Ringing it now will use your turn.");
+            Add("en", "battle_bell_counter", "Charged in {0} turns.");
             Add("en", "battle_phase_play", "Your move.");
             Add("en", "battle_phase_other", "Waiting.");
             Add("en", "battle_hit", "{0} hits {1} for {2}.");
@@ -621,6 +622,7 @@ namespace WildfrostAccessibility
             Add("de", "battle_next_wave", "Naechste Welle in {0} Runden.");
             Add("de", "battle_bell_charged", "Nachziehglocke ist aufgeladen. Laeuten zieht kostenlos eine neue Hand.");
             Add("de", "battle_bell_charging", "Nachziehglocke ist in {0} Runden bereit. Jetzt laeuten verbraucht deinen Zug.");
+            Add("de", "battle_bell_counter", "Aufgeladen in {0} Runden.");
             Add("de", "battle_phase_play", "Du bist dran.");
             Add("de", "battle_phase_other", "Warten.");
             Add("de", "battle_hit", "{0} trifft {1} fuer {2}.");
@@ -802,6 +804,7 @@ namespace WildfrostAccessibility
             Add("es", "battle_next_wave", "Proxima oleada en {0} turnos.");
             Add("es", "battle_bell_charged", "La campana de robo esta cargada. Tocarla roba una mano nueva gratis.");
             Add("es", "battle_bell_charging", "La campana de robo estara lista en {0} turnos. Tocarla ahora gasta tu turno.");
+            Add("es", "battle_bell_counter", "Se carga en {0} turnos.");
             Add("es", "battle_phase_play", "Te toca.");
             Add("es", "battle_phase_other", "Esperando.");
             Add("es", "battle_hit", "{0} golpea a {1} por {2}.");
@@ -983,6 +986,7 @@ namespace WildfrostAccessibility
             Add("fr", "battle_next_wave", "Prochaine vague dans {0} tours.");
             Add("fr", "battle_bell_charged", "La cloche de pioche est chargee. La sonner pioche une nouvelle main gratuitement.");
             Add("fr", "battle_bell_charging", "La cloche de pioche sera prete dans {0} tours. La sonner maintenant utilise votre tour.");
+            Add("fr", "battle_bell_counter", "Chargee dans {0} tours.");
             Add("fr", "battle_phase_play", "A vous de jouer.");
             Add("fr", "battle_phase_other", "En attente.");
             Add("fr", "battle_hit", "{0} frappe {1} pour {2}.");

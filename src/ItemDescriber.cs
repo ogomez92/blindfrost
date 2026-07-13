@@ -469,10 +469,35 @@ namespace WildfrostAccessibility
             }
 
             string processed = TextProcessor.ProcessForScreenReader(rawDesc, extraKeywords);
+
+            // Cards with no ability text show italic flavour text in the
+            // description box instead (Card.SetDescription) — read it there too
+            if (string.IsNullOrWhiteSpace(rawDesc))
+            {
+                string flavour = GetFlavourText(entity.data);
+                if (!string.IsNullOrEmpty(flavour))
+                    parts.Add(flavour);
+            }
+
             if (!string.IsNullOrEmpty(processed))
                 parts.Add(processed);
 
             return parts.Count > 0 ? string.Join(", ", parts) : null;
+        }
+
+        /// <summary>Localized flavour text (lore), shown on cards without ability text.</summary>
+        public static string GetFlavourText(CardData data)
+        {
+            try
+            {
+                var key = data?.flavourKey;
+                if (key == null || key.IsEmpty) return null;
+                return TextProcessor.StripRichText(key.GetLocalizedString());
+            }
+            catch
+            {
+                return null; // localization may not be loaded yet
+            }
         }
 
         /// <summary>
@@ -691,7 +716,9 @@ namespace WildfrostAccessibility
             {
                 var stateKey = ReflectionUtil.GetField<LocalizedString>(bell,
                     bell.IsCharged ? "textCharged" : "textNotCharged");
-                state = stateKey?.GetLocalizedString();
+                // Tag-aware: the game strings start with the word tags
+                // <Charged!> / <Not Charged>, which StripRichText would delete
+                state = TextProcessor.ProcessForScreenReader(stateKey?.GetLocalizedString());
             }
             catch { }
             if (string.IsNullOrEmpty(state))
@@ -700,7 +727,11 @@ namespace WildfrostAccessibility
                     ? Loc.Get("battle_bell_charged")
                     : Loc.Get("battle_bell_charging", bell.counter.current);
             }
-            parts.Add(TextProcessor.StripRichText(state));
+            parts.Add(state);
+
+            // The bell's counter is only shown visually on its counter icon
+            if (!bell.IsCharged)
+                parts.Add(Loc.Get("battle_bell_counter", bell.counter.current));
 
             return string.Join(". ", parts);
         }
@@ -794,7 +825,10 @@ namespace WildfrostAccessibility
                     try { text = string.Format(text, args); }
                     catch { /* keep the unformatted template */ }
                 }
-                return TextProcessor.StripRichText(text);
+                // Tag-aware processing: the game wraps numbers in angle brackets
+                // ("<{0}> enemies arriving in <{1}> turns"), which plain
+                // StripRichText would delete along with the rich text tags
+                return TextProcessor.ProcessForScreenReader(text);
             }
             catch
             {

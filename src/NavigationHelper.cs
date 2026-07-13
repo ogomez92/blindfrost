@@ -312,10 +312,23 @@ namespace WildfrostAccessibility
         private static bool IsHelpItem(UINavigationItem item)
         {
             GameObject obj = item.clickHandler ?? item.gameObject;
-            return obj.GetComponent<HelpPanelShower>() != null
-                || obj.GetComponentInParent<HelpPanelShower>() != null
-                || item.gameObject.GetComponent<HelpPanelShower>() != null
-                || item.gameObject.GetComponentInParent<HelpPanelShower>() != null;
+            return IsUnderHelpShower(obj) || IsUnderHelpShower(item.gameObject);
+        }
+
+        /// <summary>
+        /// True when the nearest HelpPanelShower above this object marks a help
+        /// button. Some screens (BattleWin) put a HelpPanelShower on the root
+        /// canvas that also hosts the navigation layer — that one describes the
+        /// whole screen, and treating it as a help button filtered out every
+        /// item on the victory screen, including Continue.
+        /// </summary>
+        private static bool IsUnderHelpShower(GameObject obj)
+        {
+            if (obj == null) return false;
+            var shower = obj.GetComponentInParent<HelpPanelShower>();
+            if (shower == null) return false;
+            return shower.GetComponent<UINavigationLayer>() == null
+                && shower.GetComponent<Canvas>() == null;
         }
 
         /// <summary>

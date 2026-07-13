@@ -301,12 +301,21 @@ namespace WildfrostAccessibility
             if (tag.Length <= 2)
                 return null;
 
-            // Unknown tags — skip formatting ones, return others as text
-            if (tag == "b" || tag == "s" || tag == "i" || tag == "u")
+            // TMP shorthand colour (<#fff>) and formatting keywords — skip
+            if (tag[0] == '#' || _tmpFormattingTags.Contains(tag))
                 return null;
 
-            return null;
+            // Any other word tag (<Not Charged>, <Redraw Bell>, <Charms>) is the
+            // game's inline highlight: Text.ProcessTag renders unmatched tags as
+            // their own coloured text, so they are real words — read them
+            return tag;
         }
+
+        private static readonly HashSet<string> _tmpFormattingTags = new HashSet<string>
+        {
+            "sup", "sub", "nobr", "noparse", "lowercase", "uppercase",
+            "allcaps", "smallcaps", "mark", "page"
+        };
 
         /// <summary>
         /// Process a keyword tag like "shell", "shell 5", or "shell 5 silenced".
@@ -403,6 +412,11 @@ namespace WildfrostAccessibility
 
             // Remove all <...> tags
             text = Regex.Replace(text, @"<[^>]+>", "");
+
+            // Newlines are the game's paragraph breaks ("...next wave\n\nCan't be
+            // called early..."); read them as sentence pauses, not run-ons
+            text = Regex.Replace(text, @"([.!?:,;])?[ \t]*\n\s*",
+                m => m.Groups[1].Success ? m.Groups[1].Value + " " : ". ");
 
             // Clean up resulting whitespace
             text = Regex.Replace(text, @"\s+", " ").Trim();
