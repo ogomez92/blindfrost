@@ -34,6 +34,7 @@ namespace WildfrostAccessibility
             Register("Town", new TownHandler());
             Register("ContinueRun", new ContinueRunHandler());
             Register("Battle", new BattleHandler());
+            Register("CharacterSelect", new CharacterSelectHandler());
 
             // The campaign map spans two scenes: "Campaign" loads the systems,
             // "MapNew" is the visible map. One handler serves both.

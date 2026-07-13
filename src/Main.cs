@@ -32,9 +32,9 @@ namespace WildfrostAccessibility
         }
 
         /// <summary>
-        /// Adds this mod to the game's enabled-mods list on the first run after
-        /// installation, so blind players never have to find the Mods menu
-        /// (which is inaccessible without the mod — chicken-and-egg).
+        /// Adds this mod to the game's enabled-mods list so blind players never
+        /// have to find the Mods menu (which is inaccessible without the mod —
+        /// chicken-and-egg).
         ///
         /// The game constructs every mod it finds in StreamingAssets/Mods on
         /// boot, but only activates the ones stored under "lastSavedMods" in
@@ -42,30 +42,73 @@ namespace WildfrostAccessibility
         /// This constructor runs before that check, so registering our GUID here
         /// makes the game activate us through its normal path on the same boot.
         ///
-        /// A marker file remembers that self-enable already happened, so a
-        /// player who later disables the mod in the Mods menu stays disabled.
+        /// Self-enable fires when:
+        ///  - the save has no "lastSavedMods" key at all (fresh or wiped save;
+        ///    a marker file can't be trusted here because the save state it
+        ///    guarded no longer exists), or
+        ///  - our GUID is missing and the marker file is absent (first install
+        ///    onto an existing modded save).
+        /// A save that has "lastSavedMods" without our GUID while the marker
+        /// exists means the player disabled us in the Mods menu — respected.
         /// </summary>
         private void SelfEnableOnFirstRun(string modDirectory)
         {
             try
             {
                 string marker = Path.Combine(modDirectory, "autoenable.marker");
-                if (File.Exists(marker))
-                    return;
+                string[] enabled = SaveSystem.LoadProgressData<string[]>("lastSavedMods");
 
-                string[] enabled = SaveSystem.LoadProgressData<string[]>("lastSavedMods") ?? new string[0];
-                if (!enabled.Contains(GUID))
+                if (enabled == null)
+                {
+                    SaveSystem.SaveProgressData("lastSavedMods", new[] { GUID });
+                    Debug.Log("[WildfrostAccessibility] Fresh save: mod self-enabled, will load this boot");
+                }
+                else if (!enabled.Contains(GUID) && !File.Exists(marker))
                 {
                     SaveSystem.SaveProgressData("lastSavedMods", enabled.Append(GUID).ToArray());
                     Debug.Log("[WildfrostAccessibility] First run: mod self-enabled, will load this boot");
                 }
-                File.WriteAllText(marker, "This file marks that the mod has auto-enabled itself once. Delete it to make the mod auto-enable again on the next game start.");
+
+                if (!File.Exists(marker))
+                    File.WriteAllText(marker, "This file marks that the mod has auto-enabled itself once. Delete it to make the mod auto-enable again on the next game start.");
             }
             catch (Exception ex)
             {
                 // Never let self-enable break mod construction — the game's
                 // ModsSetup aborts ALL mods if a constructor throws.
                 Debug.LogError($"[WildfrostAccessibility] Self-enable failed: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Re-adds this mod to "lastSavedMods" if something wiped it while we
+        /// are loaded. On a brand-new save, VersionCompatibility.GameStart sees
+        /// version 0, runs Reset Progress scripts that delete the whole save
+        /// file (and even the profile folder) — including the entry written by
+        /// SelfEnableOnFirstRun — so without this the mod silently stays off
+        /// from the second boot onward. Called by a Harmony postfix on
+        /// VersionCompatibility.GameStart, which only exists while the mod is
+        /// loaded; a player who disables the mod in the Mods menu is unloaded
+        /// first, so their choice is never overridden.
+        /// </summary>
+        internal static void EnsureEnabledInSave()
+        {
+            var mod = Instance;
+            if (mod == null)
+                return;
+
+            try
+            {
+                string[] enabled = SaveSystem.LoadProgressData<string[]>("lastSavedMods") ?? new string[0];
+                if (!enabled.Contains(mod.GUID))
+                {
+                    SaveSystem.SaveProgressData("lastSavedMods", enabled.Append(mod.GUID).ToArray());
+                    Debug.Log("[WildfrostAccessibility] Enabled-mods list was reset by the game; re-added self");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[WildfrostAccessibility] EnsureEnabledInSave failed: {ex.Message}");
             }
         }
 
@@ -211,6 +254,21 @@ namespace WildfrostAccessibility
             menu.Toggle();
             if (!menu.gameObject.activeSelf)
                 ScreenReader.Say(Loc.Get("pause_closed"), interrupt: true);
+        }
+    }
+
+    /// <summary>
+    /// Runs right after the game's version-compatibility scripts, which wipe
+    /// the save file (including the enabled-mods list) on fresh saves. Applied
+    /// automatically by base.Load()'s PatchAll, so it only exists while the
+    /// mod is actually loaded.
+    /// </summary>
+    [HarmonyPatch(typeof(VersionCompatibility), "GameStart")]
+    internal static class VersionCompatibilityGameStartPatch
+    {
+        private static void Postfix()
+        {
+            WildfrostAccessibilityMod.EnsureEnabledInSave();
         }
     }
 

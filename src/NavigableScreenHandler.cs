@@ -16,6 +16,11 @@ namespace WildfrostAccessibility
         private float _enterTime;
         private UINavigationLayer _lastNavLayer;
 
+        private InspectNewUnitSequence _inspectPanel;
+        private bool _inspectWasRunning;
+        private float _nextInspectPoll;
+        private float _inspectSuppressUntil;
+
         /// <summary>Seconds to wait after entry before announcing the screen (lets UI settle).</summary>
         protected virtual float AnnounceDelay => 0.5f;
 
@@ -29,6 +34,10 @@ namespace WildfrostAccessibility
             _announced = false;
             _enterTime = Time.unscaledTime;
             _lastNavLayer = UINavigationSystem.ActiveNavigationLayer;
+            _inspectPanel = null;
+            _inspectWasRunning = false;
+            _nextInspectPoll = 0f;
+            _inspectSuppressUntil = 0f;
         }
 
         public override void OnExit()
@@ -57,12 +66,101 @@ namespace WildfrostAccessibility
                 OnNavigationLayerChanged(currentLayer);
             }
 
+            // Watch for the inspect/confirm panel opening (cheap 4 Hz poll)
+            if (Time.unscaledTime >= _nextInspectPoll)
+            {
+                _nextInspectPoll = Time.unscaledTime + 0.25f;
+                bool running = ActiveInspectPanel != null;
+                if (running != _inspectWasRunning)
+                {
+                    _inspectWasRunning = running;
+                    if (running)
+                        OnInspectPanelOpened(ActiveInspectPanel);
+                }
+            }
+
             // Give the UI a moment to initialize before accepting input
             if (Time.unscaledTime - _enterTime < 0.3f) return;
 
             HandleInput();
             CheckAndAnnounceFocus();
         }
+
+        // ---- Inspect/confirm panel (InspectNewUnitSequence) ----
+        // Opens when a card is picked on select screens: character select,
+        // companion map events, the starting pet choice. Its buttons
+        // ("Let's Go!" / X / rename) are NOT navigation items, so without
+        // this the keyboard is completely locked out while it is open.
+
+        /// <summary>The inspect panel currently running, or null.</summary>
+        protected InspectNewUnitSequence ActiveInspectPanel
+        {
+            get
+            {
+                if (_inspectPanel == null || !_inspectPanel.gameObject.activeInHierarchy)
+                    _inspectPanel = Object.FindObjectOfType<InspectNewUnitSequence>();
+                return (_inspectPanel != null && _inspectPanel.IsRunning) ? _inspectPanel : null;
+            }
+        }
+
+        /// <summary>Announce the panel: who was chosen and how to proceed.</summary>
+        protected virtual void OnInspectPanelOpened(InspectNewUnitSequence panel)
+        {
+            Entity unit = ReflectionUtil.GetField<Entity>(panel, "unit");
+            string title = unit?.data?.title;
+            ScreenReader.Say(
+                !string.IsNullOrEmpty(title)
+                    ? Loc.Get("charselect_chosen", title)
+                    : Loc.Get("charselect_chosen_generic"),
+                interrupt: true);
+        }
+
+        /// <summary>
+        /// Enter while the panel is open. Default: the panel's own TakeCard()
+        /// (confirms the unit into the deck) when a card selector is wired.
+        /// CharacterSelect overrides this — its panel confirms elsewhere.
+        /// </summary>
+        protected virtual void ConfirmInspectPanel(InspectNewUnitSequence panel)
+        {
+            DebugLogger.LogInput(Name, "Confirm inspect panel");
+            if (panel.cardSelector != null)
+            {
+                panel.TakeCard();
+                return;
+            }
+            ScreenReader.Say(Loc.Get("inspect_no_confirm"), interrupt: true);
+        }
+
+        /// <summary>
+        /// Escape while the panel is open: close it and put the card back.
+        /// Safe to intercept — the game has no keyboard path on these panels.
+        /// </summary>
+        protected virtual void CancelInspectPanel(InspectNewUnitSequence panel)
+        {
+            DebugLogger.LogInput(Name, "Cancel inspect panel");
+            panel.End(); // Run() tail returns the card and pops the nav layer
+
+            // Selecting disabled the screen's select-card controller(s);
+            // re-enable so browsing works again. Only select-type controllers
+            // are touched — organizer/battle controllers are never disabled
+            // by these panels.
+            foreach (var controller in Object.FindObjectsOfType<CardControllerSelectCard>())
+            {
+                if (!controller.enabled)
+                    controller.Enable();
+            }
+
+            // Let the cancel message finish before focus chatter resumes
+            _inspectSuppressUntil = Time.unscaledTime + 1.5f;
+            ScreenReader.Say(Loc.Get("charselect_cancelled"), interrupt: true);
+        }
+
+        /// <summary>
+        /// True while the inspect panel is open or briefly after cancelling —
+        /// keeps the focus tracker from talking over the panel announcements.
+        /// </summary>
+        private bool InspectPanelSuppression
+            => _inspectWasRunning || Time.unscaledTime < _inspectSuppressUntil;
 
         /// <summary>Arrow key navigation and Enter activation. Override for custom input.</summary>
         protected virtual void HandleInput()
@@ -75,7 +173,17 @@ namespace WildfrostAccessibility
 
             if (NavigationHelper.IsConfirmPressed())
             {
-                Confirm();
+                var panel = ActiveInspectPanel;
+                if (panel != null)
+                    ConfirmInspectPanel(panel);
+                else
+                    Confirm();
+            }
+            else if (NavigationHelper.IsBackPressed())
+            {
+                var panel = ActiveInspectPanel;
+                if (panel != null)
+                    CancelInspectPanel(panel);
             }
         }
 
@@ -163,7 +271,7 @@ namespace WildfrostAccessibility
             _lastFocused = current;
             if (current == null) return;
 
-            if (SuppressFocusAnnouncements) return;
+            if (SuppressFocusAnnouncements || InspectPanelSuppression) return;
 
             string text = GetItemDescription(current);
             if (string.IsNullOrEmpty(text))

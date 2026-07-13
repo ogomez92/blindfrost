@@ -346,6 +346,16 @@ namespace WildfrostAccessibility
             Add("en", "scene_BattleWin", "Battle won! Victory screen.");
             Add("en", "scene_CampaignEnd", "Journey over.");
 
+            // Character select
+            Add("en", "charselect_leaders", "Choose your leader. Arrow keys browse the leaders, Enter selects one.");
+            Add("en", "charselect_chosen", "{0} chosen. Press Enter to confirm, or Escape to put the card back.");
+            Add("en", "charselect_chosen_generic", "Card chosen. Press Enter to confirm, or Escape to put it back.");
+            Add("en", "charselect_cancelled", "Choice cancelled, back to browsing.");
+            Add("en", "charselect_pets", "Choose your starting pet. Arrow keys browse, Enter selects.");
+            Add("en", "charselect_starting", "Let's go! Starting the journey.");
+            Add("en", "inspect_no_confirm", "This panel cannot be confirmed here. Escape puts the card back.");
+            Add("en", "help_charselect", "Character selection. Arrow keys browse the choices and Enter selects one. After selecting, Enter confirms and continues, Escape puts the card back.");
+
             // Main menu
             Add("en", "help_main_menu", "Main menu. Up and down arrows move between buttons, Enter selects. F1 repeats this help, F10 toggles debug mode.");
 
@@ -539,6 +549,14 @@ namespace WildfrostAccessibility
             Add("de", "scene_BossReward", "Boss-Belohnung.");
             Add("de", "scene_BattleWin", "Kampf gewonnen! Siegesbildschirm.");
             Add("de", "scene_CampaignEnd", "Reise beendet.");
+            Add("de", "charselect_leaders", "Waehle deinen Anfuehrer. Pfeiltasten wechseln zwischen den Anfuehrern, Enter waehlt aus.");
+            Add("de", "charselect_chosen", "{0} gewaehlt. Enter bestaetigt, Escape legt die Karte zurueck.");
+            Add("de", "charselect_chosen_generic", "Karte gewaehlt. Enter bestaetigt, Escape legt sie zurueck.");
+            Add("de", "charselect_cancelled", "Auswahl abgebrochen, zurueck zur Uebersicht.");
+            Add("de", "charselect_pets", "Waehle dein Start-Haustier. Pfeiltasten wechseln, Enter waehlt aus.");
+            Add("de", "charselect_starting", "Los geht's! Die Reise beginnt.");
+            Add("de", "inspect_no_confirm", "Dieses Fenster kann hier nicht bestaetigt werden. Escape legt die Karte zurueck.");
+            Add("de", "help_charselect", "Charakterauswahl. Pfeiltasten wechseln zwischen den Optionen, Enter waehlt aus. Nach der Auswahl bestaetigt Enter und setzt fort, Escape legt die Karte zurueck.");
             Add("de", "help_main_menu", "Hauptmenue. Pfeiltasten hoch und runter wechseln die Knoepfe, Enter waehlt aus. F1 wiederholt diese Hilfe, F10 schaltet den Debug-Modus um.");
             Add("de", "screen_town", "Stadt, dein Lager.");
             Add("de", "town_hint", "Pfeiltasten wechseln zwischen Gebaeuden, Enter waehlt aus, I beschreibt das fokussierte Gebaeude. F1 fuer Hilfe.");
@@ -721,6 +739,14 @@ namespace WildfrostAccessibility
             Add("es", "scene_BossReward", "Recompensa de jefe.");
             Add("es", "scene_BattleWin", "Batalla ganada! Pantalla de victoria.");
             Add("es", "scene_CampaignEnd", "Fin del viaje.");
+            Add("es", "charselect_leaders", "Elige a tu lider. Las flechas cambian de lider, Enter selecciona.");
+            Add("es", "charselect_chosen", "{0} elegido. Enter confirma, Escape devuelve la carta.");
+            Add("es", "charselect_chosen_generic", "Carta elegida. Enter confirma, Escape la devuelve.");
+            Add("es", "charselect_cancelled", "Eleccion cancelada, de vuelta a la lista.");
+            Add("es", "charselect_pets", "Elige tu mascota inicial. Las flechas cambian, Enter selecciona.");
+            Add("es", "charselect_starting", "Vamos! Comienza el viaje.");
+            Add("es", "inspect_no_confirm", "Este panel no se puede confirmar aqui. Escape devuelve la carta.");
+            Add("es", "help_charselect", "Seleccion de personaje. Las flechas cambian entre las opciones y Enter selecciona. Tras seleccionar, Enter confirma y continua, Escape devuelve la carta.");
             Add("es", "help_main_menu", "Menu principal. Flechas arriba y abajo cambian de boton, Enter selecciona. F1 repite esta ayuda, F10 alterna el modo de depuracion.");
             Add("es", "screen_town", "Pueblo, tu campamento base.");
             Add("es", "town_hint", "Las flechas cambian de edificio, Enter selecciona, I describe el edificio seleccionado. F1 para ayuda.");
@@ -903,6 +929,14 @@ namespace WildfrostAccessibility
             Add("fr", "scene_BossReward", "Recompense de boss.");
             Add("fr", "scene_BattleWin", "Bataille gagnee! Ecran de victoire.");
             Add("fr", "scene_CampaignEnd", "Fin du voyage.");
+            Add("fr", "charselect_leaders", "Choisissez votre chef. Les fleches changent de chef, Entree selectionne.");
+            Add("fr", "charselect_chosen", "{0} choisi. Entree confirme, Echap remet la carte.");
+            Add("fr", "charselect_chosen_generic", "Carte choisie. Entree confirme, Echap la remet.");
+            Add("fr", "charselect_cancelled", "Choix annule, retour a la liste.");
+            Add("fr", "charselect_pets", "Choisissez votre familier de depart. Les fleches changent, Entree selectionne.");
+            Add("fr", "charselect_starting", "C'est parti! Le voyage commence.");
+            Add("fr", "inspect_no_confirm", "Ce panneau ne peut pas etre confirme ici. Echap remet la carte.");
+            Add("fr", "help_charselect", "Selection du personnage. Les fleches changent d'option et Entree selectionne. Apres la selection, Entree confirme et continue, Echap remet la carte.");
             Add("fr", "help_main_menu", "Menu principal. Fleches haut et bas pour changer de bouton, Entree pour selectionner. F1 repete cette aide, F10 bascule le mode debogage.");
             Add("fr", "screen_town", "Village, votre camp de base.");
             Add("fr", "town_hint", "Les fleches changent de batiment, Entree selectionne, I decrit le batiment selectionne. F1 pour l'aide.");
