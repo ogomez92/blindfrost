@@ -8,7 +8,7 @@ namespace WildfrostAccessibility
     /// Navigation model: Up/Down switch groups (hand, your board, enemy board, system items),
     /// Left/Right move within the group. Enter picks up a card, Enter again places it.
     /// Announces turns, phases, waves, and full card descriptions with status effects.
-    /// Extra keys: H hand, B board, W waves, R redraw bell, G gold, T turn.
+    /// Extra keys: H hand, B board, W waves, R redraw bell, G gold, T turn, M modifiers.
     /// </summary>
     public class BattleHandler : NavigableScreenHandler
     {
@@ -44,6 +44,10 @@ namespace WildfrostAccessibility
             Events.OnEntityPostHit += OnEntityPostHit;
             Events.OnEntityKilled += OnEntityKilled;
             Events.OnStatusEffectApplied += OnStatusApplied;
+            Events.OnEntityTrigger += OnEntityTrigger;
+            Events.OnKillCombo += OnKillCombo;
+            Events.OnDropGold += OnDropGold;
+            Events.OnCardInjured += OnCardInjured;
         }
 
         private void Unsubscribe()
@@ -56,6 +60,10 @@ namespace WildfrostAccessibility
             Events.OnEntityPostHit -= OnEntityPostHit;
             Events.OnEntityKilled -= OnEntityKilled;
             Events.OnStatusEffectApplied -= OnStatusApplied;
+            Events.OnEntityTrigger -= OnEntityTrigger;
+            Events.OnKillCombo -= OnKillCombo;
+            Events.OnDropGold -= OnDropGold;
+            Events.OnCardInjured -= OnCardInjured;
         }
 
         protected override bool TryAnnounceScreen()
@@ -76,6 +84,13 @@ namespace WildfrostAccessibility
             int handCount = battle.player.handContainer?.Count ?? 0;
             if (handCount > 0)
                 parts.Add(Loc.Get("battle_hand_count", handCount));
+
+            // Crowned cards deploy before the battle starts — tell the player now
+            int crowned = CountCrownedInHand(battle);
+            if (crowned == 1)
+                parts.Add(Loc.Get("battle_crown_deploy_one"));
+            else if (crowned > 1)
+                parts.Add(Loc.Get("battle_crown_deploy", crowned));
 
             // Navigation instructions only the first time this session; F1 repeats them
             string hint = HintOnce("battle_hint");
@@ -110,7 +125,54 @@ namespace WildfrostAccessibility
                 case Battle.Phase.End:
                     ScreenReader.Say(Loc.Get("battle_over"));
                     break;
+                case Battle.Phase.LastStand:
+                    // A dice standoff: the game blocks until Roll is pressed
+                    _lastStandResultSeen = -1;
+                    string subject = LastStandSystem.subject?.data?.title;
+                    ScreenReader.Say(subject != null
+                        ? Loc.Get("battle_last_stand", subject)
+                        : Loc.Get("battle_last_stand_generic"), interrupt: true);
+                    break;
             }
+        }
+
+        /// <summary>Outcome of the last dice roll we already announced.</summary>
+        private int _lastStandResultSeen = -1;
+
+        public override void OnUpdate()
+        {
+            base.OnUpdate();
+            WatchLastStand();
+        }
+
+        /// <summary>
+        /// The last stand dice roll resolves inside a coroutine with no event
+        /// hook — watch the system's private result field for the outcome.
+        /// </summary>
+        private void WatchLastStand()
+        {
+            var battle = Battle.instance;
+            if (battle == null || battle.phase != Battle.Phase.LastStand)
+                return;
+
+            var system = Object.FindObjectOfType<LastStandSystem>();
+            if (system == null) return;
+
+            int result = ReflectionUtil.GetIntField(system, "result", -1);
+            if (result != -1 && result != _lastStandResultSeen)
+            {
+                _lastStandResultSeen = result;
+                ScreenReader.Say(Loc.Get(result == 0
+                    ? "battle_last_stand_won"
+                    : "battle_last_stand_lost"), interrupt: true);
+            }
+        }
+
+        /// <summary>A companion survived defeat but takes a lasting injury.</summary>
+        private void OnCardInjured(CardData card)
+        {
+            if (card == null) return;
+            ScreenReader.Say(Loc.Get("battle_companion_injured", card.title));
         }
 
         private void OnTurnStart(int turn)
@@ -177,11 +239,87 @@ namespace WildfrostAccessibility
                 apply.count, ItemDescriber.GetStatusName(apply.effectData), apply.target.data.title));
         }
 
+        /// <summary>
+        /// Narrate every trigger so the player knows who acts and why:
+        /// snowed units skipping their action, nullified triggers, Smackback
+        /// retaliation, Last Stand, and reaction chains ("triggered by").
+        /// </summary>
+        private void OnEntityTrigger(ref Trigger trigger)
+        {
+            if (!InCombat() || trigger?.entity?.data == null) return;
+
+            string name = trigger.entity.data.title;
+
+            // The game skips a snowed unit's trigger entirely (ActionProcessTrigger)
+            if (trigger.entity.IsSnowed)
+            {
+                ScreenReader.Say(Loc.Get("battle_trigger_snowed", name));
+                return;
+            }
+
+            if (trigger.nullified)
+            {
+                ScreenReader.Say(Loc.Get("battle_trigger_nullified", name));
+                return;
+            }
+
+            switch (trigger.type)
+            {
+                case "smackback":
+                    string attacker = trigger.triggeredBy?.data?.title;
+                    ScreenReader.Say(attacker != null
+                        ? Loc.Get("battle_trigger_smackback", name, attacker)
+                        : Loc.Get("battle_trigger_acts", name));
+                    break;
+
+                case "laststand":
+                    ScreenReader.Say(Loc.Get("battle_trigger_laststand", name));
+                    break;
+
+                default:
+                    // Reaction chains: another unit set this trigger off. A card the
+                    // player just played is "triggered by" the leader — treat as acting.
+                    Entity by = trigger.triggeredBy;
+                    if (by != null && by != trigger.entity && by.data != null
+                        && by != trigger.entity.owner?.entity)
+                        ScreenReader.Say(Loc.Get("battle_trigger_chain", name, by.data.title));
+                    else
+                        ScreenReader.Say(Loc.Get("battle_trigger_acts", name));
+                    break;
+            }
+        }
+
+        /// <summary>Combo kills grant bonus gold — announce the multiplier.</summary>
+        private void OnKillCombo(int combo)
+        {
+            if (!InCombat()) return;
+            ScreenReader.Say(Loc.Get("battle_kill_combo", combo));
+        }
+
+        /// <summary>Announce gold earned during battle (combo bonuses, bounties).</summary>
+        private void OnDropGold(int amount, string source, Character owner, Vector3 position)
+        {
+            if (!InCombat() || amount <= 0) return;
+            if (owner != null && References.Player != null && owner != References.Player) return;
+            ScreenReader.Say(Loc.Get("battle_gold_dropped", amount));
+        }
+
         // ---- Input ----------------------------------------------------------
 
         protected override void HandleInput()
         {
             base.HandleInput();
+
+            // Escape puts a picked-up card back (same as the gamepad Back action)
+            if (IsTargeting() && NavigationHelper.IsBackPressed())
+            {
+                DebugLogger.LogInput(Name, "Cancel pickup");
+                var controller = Battle.instance?.playerCardController;
+                Entity held = controller?.dragging;
+                controller?.DragCancel();
+                ScreenReader.Say(Loc.Get("battle_pickup_cancelled", held?.data?.title ?? ""));
+                return;
+            }
 
             if (Input.GetKeyDown(KeyCode.H)) { DebugLogger.LogInput(Name, "Hand"); AnnounceHand(); }
             if (Input.GetKeyDown(KeyCode.B)) { DebugLogger.LogInput(Name, "Board"); AnnounceBoard(); }
@@ -189,6 +327,7 @@ namespace WildfrostAccessibility
             if (Input.GetKeyDown(KeyCode.R)) { DebugLogger.LogInput(Name, "Bell"); AnnounceBell(); }
             if (Input.GetKeyDown(KeyCode.G)) { DebugLogger.LogInput(Name, "Gold"); AnnounceGold(); }
             if (Input.GetKeyDown(KeyCode.T)) { DebugLogger.LogInput(Name, "Turn"); AnnounceTurn(); }
+            if (Input.GetKeyDown(KeyCode.M)) { DebugLogger.LogInput(Name, "Modifiers"); AnnounceModifiers(); }
         }
 
         /// <summary>
@@ -385,6 +524,22 @@ namespace WildfrostAccessibility
             var battle = Battle.instance;
             var navSystem = MonoBehaviourSingleton<UINavigationSystem>.instance;
             var current = navSystem?.currentNavigationItem;
+
+            // Last stand: the Roll button belongs to no navigation layer, so
+            // while the game waits for it, Enter rolls the dice directly.
+            if (battle != null && battle.phase == Battle.Phase.LastStand)
+            {
+                var lastStand = Object.FindObjectOfType<LastStandSystem>();
+                var rollButton = ReflectionUtil.GetField<GameObject>(lastStand, "button");
+                if (rollButton != null && rollButton.activeInHierarchy)
+                {
+                    DebugLogger.LogInput(Name, "Last stand roll");
+                    lastStand.Roll();
+                    ScreenReader.Say(Loc.Get("battle_last_stand_rolling"), interrupt: true);
+                    return;
+                }
+            }
+
             if (battle == null || current == null)
             {
                 base.Confirm();
@@ -398,36 +553,69 @@ namespace WildfrostAccessibility
             {
                 DebugLogger.LogInput(Name, "Place card");
                 Entity held = controller.dragging;
+                string title = held?.data?.title ?? "";
+
+                // Captured before Release: they decide what the release means
+                bool fromBoard = held != null && Battle.IsOnBoard(held);
+                bool toRecall = controller.hoverContainer != null
+                    && controller.hoverContainer == battle.player?.discardContainer;
+                bool busyBefore = !IsActionQueueEmpty();
+
                 if (ReflectionUtil.InvokeMethod(controller, "Release"))
                 {
-                    if (controller.dragging == null)
-                        ScreenReader.Say(Loc.Get("battle_card_released", held?.data?.title ?? ""));
+                    // Every successful release queues actions (move/play + end turn);
+                    // an invalid target queues nothing and the card snaps back.
+                    bool acted = !busyBefore && !IsActionQueueEmpty();
+
+                    if (acted && toRecall)
+                    {
+                        string msg = Loc.Get("battle_unit_recalled", title);
+                        if (fromBoard)
+                            msg += " " + Loc.Get("battle_free_action");
+                        ScreenReader.Say(msg);
+                    }
+                    else if (acted && fromBoard)
+                    {
+                        // Repositioning a board unit is free — the turn continues
+                        ScreenReader.Say(Loc.Get("battle_unit_moved", title)
+                            + " " + Loc.Get("battle_free_action"));
+                    }
+                    else if (acted)
+                    {
+                        ScreenReader.Say(Loc.Get("battle_card_released", title));
+                    }
                     else
+                    {
                         ScreenReader.Say(Loc.Get("battle_invalid_target"));
+                    }
                 }
                 return;
             }
 
-            // Focused item is one of our own hand cards: pick it up
+            // Focused item is one of our own cards (in hand, or a unit on the
+            // board — moving, swapping and recalling units is a free action)
             Entity entity = GetEntityFromItem(current);
-            if (entity != null && controller != null
-                && entity.owner == battle.player && entity.InHand())
+            if (entity != null && controller != null && entity.owner == battle.player
+                && (entity.InHand() || Battle.IsOnBoard(entity)))
             {
                 DebugLogger.LogInput(Name, "Pick up card");
+                bool onBoard = Battle.IsOnBoard(entity);
                 controller.hoverEntity = entity;
                 if (ReflectionUtil.SetField(controller, "pressEntity", entity)
                     && ReflectionUtil.InvokeMethod(controller, "Press")
                     && controller.dragging != null)
                 {
-                    string msg = Loc.Get("battle_card_picked_up", entity.data?.title ?? "");
-                    string hint = HintOnce("battle_pickup_hint");
+                    string msg = Loc.Get(
+                        onBoard ? "battle_unit_picked_up" : "battle_card_picked_up",
+                        entity.data?.title ?? "");
+                    string hint = HintOnce(onBoard ? "battle_move_hint" : "battle_pickup_hint");
                     if (hint != null)
                         msg += " " + hint;
                     ScreenReader.Say(msg);
                 }
                 else
                 {
-                    ScreenReader.Say(Loc.Get("battle_cannot_play"));
+                    ScreenReader.Say(Loc.Get(onBoard ? "battle_cannot_move" : "battle_cannot_play"));
                 }
                 return;
             }
@@ -457,6 +645,27 @@ namespace WildfrostAccessibility
             if (entity == null && item.clickHandler != null)
                 entity = item.clickHandler.GetComponentInParent<Entity>();
             return entity;
+        }
+
+        private static bool IsActionQueueEmpty()
+        {
+            try { return ActionQueue.Empty; }
+            catch { return true; }
+        }
+
+        /// <summary>How many cards in the player's hand carry a crown.</summary>
+        private static int CountCrownedInHand(Battle battle)
+        {
+            var hand = battle?.player?.handContainer;
+            if (hand == null) return 0;
+
+            int count = 0;
+            foreach (Entity entity in hand)
+            {
+                if (entity?.data != null && entity.data.HasCrown)
+                    count++;
+            }
+            return count;
         }
 
         // ---- Readout keys ----------------------------------------------------
@@ -520,7 +729,7 @@ namespace WildfrostAccessibility
                     if (occupant.hp.max > 0)
                         cell += " " + Loc.Get("stat_health", occupant.hp.current);
                     if (occupant.damage.max > 0)
-                        cell += " " + Loc.Get("stat_attack", occupant.damage.current);
+                        cell += " " + Loc.Get("stat_attack", ItemDescriber.GetShownAttack(occupant));
                     if (occupant.counter.max > 0)
                         cell += " " + Loc.Get("battle_acts_in", occupant.counter.current);
 
@@ -610,6 +819,29 @@ namespace WildfrostAccessibility
                 ScreenReader.Say(Loc.Get("battle_bell_charged"), interrupt: true);
             else
                 ScreenReader.Say(Loc.Get("battle_bell_charging", bell.counter.current), interrupt: true);
+        }
+
+        /// <summary>
+        /// Read the run modifier bells hanging in the HUD (gauntlet/event rules).
+        /// They only explain themselves via hover panels, which keyboard
+        /// navigation can't reach.
+        /// </summary>
+        private void AnnounceModifiers()
+        {
+            var parts = new List<string>();
+            foreach (var icon in Object.FindObjectsOfType<ModifierIcon>())
+            {
+                if (icon == null || !icon.gameObject.activeInHierarchy)
+                    continue;
+
+                string desc = ItemDescriber.DescribeModifierIcon(icon);
+                if (!string.IsNullOrEmpty(desc) && !parts.Contains(desc))
+                    parts.Add(desc);
+            }
+
+            ScreenReader.Say(parts.Count > 0
+                ? string.Join(". ", parts)
+                : Loc.Get("battle_no_modifiers"), interrupt: true);
         }
 
         private void AnnounceGold()

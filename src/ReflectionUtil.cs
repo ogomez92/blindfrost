@@ -10,6 +10,23 @@ namespace WildfrostAccessibility
     public static class ReflectionUtil
     {
         /// <summary>
+        /// Find an instance field, walking base types: GetField on a derived type
+        /// does not return private fields declared on a base class.
+        /// </summary>
+        private static FieldInfo FindField(object obj, string fieldName)
+        {
+            for (Type type = obj.GetType(); type != null; type = type.BaseType)
+            {
+                FieldInfo field = type.GetField(fieldName,
+                    BindingFlags.NonPublic | BindingFlags.Public
+                    | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+                if (field != null)
+                    return field;
+            }
+            return null;
+        }
+
+        /// <summary>
         /// Read a private int field. Returns the fallback on any failure (never throws).
         /// </summary>
         public static int GetIntField(object obj, string fieldName, int fallback)
@@ -17,10 +34,28 @@ namespace WildfrostAccessibility
             if (obj == null) return fallback;
             try
             {
-                FieldInfo field = obj.GetType().GetField(fieldName,
-                    BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+                FieldInfo field = FindField(obj, fieldName);
                 if (field != null && field.FieldType == typeof(int))
                     return (int)field.GetValue(obj);
+            }
+            catch
+            {
+                // fall through to fallback
+            }
+            return fallback;
+        }
+
+        /// <summary>
+        /// Read a private bool field. Returns the fallback on any failure (never throws).
+        /// </summary>
+        public static bool GetBoolField(object obj, string fieldName, bool fallback)
+        {
+            if (obj == null) return fallback;
+            try
+            {
+                FieldInfo field = FindField(obj, fieldName);
+                if (field != null && field.FieldType == typeof(bool))
+                    return (bool)field.GetValue(obj);
             }
             catch
             {
@@ -61,8 +96,7 @@ namespace WildfrostAccessibility
             if (obj == null) return false;
             try
             {
-                FieldInfo field = obj.GetType().GetField(fieldName,
-                    BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+                FieldInfo field = FindField(obj, fieldName);
                 if (field == null) return false;
                 field.SetValue(obj, value);
                 return true;
@@ -83,8 +117,7 @@ namespace WildfrostAccessibility
             if (obj == null) return null;
             try
             {
-                FieldInfo field = obj.GetType().GetField(fieldName,
-                    BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+                FieldInfo field = FindField(obj, fieldName);
                 return field?.GetValue(obj) as T;
             }
             catch (Exception ex)

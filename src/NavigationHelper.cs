@@ -77,6 +77,19 @@ namespace WildfrostAccessibility
         }
 
         /// <summary>
+        /// True while a text input field has focus (console, run naming).
+        /// Letter-key mod bindings must stay inactive then.
+        /// </summary>
+        public static bool IsTextInputFocused()
+        {
+            var eventSystem = EventSystem.current;
+            var selected = eventSystem != null ? eventSystem.currentSelectedGameObject : null;
+            if (selected == null) return false;
+            return selected.GetComponent<TMPro.TMP_InputField>() != null
+                || selected.GetComponent<UnityEngine.UI.InputField>() != null;
+        }
+
+        /// <summary>
         /// Get all active UINavigationItems in the current layer, sorted spatially.
         /// Filters to items on the active navigation layer that are selectable.
         /// </summary>
@@ -157,6 +170,109 @@ namespace WildfrostAccessibility
             EnsureControllerMode();
 
             navSystem.SetCurrentNavigationItem(item);
+            SyncHoverToFocus();
+        }
+
+        /// <summary>
+        /// Force the game's hover (CustomEventSystem.current) onto the focused item.
+        /// SetCurrentNavigationItem only hovers when the active layer has forceHover,
+        /// so inside layers without it (the pause journal) the hover goes stale — and
+        /// the game clicks its HOVERED object when Rewired "Select" (Enter) fires.
+        /// A stale hover then clicks UI behind the open menu: this is what loaded
+        /// the Credits screen from inside the pause menu. Idempotent; call freely.
+        /// </summary>
+        public static void SyncHoverToFocus()
+        {
+            var navSystem = MonoBehaviourSingleton<UINavigationSystem>.instance;
+            var item = navSystem != null ? navSystem.currentNavigationItem : null;
+            if (item == null) return;
+
+            var eventSystem = ReflectionUtil.GetField<CustomEventSystem>(navSystem, "eventSystem");
+            if (eventSystem == null) return;
+
+            var hovered = ReflectionUtil.GetField<GameObject>(eventSystem, "current");
+            if (item.clickHandler != null)
+            {
+                if (hovered != item.clickHandler)
+                    eventSystem.Hover(item.clickHandler);
+            }
+            else if (hovered != null)
+            {
+                // No click handler to hover: clear the stale hover so the game's
+                // Select cannot click a leftover object (it opened the wrong
+                // settings page when Enter hit a previously hovered tab).
+                eventSystem.Unhover(hovered);
+            }
+
+            ClearUnitySelection();
+        }
+
+        /// <summary>
+        /// Clear the game's hover entirely, so a game-side Select (Enter)
+        /// cannot click anything. Used while browsing virtual rows.
+        /// </summary>
+        public static void ClearHover()
+        {
+            var navSystem = MonoBehaviourSingleton<UINavigationSystem>.instance;
+            if (navSystem == null) return;
+            var eventSystem = ReflectionUtil.GetField<CustomEventSystem>(navSystem, "eventSystem");
+            if (eventSystem == null) return;
+            var hovered = ReflectionUtil.GetField<GameObject>(eventSystem, "current");
+            if (hovered != null)
+                eventSystem.Unhover(hovered);
+            ClearUnitySelection();
+        }
+
+        /// <summary>
+        /// Disarm Unity's uGUI "Submit": StandaloneInputModule fires Submit on
+        /// Enter at the EventSystem's SELECTED object, and a Button stays
+        /// selected forever after any pointer-down — so every later Enter
+        /// re-clicked an old button invisibly (loaded Credits/Mods from inside
+        /// the pause menu). We never use uGUI selection for navigation; keep it
+        /// empty except while a text field is being edited.
+        /// </summary>
+        public static void ClearUnitySelection()
+        {
+            var unityEventSystem = EventSystem.current;
+            var selected = unityEventSystem != null ? unityEventSystem.currentSelectedGameObject : null;
+            if (selected == null) return;
+            if (selected.GetComponent<TMPro.TMP_InputField>() != null
+                || selected.GetComponent<UnityEngine.UI.InputField>() != null)
+                return;
+            unityEventSystem.SetSelectedGameObject(null);
+        }
+
+        /// <summary>
+        /// Debug: log every input path that could react to this Enter press —
+        /// Rewired Select/Back, our nav focus, the game's hover, and Unity's
+        /// uGUI selection. Identifies which system performs phantom clicks.
+        /// </summary>
+        public static void LogEnterDiagnostic()
+        {
+            bool select = false, back = false;
+            try
+            {
+                select = InputSystem.IsSelectPressed();
+                back = InputSystem.IsButtonPressed("Back");
+            }
+            catch { /* Rewired not ready */ }
+
+            var navSystem = MonoBehaviourSingleton<UINavigationSystem>.instance;
+            var current = navSystem != null ? navSystem.currentNavigationItem : null;
+
+            GameObject hover = null;
+            var gameEventSystem = ReflectionUtil.GetField<CustomEventSystem>(navSystem, "eventSystem");
+            if (gameEventSystem != null)
+                hover = ReflectionUtil.GetField<GameObject>(gameEventSystem, "current");
+
+            var unitySelected = EventSystem.current != null
+                ? EventSystem.current.currentSelectedGameObject : null;
+
+            DebugLogger.Log(DebugLogger.LogCategory.State, "EnterDiag",
+                $"rewiredSelect={select} rewiredBack={back}"
+                + $" | navFocus={(current != null ? GetPath(current.transform) : "null")}"
+                + $" | gameHover={(hover != null ? GetPath(hover.transform) : "null")}"
+                + $" | unitySelected={(unitySelected != null ? GetPath(unitySelected.transform) : "null")}");
         }
 
         /// <summary>
@@ -184,6 +300,9 @@ namespace WildfrostAccessibility
             yield return null;
             ExecuteEvents.ExecuteHierarchy(clickHandler, pointerData, ExecuteEvents.pointerUpHandler);
             ExecuteEvents.ExecuteHierarchy(clickHandler, pointerData, ExecuteEvents.pointerClickHandler);
+            // The pointer-down made this Button the uGUI "selected" object;
+            // left armed, every later Enter would re-click it via Unity Submit
+            ClearUnitySelection();
         }
 
         /// <summary>
@@ -197,6 +316,73 @@ namespace WildfrostAccessibility
                 || obj.GetComponentInParent<HelpPanelShower>() != null
                 || item.gameObject.GetComponent<HelpPanelShower>() != null
                 || item.gameObject.GetComponentInParent<HelpPanelShower>() != null;
+        }
+
+        /// <summary>
+        /// Dump the full navigation state to the debug log: active layer, current
+        /// item, and every registered item with its layer, flags, and notable
+        /// components. For diagnosing screens whose items aren't where we expect.
+        /// </summary>
+        public static void DumpNavigationState()
+        {
+            var navSystem = MonoBehaviourSingleton<UINavigationSystem>.instance;
+            if (navSystem == null)
+            {
+                DebugLogger.Log(DebugLogger.LogCategory.State, "NavDump", "No UINavigationSystem");
+                return;
+            }
+
+            var layer = UINavigationSystem.ActiveNavigationLayer;
+            DebugLogger.Log(DebugLogger.LogCategory.State, "NavDump",
+                $"ActiveLayer: {(layer != null ? GetPath(layer.transform) + "#" + layer.GetInstanceID() : "null")}");
+            var current = navSystem.currentNavigationItem;
+            DebugLogger.Log(DebugLogger.LogCategory.State, "NavDump",
+                $"Current: {(current != null ? GetPath(current.transform) : "null")}");
+            DebugLogger.Log(DebugLogger.LogCategory.State, "NavDump",
+                $"Registered items: {navSystem.AvailableNavigationItems.Count}");
+
+            foreach (var item in navSystem.AvailableNavigationItems)
+            {
+                if (item == null) continue;
+
+                var flags = new List<string>();
+                if (!item.enabled) flags.Add("disabled");
+                if (!item.isSelectable) flags.Add("notSelectable");
+                if (!item.gameObject.activeInHierarchy) flags.Add("inactive");
+                if (item.ignoreLayers) flags.Add("ignoreLayers");
+                if (item.overrideHorizontal) flags.Add("overrideH");
+                if (item.overrideVertical) flags.Add("overrideV");
+                if (item.clickHandler == null) flags.Add("noClick");
+
+                var comps = new List<string>();
+                var journalTab = item.GetComponentInParent<JournalTab>();
+                if (journalTab != null) comps.Add("JournalTab:" + journalTab.gameObject.name);
+                if (item.GetComponentInParent<SettingOptions>() != null) comps.Add("SettingOptions");
+                if (item.GetComponentInParent<SettingSlider>() != null) comps.Add("SettingSlider");
+                if (item.GetComponentInChildren<TMPro.TMP_Dropdown>(true) != null) comps.Add("Dropdown");
+                if (item.GetComponentInChildren<UnityEngine.UI.Slider>(true) != null) comps.Add("Slider");
+
+                DebugLogger.Log(DebugLogger.LogCategory.State, "NavDump",
+                    $"{GetPath(item.transform)}"
+                    + $" | layer={(item.navigationLayer != null ? item.navigationLayer.name + "#" + item.navigationLayer.GetInstanceID() : "null")}"
+                    + (flags.Count > 0 ? " | " + string.Join(",", flags) : "")
+                    + (comps.Count > 0 ? " | " + string.Join(",", comps) : ""));
+            }
+        }
+
+        /// <summary>Hierarchy path of a transform, up to 6 ancestors deep.</summary>
+        private static string GetPath(Transform t)
+        {
+            var parts = new List<string>();
+            int depth = 0;
+            while (t != null && depth < 6)
+            {
+                parts.Insert(0, t.name);
+                t = t.parent;
+                depth++;
+            }
+            if (t != null) parts.Insert(0, "...");
+            return string.Join("/", parts);
         }
 
         /// <summary>

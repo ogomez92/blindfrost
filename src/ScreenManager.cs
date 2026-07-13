@@ -40,6 +40,10 @@ namespace WildfrostAccessibility
             var mapHandler = new MapHandler();
             Register("Campaign", mapHandler);
             Register("MapNew", mapHandler);
+
+            // Pause menu (settings, battle log, lore) — routed via GameManager.paused,
+            // not by scene: it lives in the always-loaded PauseScreen scene.
+            Register("PauseMenu", new PauseMenuHandler());
         }
 
         /// <summary>
@@ -119,6 +123,11 @@ namespace WildfrostAccessibility
         {
             try
             {
+                // The pause menu overlays everything and never changes the
+                // active scene — PauseMenu.OnEnable/OnDisable toggle this flag.
+                if (GameManager.paused)
+                    return "PauseMenu";
+
                 foreach (string overlay in _overlayScenes)
                 {
                     if (SceneManager.IsLoaded(overlay))

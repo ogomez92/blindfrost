@@ -83,7 +83,12 @@ namespace WildfrostAccessibility
         protected virtual void Navigate(NavDirection dir)
         {
             var items = GetItems();
-            if (items.Count == 0) return;
+            if (items.Count == 0)
+            {
+                // Silence here reads as a dead keyboard — say why nothing moves
+                ScreenReader.Say(Loc.Get("nav_nothing"), interrupt: true);
+                return;
+            }
 
             var navSystem = MonoBehaviourSingleton<UINavigationSystem>.instance;
             UINavigationItem current = navSystem?.currentNavigationItem;
@@ -161,6 +166,11 @@ namespace WildfrostAccessibility
             if (SuppressFocusAnnouncements) return;
 
             string text = GetItemDescription(current);
+            if (string.IsNullOrEmpty(text))
+            {
+                // Never focus silently — an unnamed item still needs a voice
+                text = ScreenHandler.CleanName(current.gameObject.name);
+            }
             if (!string.IsNullOrEmpty(text))
             {
                 ScreenReader.Say(text, interrupt: true);

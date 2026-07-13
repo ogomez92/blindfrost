@@ -597,8 +597,56 @@ Events.OnEntityHover += (Entity entity) =>
 - **Status effects:** `entity.statusEffects` (List<StatusEffectData>) — `visible`, `count`, `GetAmount()`, name via `AddressableLoader.Get<KeywordData>("KeywordData", effect.keyword).title`. Attack payload: `entity.attackEffects` (StatusEffectStacks: data + count).
 - Post-win flow: optional "BossReward" → "BattleWin" (both Temporary); lose/end → "CampaignEnd".
 
-## 18. Change History
+## 18. Moving, Swapping, Recalling Units (free actions)
+
+- **Board units are draggable like hand cards**: `CardControllerBattle.Press()` only requires `pressEntity.owner == owner` — the same reflection path (set `pressEntity`, invoke `Press()`) works for units on the board.
+- **Valid drop targets while dragging** come from `NavigationStateCard.Begin()`: it disables every nav item except containers where `entity.CanPlayOn(container)` is true. For a `PlayType.Place` card that means own board slots (empty = move, occupied = swap/shove via `ShoveSystem`).
+- **Recall**: `Entity.CanPlayOn(CardContainer)` explicitly returns true for `owner.discardContainer` when `entity.CanRecall()` (extension in `EntityExt`: `data.cardType.canRecall && blockRecall <= 0 && Battle.IsOnBoard(entity)`). So the discard pile nav item (`container.nav`) stays enabled as a drop target. `Release()` over it queues `ActionMove(entity, discardContainer)` + `ActionEndTurn` and fires `Events.InvokeDiscard`. `Sequences.CardRecall` confirms the unit goes to the **discard pile** (not hand) — no heal found in code.
+- **Free actions**: `Character.freeAction = true` is set when the released unit came from the board (move, swap, recall) — `Battle` then skips consuming the turn in its end-turn check. Ringing the bell also sets it (`RedrawBellSystem`).
+- **Release outcome detection**: every successful release queues actions; an invalid drop leaves `ActionQueue` empty and the card snaps back (`dragging` is nulled either way by `DragEnd()`, so check the queue, not `dragging`).
+- **Cancel pickup**: `CardController.DragCancel()` is public; the `CardControllerBattle` override tweens the card home and restores the navigation state. Game maps it to Rewired "Back" (`CancelCardDragSystem`).
+- **"Use on hand" anchor**: `CardControllerBattle.useOnHandAnchor` (public UINavigationItem) is the gamepad drop zone for no-target plays; disabled while the held card `NeedsTarget`.
+
+## 19. Triggers (reactions, Smackback, Last Stand)
+
+- All card activations run through `ActionProcessTrigger.Run()` which fires `Events.OnEntityTrigger(ref Trigger)` before processing and `OnEntityTriggered` after.
+- `Trigger` fields: `entity` (who acts), `triggeredBy`, `targets`, `type` (string), `nullified`.
+- Known `type` values: `"basic"` (default, incl. counter-reaching-zero and played cards), `"smackback"` (`StatusEffectTriggerAgainstAttackerWhenHit`; `triggeredBy` = the attacker being retaliated against), `"laststand"` (`LastStandSystem`), `"eat"` (`StatusEffectInstantEatSomething`).
+- **Snow skips triggers**: `ActionProcessTrigger` does not process when `trigger.entity.IsSnowed` (public: `Entity.IsSnowed => SnowAmount() > 0`). Snow blocks counter reduction by consuming `hit.counterReduction` (`StatusEffectSnow`).
+- Played-from-hand cards arrive with `triggeredBy = owner.entity` (the leader) — compare against `entity.owner?.entity` to distinguish real reaction chains.
+
+## 20. Gold / Kill Combos
+
+- `KillComboSystem`: kills of enemy units in the same turn count up; at `count >= 2` each further kill fires `Events.InvokeDropGold(amount, "Combo", References.Player, pos)` then `Events.InvokeKillCombo(count)`. Combo counter resets on turn end.
+- `Events.OnDropGold(int amount, string source, Character owner, Vector3 position)` — all battle gold drops.
+
+## 21. Crowns & Charms
+
+- `CardData.upgrades` (`List<CardUpgradeData>`), `CardUpgradeData.type`: enum `Type { ..., Charm = 1, Crown = 3 }`, localized name via `.title` (property wrapping `titleKey`).
+- Convenience: `CardData.HasCrown`, `GetCrown()`, `crownSlots`.
+- Crowned cards deploy pre-battle: `Battle.WaitForChampionsToDeploy` enables the card controller before turn 1 while crowned cards are in hand — the normal pickup/place flow works during this window.
+
+## 22. Pause Menu / Settings (scene "PauseScreen", persistent)
+
+- Loaded at bootstrap (`Bootstrap.thenLoad`) and **never changes ActiveSceneKey**; `SceneManager.IsLoaded("PauseScreen")` is always true. Detect it being open via `GameManager.paused` (public static, set in `PauseMenu.OnEnable/OnDisable`; `Time.timeScale` is 0 while open — use unscaled time).
+- `PauseMenu : Menu` (public `Open/Close/Toggle`, `Settings()`, `BattleLog()`, `OpenLorePages()`); find via `Object.FindObjectOfType<PauseMenu>(true)`. `Open()` respects a static `blocked` counter. The main menu's settings button calls the same instance.
+- Tabs: `JournalTab` with public `Hover/Press/Release/Select`; `Release()` fires `Select()` only while hovered.
+- Setting rows: `SettingOptions : Setting<int>` (TMP_Dropdown; public `Increase/Decrease/Add(float)`), `SettingSlider : Setting<float>` (UI Slider). Persistence via `SetSettingInt/SetSettingFloat` components (`Set(value)` saves; `OnEnable` loads).
+- **Gamepad value adjustment** goes through `UINavigationItem.overrideHorizontal` + `OnHorizontalOverride` (`UnityEvent<float>`) — invoke with plus or minus 1f to change a focused row's value exactly like the game does.
+- **Stats page** ("Overall Statistics"): `OverallStatsDisplay` (OnEnable → Populate) writes the whole page into a few large TMP blocks — private `nameGroups[]` / `valueGroups[]`, lines separated by `<br>`, blank `<br>` lines as group separators; centred locales (zh/ko/ja) inline the value into the name block and leave `valueGroups` empty. Per-row `StatDisplay` components are used by other stat panels (end of run), NOT this page.
+
+## 22b. Battle bells & Last Stand
+
+- **Bell nav items are serialized references, not children**: `RedrawBellSystem.nav` and `WaveDeploySystem.nav` (statics, assigned from private `navigationItem` fields in OnEnable/Awake) do NOT live under their system components — `GetComponentInParent` from the nav item finds nothing. Identify by identity comparison against the static fields. `WaveDeploySystemOverflow` also assigns `WaveDeploySystem.nav`.
+- **Standard wave bell** `WaveDeploySystem`: private `waveManager` (BattleWaveManager, `list` public), `currentWave`, `counter`. The Overflow variant has its own `waves`/popup fields (already documented behavior in ItemDescriber).
+- **Last Stand** (`Battle.Phase.LastStand`, `LastStandSystem`): stacks an ActionSequence that shows a modal (`background`/`button` private GameObjects) and blocks on `WaitUntil(diceRolled)`; public `Roll()` sets it. The Roll button belongs to NO navigation layer — unreachable via nav items. Dice outcome lands in private int `result` (-1 pending / 0 player wins / 1 enemy wins), reset to -1 after the kill sequence; statics `subject`/`attacker`/`previousPhase` on the class. Attack stat shown on cards is `entity.damage + entity.tempDamage` (SafeInt, temporary Spice/Frost/ongoing modifiers) — `EntityDisplay.cs:95`.
+- **Injuries**: `Events.OnCardInjured` (`UnityAction<CardData>`) fires when a companion gains an injury (`InjurySystem`); persistent on `CardData.injuries`.
+- **Card upgrade types**: `CardUpgradeData.Type` = None/Charm/Token/Crown — Token is a real, displayed category (own holder on the card).
+
+## 23. Change History
 
 - 2026-03-29: Initial creation with structure overview
 - 2026-03-29: Complete Tier 1 analysis — input system, UI navigation, singletons, scenes, cards, battle, localization
 - 2026-07-11: Town, ContinueRun, overlay scenes, campaign map, battle interaction, status effects (sections 13-17)
+- 2026-07-13: Unit moving/swapping/recall, trigger system, kill combos, crowns/charms, pause menu and settings (sections 18-22)
+- 2026-07-13: Stats page rendering, bell nav-item identity, Last Stand system, tempDamage, injuries, Token upgrades (sections 22, 22b)

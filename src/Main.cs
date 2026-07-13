@@ -112,6 +112,34 @@ namespace WildfrostAccessibility
                 AnnounceHelp();
             }
 
+            // O opens/closes the game menu (settings, battle log, lore) anywhere.
+            // The game only opens it via mouse click or gamepad, so keyboard
+            // users need this binding. Inactive while typing into a text field.
+            if (Input.GetKeyDown(KeyCode.O) && !NavigationHelper.IsTextInputFocused())
+            {
+                TogglePauseMenu();
+            }
+
+            // F9 (debug mode only): dump the navigation state to the log
+            if (debugMode && Input.GetKeyDown(KeyCode.F9))
+            {
+                NavigationHelper.DumpNavigationState();
+                ScreenReader.Say("Navigation state dumped", interrupt: true);
+            }
+
+            // Debug: trace every Enter press across all input systems, so
+            // phantom activations show up with their source in the log
+            if (debugMode && (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter)))
+            {
+                NavigationHelper.LogEnterDiagnostic();
+            }
+
+            // Keep the game in controller mode permanently. In mouse mode the
+            // game hovers — and Select-clicks — whatever sits under the
+            // PHYSICAL mouse cursor, which a blind player never aims: that
+            // produced phantom clicks on menu buttons behind everything.
+            NavigationHelper.EnsureControllerMode();
+
             // Check for overlay popups (help panels, prompts, etc.)
             PopupReader.Update();
 
@@ -123,6 +151,25 @@ namespace WildfrostAccessibility
         {
             string help = ScreenManager.ActiveHandler?.GetHelpText() ?? Loc.Get("help_text");
             ScreenReader.Say(help, interrupt: true);
+        }
+
+        /// <summary>
+        /// Toggle the game's pause menu (persistent PauseScreen scene).
+        /// Opening is announced by PauseMenuHandler once ScreenManager routes to it.
+        /// </summary>
+        private void TogglePauseMenu()
+        {
+            var menu = UnityEngine.Object.FindObjectOfType<PauseMenu>(true);
+            if (menu == null)
+            {
+                ScreenReader.Say(Loc.Get("pause_unavailable"), interrupt: true);
+                return;
+            }
+
+            DebugLogger.LogInput("Main", "Toggle pause menu");
+            menu.Toggle();
+            if (!menu.gameObject.activeSelf)
+                ScreenReader.Say(Loc.Get("pause_closed"), interrupt: true);
         }
     }
 
