@@ -13,8 +13,9 @@ Screen reader accessibility mod for Wildfrost, enabling blind players to navigat
 
 - `Install-Mod.ps1` - installer script that does all the steps below for you
 - `put in game folder\` - the mod DLL plus the Tolk screen reader DLLs, already laid out in the game's own folder structure
-- `put in AppData LocalLow\` - a fresh save file with the mod already enabled, so you do not need sighted help to turn it on
 - `readme.html` - this document as a web page
+
+The mod enables itself automatically the first time the game starts after installation, so you do not need sighted help and your save file is never touched.
 
 ### Easy install: run the script (recommended)
 
@@ -23,12 +24,9 @@ Screen reader accessibility mod for Wildfrost, enabling blind players to navigat
 
        powershell -ExecutionPolicy Bypass -File .\Install-Mod.ps1
 
-The script copies everything into place and tells you what it did. Options:
+The script copies everything into place and tells you what it did. If the game is installed somewhere else, pass `-GamePath "D:\Path\To\Wildfrost"`.
 
-- Game installed somewhere else: `-GamePath "D:\Path\To\Wildfrost"`
-- You have progress you want to keep: `-KeepSave` (skips the pre-enabled save; you then enable the mod once manually, see Step 2 below). Without it, the script asks before replacing an existing save and always makes a backup copy first.
-
-If the script succeeds, skip to Step 3: Verify. The manual steps below do the same thing by hand.
+If the script succeeds, skip to Step 2: Verify. The manual steps below do the same thing by hand.
 
 ### Step 1: Copy "put in game folder" into the game folder
 
@@ -44,32 +42,11 @@ After copying, these files must exist:
 
 If you install by hand instead: Tolk.dll and nvdaControllerClient64.dll go directly in the `Modded` folder, NOT in the WildfrostAccessibility mod folder. The game tries to load every DLL in a mod folder as a .NET assembly and crashes on native DLLs.
 
-### Step 2: Copy "put in AppData LocalLow" into AppData\LocalLow
+### Step 2: Verify
 
-Enabling a mod for the first time normally requires clicking through the game's Mods menu with a mouse or gamepad, which is not accessible. The release ships a fresh save file with the mod already enabled so you can skip that.
+Launch Wildfrost. On the first start after installation the mod enables itself - no Mods menu, no sighted help, and your save file is not touched. You should hear "Wildfrost Accessibility loaded. Press F1 for help." from NVDA. Afterwards the mod auto-loads on every launch.
 
-Copy the **contents** of the `put in AppData LocalLow` folder into:
-
-    C:\Users\<your username>\AppData\LocalLow
-
-(You can paste `%USERPROFILE%\AppData\LocalLow` into the File Explorer address bar to get there.)
-
-After copying, this file must exist:
-
-    C:\Users\<your username>\AppData\LocalLow\Deadpan Games\Wildfrost\Profiles\Default\Save.sav
-
-WARNING: this overwrites your existing Wildfrost save. If you already have progress you want to keep, skip this step and enable the mod manually instead:
-
-1. Launch Wildfrost (it uses the Modded runtime automatically)
-2. On the main menu, use a gamepad or mouse to navigate to "Mods"
-3. Click on "Wildfrost Accessibility" to enable it
-4. Go back to the main menu
-
-Either way this is a one-time step; afterwards the mod auto-loads on every launch.
-
-### Step 3: Verify
-
-Launch Wildfrost. You should hear "Wildfrost Accessibility loaded. Press F1 for help." from NVDA.
+If you ever disable the mod in the game's Mods menu, it stays disabled. To make it enable itself once more, delete the file `autoenable.marker` next to `WildfrostAccessibility.dll` in the mod folder and start the game again.
 
 ## What the mod does
 

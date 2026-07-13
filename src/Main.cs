@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Deadpan.Enums.Engine.Components.Modding;
 using HarmonyLib;
 using UnityEngine;
@@ -26,6 +28,45 @@ namespace WildfrostAccessibility
 
         public WildfrostAccessibilityMod(string modDirectory) : base(modDirectory)
         {
+            SelfEnableOnFirstRun(modDirectory);
+        }
+
+        /// <summary>
+        /// Adds this mod to the game's enabled-mods list on the first run after
+        /// installation, so blind players never have to find the Mods menu
+        /// (which is inaccessible without the mod — chicken-and-egg).
+        ///
+        /// The game constructs every mod it finds in StreamingAssets/Mods on
+        /// boot, but only activates the ones stored under "lastSavedMods" in
+        /// the save file (see Bootstrap.ModsSetup and WildfrostMod.GetLastMods).
+        /// This constructor runs before that check, so registering our GUID here
+        /// makes the game activate us through its normal path on the same boot.
+        ///
+        /// A marker file remembers that self-enable already happened, so a
+        /// player who later disables the mod in the Mods menu stays disabled.
+        /// </summary>
+        private void SelfEnableOnFirstRun(string modDirectory)
+        {
+            try
+            {
+                string marker = Path.Combine(modDirectory, "autoenable.marker");
+                if (File.Exists(marker))
+                    return;
+
+                string[] enabled = SaveSystem.LoadProgressData<string[]>("lastSavedMods") ?? new string[0];
+                if (!enabled.Contains(GUID))
+                {
+                    SaveSystem.SaveProgressData("lastSavedMods", enabled.Append(GUID).ToArray());
+                    Debug.Log("[WildfrostAccessibility] First run: mod self-enabled, will load this boot");
+                }
+                File.WriteAllText(marker, "This file marks that the mod has auto-enabled itself once. Delete it to make the mod auto-enable again on the next game start.");
+            }
+            catch (Exception ex)
+            {
+                // Never let self-enable break mod construction — the game's
+                // ModsSetup aborts ALL mods if a constructor throws.
+                Debug.LogError($"[WildfrostAccessibility] Self-enable failed: {ex.Message}");
+            }
         }
 
         protected override void Load()

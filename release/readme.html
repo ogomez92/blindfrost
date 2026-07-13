@@ -195,10 +195,11 @@ map via NVDA.</p>
 steps below for you</li>
 <li><code>put in game folder\</code> - the mod DLL plus the Tolk screen
 reader DLLs, already laid out in the game's own folder structure</li>
-<li><code>put in AppData LocalLow\</code> - a fresh save file with the
-mod already enabled, so you do not need sighted help to turn it on</li>
 <li><code>readme.html</code> - this document as a web page</li>
 </ul>
+<p>The mod enables itself automatically the first time the game starts
+after installation, so you do not need sighted help and your save file
+is never touched.</p>
 <h3 id="easy-install-run-the-script-recommended">Easy install: run the
 script (recommended)</h3>
 <ol type="1">
@@ -206,17 +207,10 @@ script (recommended)</h3>
 <li><p>Open PowerShell in the extracted folder and run:</p>
 <pre><code>powershell -ExecutionPolicy Bypass -File .\Install-Mod.ps1</code></pre></li>
 </ol>
-<p>The script copies everything into place and tells you what it did.
-Options:</p>
-<ul>
-<li>Game installed somewhere else:
-<code>-GamePath "D:\Path\To\Wildfrost"</code></li>
-<li>You have progress you want to keep: <code>-KeepSave</code> (skips
-the pre-enabled save; you then enable the mod once manually, see Step 2
-below). Without it, the script asks before replacing an existing save
-and always makes a backup copy first.</li>
-</ul>
-<p>If the script succeeds, skip to Step 3: Verify. The manual steps
+<p>The script copies everything into place and tells you what it did. If
+the game is installed somewhere else, pass
+<code>-GamePath "D:\Path\To\Wildfrost"</code>.</p>
+<p>If the script succeeds, skip to Step 2: Verify. The manual steps
 below do the same thing by hand.</p>
 <h3 id="step-1-copy-put-in-game-folder-into-the-game-folder">Step 1:
 Copy "put in game folder" into the game folder</h3>
@@ -233,33 +227,16 @@ nvdaControllerClient64.dll go directly in the <code>Modded</code>
 folder, NOT in the WildfrostAccessibility mod folder. The game tries to
 load every DLL in a mod folder as a .NET assembly and crashes on native
 DLLs.</p>
-<h3 id="step-2-copy-put-in-appdata-locallow-into-appdatalocallow">Step
-2: Copy "put in AppData LocalLow" into AppData\LocalLow</h3>
-<p>Enabling a mod for the first time normally requires clicking through
-the game's Mods menu with a mouse or gamepad, which is not accessible.
-The release ships a fresh save file with the mod already enabled so you
-can skip that.</p>
-<p>Copy the <strong>contents</strong> of the
-<code>put in AppData LocalLow</code> folder into:</p>
-<pre><code>C:\Users\&lt;your username&gt;\AppData\LocalLow</code></pre>
-<p>(You can paste <code>%USERPROFILE%\AppData\LocalLow</code> into the
-File Explorer address bar to get there.)</p>
-<p>After copying, this file must exist:</p>
-<pre><code>C:\Users\&lt;your username&gt;\AppData\LocalLow\Deadpan Games\Wildfrost\Profiles\Default\Save.sav</code></pre>
-<p>WARNING: this overwrites your existing Wildfrost save. If you already
-have progress you want to keep, skip this step and enable the mod
-manually instead:</p>
-<ol type="1">
-<li>Launch Wildfrost (it uses the Modded runtime automatically)</li>
-<li>On the main menu, use a gamepad or mouse to navigate to "Mods"</li>
-<li>Click on "Wildfrost Accessibility" to enable it</li>
-<li>Go back to the main menu</li>
-</ol>
-<p>Either way this is a one-time step; afterwards the mod auto-loads on
-every launch.</p>
-<h3 id="step-3-verify">Step 3: Verify</h3>
-<p>Launch Wildfrost. You should hear "Wildfrost Accessibility loaded.
-Press F1 for help." from NVDA.</p>
+<h3 id="step-2-verify">Step 2: Verify</h3>
+<p>Launch Wildfrost. On the first start after installation the mod
+enables itself - no Mods menu, no sighted help, and your save file is
+not touched. You should hear "Wildfrost Accessibility loaded. Press F1
+for help." from NVDA. Afterwards the mod auto-loads on every launch.</p>
+<p>If you ever disable the mod in the game's Mods menu, it stays
+disabled. To make it enable itself once more, delete the file
+<code>autoenable.marker</code> next to
+<code>WildfrostAccessibility.dll</code> in the mod folder and start the
+game again.</p>
 <h2 id="what-the-mod-does">What the mod does</h2>
 <p>Every screen announces itself when it opens, and every focused
 element is described. Tutorial popups and help panels are read aloud,

@@ -137,7 +137,7 @@ Patterns: `docs/ACCESSIBILITY_MODDING_GUIDE.md`
 # Critical Warnings
 
 - **F12 is Steam screenshot** — never use F12 for mod bindings. Also avoid Shift+Tab (Steam overlay).
-- **Mod must be enabled once manually** — user goes to Mods menu in game, enables it. After that it auto-loads.
+- **Mod self-enables on first run** — the constructor adds the GUID to `lastSavedMods` (progress save data) before the game's `Bootstrap.ModsSetup` reads it, then writes `autoenable.marker` in the mod folder. Marker present = never self-enable again, so disabling via Mods menu sticks. Delete the marker to re-trigger. No Mods menu visit needed.
 - **Mods run in Modded/ runtime** — Tolk DLLs go in Modded/ directory, not game root and NOT in the mod folder.
 - **Native DLLs NEVER in mod folder** — the game loads ALL .dll files in StreamingAssets/Mods/<ModName>/ as .NET assemblies. Native DLLs (Tolk.dll, nvdaControllerClient64.dll) there will crash the game with "Invalid Image".
 - **Tolk_DetectScreenReader() crashes** — the wchar_t* return marshalling causes native crash. Use Tolk_HasSpeech() (bool) instead. Never call Tolk_DetectScreenReader().

@@ -37,6 +37,17 @@
 **Currently working on:** In-game testing of battle mechanics round 2 (unit move/swap/recall, triggers, pause menu/settings) — built + deployed 2026-07-13
 **Blocked by:** Nothing — needs an in-game test pass
 
+### Pending test: self-enable on first run (added 2026-07-13)
+
+The mod now enables itself on the first game start after installation — no Mods menu needed, save file untouched. Constructor writes the GUID into `lastSavedMods` before `Bootstrap.ModsSetup` reads it, then drops `autoenable.marker` in the mod folder so a deliberate disable in the Mods menu sticks. The release package no longer ships a replacement Save.sav; Install-Mod.ps1 no longer touches AppData.
+
+Test protocol (simulates a fresh player):
+1. Close the game.
+2. Delete `autoenable.marker` from the deployed mod folder (if present).
+3. Disable the mod: temporarily rename `%USERPROFILE%\AppData\LocalLow\Deadpan Games\Wildfrost\Profiles\Default\Save.sav` to `Save.sav.test-backup` (fresh-save simulation; restore afterwards).
+4. Launch the game. Expected: speech on the main menu without visiting the Mods menu, and `Log.log` contains "First run: mod self-enabled, will load this boot".
+5. Close the game, restore the real Save.sav, delete the test save. Mod stays enabled there because the real save already lists the GUID.
+
 ## Codebase Analysis Progress
 
 ### GATE: Tier 1 MUST be complete before Phase 2 (Framework)!
