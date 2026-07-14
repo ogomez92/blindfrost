@@ -26,7 +26,7 @@ The mod enables itself automatically the first time the game starts after instal
 
 The script copies everything into place and tells you what it did. If the game is installed somewhere else, pass `-GamePath "D:\Path\To\Wildfrost"`.
 
-If the script succeeds, skip to Step 2: Verify. The manual steps below do the same thing by hand.
+If the script succeeds, skip to Step 2: Launch the MODDED game. The manual copy step below does the same thing by hand.
 
 ### Step 1: Copy "put in game folder" into the game folder
 
@@ -42,9 +42,21 @@ After copying, these files must exist:
 
 If you install by hand instead: Tolk.dll and nvdaControllerClient64.dll go directly in the `Modded` folder, NOT in the WildfrostAccessibility mod folder. The game tries to load every DLL in a mod folder as a .NET assembly and crashes on native DLLs.
 
-### Step 2: Verify
+### Step 2: Launch the MODDED game - not the one Steam runs by default
 
-Launch Wildfrost. On the first start after installation the mod enables itself - no Mods menu, no sighted help, and your save file is not touched. You should hear "Wildfrost Accessibility loaded. Press F1 for help." from NVDA. Afterwards the mod auto-loads on every launch.
+Wildfrost ships as two builds: the regular game, and a modded build inside the `Modded` subfolder. Mods only load in the modded build, and **the Steam Play button launches the regular build by default** - started that way, the mod never loads and you will hear nothing.
+
+Always start this executable:
+
+    C:\Program Files (x86)\Steam\steamapps\common\Wildfrost\Modded\Wildfrost.exe
+
+The easiest way is to create a desktop shortcut to that file once and launch the game from it from then on. (If your Steam shows a chooser with a modded entry when you press Play, that works too.)
+
+### Step 3: Verify
+
+On the first start after installation the mod enables itself - no Mods menu, no sighted help, and your save file is not touched. You should hear "Wildfrost Accessibility loaded. Press F1 for help." from NVDA. Afterwards the mod auto-loads on every launch of the modded build.
+
+If you hear nothing, the most common cause is having started the regular `Wildfrost.exe` instead of `Modded\Wildfrost.exe`.
 
 If you ever disable the mod in the game's Mods menu, it stays disabled. To make it enable itself once more, delete the file `autoenable.marker` next to `WildfrostAccessibility.dll` in the mod folder and start the game again.
 
@@ -103,12 +115,22 @@ Every screen announces itself when it opens, and every focused element is descri
 
 ## Supported Languages
 
-The mod detects the game's language automatically.
+The mod follows the game's language automatically.
 
 - Core announcements: English, German, French, Spanish, Italian, Portuguese, Russian, Polish, Turkish, Japanese, Korean, Simplified Chinese, Traditional Chinese.
 - Screen-specific announcements (Town, map, battle, continue screen): English, German, Spanish, French for now.
 
 Anything not yet translated falls back to English.
+
+### Choosing the mod language yourself
+
+The game itself only offers English, Japanese, Korean, and Chinese, so the mod's German, Spanish, and French speech cannot be reached through the game's own language setting. To pick the mod's language directly, create a plain text file called `language.txt` next to `WildfrostAccessibility.dll` in the mod folder:
+
+    C:\Program Files (x86)\Steam\steamapps\common\Wildfrost\Modded\Wildfrost_Data\StreamingAssets\Mods\WildfrostAccessibility\language.txt
+
+The file must contain a single language code and nothing else, for example `es`. Supported codes: `en` English, `de` German, `es` Spanish, `fr` French, `it` Italian, `pt` Portuguese, `ru` Russian, `pl` Polish, `tr` Turkish, `ja` Japanese, `ko` Korean, `zh-Hans` Simplified Chinese, `zh-Hant` Traditional Chinese. Capitalization does not matter.
+
+Restart the game after creating or changing the file. This only changes what the mod speaks - the game's own card and story text keeps following the game's language setting. Delete the file (or empty it) to follow the game's language again.
 
 ## Building from Source
 

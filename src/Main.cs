@@ -139,6 +139,7 @@ namespace WildfrostAccessibility
 
             DebugLogger.Initialize(this);
             Loc.Initialize();
+            Loc.LoadLanguageOverride(ModDirectory);
             ScreenManager.Initialize();
             CreateUpdateHook();
 

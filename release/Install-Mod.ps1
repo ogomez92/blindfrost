@@ -72,5 +72,8 @@ if (Test-Path $marker) {
 
 Write-Host ""
 Write-Host "Installation complete."
-Write-Host "Launch Wildfrost. The mod enables itself on the first start - your save is not touched."
+Write-Host "IMPORTANT: launch the MODDED game - the Steam Play button runs the unmodded build by default."
+Write-Host "Start this executable (a desktop shortcut to it helps):"
+Write-Host "  $(Join-Path $GamePath 'Modded\Wildfrost.exe')"
+Write-Host "The mod enables itself on the first start - your save is not touched."
 Write-Host "You should hear: 'Wildfrost Accessibility loaded. Press F1 for help.'"

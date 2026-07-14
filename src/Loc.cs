@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
@@ -15,6 +17,9 @@ namespace WildfrostAccessibility
         // language code -> (key -> translation)
         private static readonly Dictionary<string, Dictionary<string, string>> _strings
             = new Dictionary<string, Dictionary<string, string>>();
+
+        // When set, overrides the game locale for all mod speech (language.txt)
+        private static string _overrideLang;
 
         /// <summary>
         /// Initialize and register all screen reader strings.
@@ -107,10 +112,53 @@ namespace WildfrostAccessibility
         }
 
         /// <summary>
-        /// Returns the locale code of the game's currently selected language.
+        /// Apply the language override from [modDirectory]/language.txt, if
+        /// present. The game itself only offers English, Japanese, Korean and
+        /// Chinese, so the mod's other translations (Spanish, German,
+        /// French...) can only be reached this way. The file holds a single
+        /// language code such as "es"; a missing or empty file follows the
+        /// game's language setting. Must run after Initialize().
+        /// </summary>
+        public static void LoadLanguageOverride(string modDirectory)
+        {
+            try
+            {
+                string path = Path.Combine(modDirectory, "language.txt");
+                if (!File.Exists(path))
+                    return;
+
+                string code = File.ReadAllText(path).Trim();
+                if (code.Length == 0)
+                    return;
+
+                // Normalize case against the registered languages ("ES" → "es",
+                // "zh-hans" → "zh-Hans"); unknown codes follow the game language
+                foreach (string lang in _strings.Keys)
+                {
+                    if (string.Equals(lang, code, StringComparison.OrdinalIgnoreCase))
+                    {
+                        _overrideLang = lang;
+                        return;
+                    }
+                }
+                DebugLogger.Log(DebugLogger.LogCategory.ScreenReader,
+                    $"language.txt has unknown code '{code}'; following the game language");
+            }
+            catch
+            {
+                // Unreadable file — follow the game language
+            }
+        }
+
+        /// <summary>
+        /// Returns the locale code of the game's currently selected language,
+        /// unless language.txt overrides it.
         /// </summary>
         public static string GetCurrentLanguageCode()
         {
+            if (_overrideLang != null)
+                return _overrideLang;
+
             try
             {
                 Locale locale = LocalizationSettings.SelectedLocale;
@@ -468,6 +516,7 @@ namespace WildfrostAccessibility
             Add("en", "help_battle", "Battle. Up and down arrows switch groups: hand, your board, enemy board, bell and piles. Left and right arrows move within a group. Enter on a hand card picks it up, arrows choose a target, Enter places it. Enter on one of your units on the board picks it up to move it: a free slot moves it, an occupied slot swaps or shoves, the recall zone takes it off the board. Moving and recalling are free actions that do not end your turn. Escape puts a picked-up card back. Playing a card or ringing the bell ends your turn. Readout keys: H hand, B board, W waves, R bell, T turn, G gold, M modifier bells. Press O for the game menu with settings.");
             Add("en", "battle_unit_picked_up", "{0} picked up from the board.");
             Add("en", "battle_move_hint", "Arrow keys choose a destination slot or the recall zone, Enter confirms, Escape cancels.");
+            Add("en", "tutorial_drag_hint", "To select and place: press Enter on the card, choose the destination with the arrow keys, then press Enter again.");
             Add("en", "battle_unit_moved", "{0} moved.");
             Add("en", "battle_unit_recalled", "{0} recalled.");
             Add("en", "battle_free_action", "Free action, your turn continues.");
@@ -672,6 +721,7 @@ namespace WildfrostAccessibility
             Add("de", "help_battle", "Kampf. Hoch und runter wechseln die Gruppen: Hand, dein Feld, Gegnerfeld, Glocke und Stapel. Links und rechts bewegen sich innerhalb einer Gruppe. Enter auf einer Handkarte nimmt sie auf, Pfeiltasten waehlen ein Ziel, Enter legt ab. Enter auf einer deiner Einheiten auf dem Feld nimmt sie zum Bewegen auf: ein freier Platz bewegt sie, ein besetzter Platz tauscht oder schiebt, die Rueckrufzone nimmt sie vom Feld. Bewegen und Zurueckrufen sind freie Aktionen und beenden deinen Zug nicht. Escape legt eine aufgenommene Karte zurueck. Eine Karte spielen oder die Glocke laeuten beendet deinen Zug. Vorlesetasten: H Hand, B Feld, W Wellen, R Glocke, T Runde, G Gold, M Modifikator-Glocken. O oeffnet das Spielmenue mit Einstellungen.");
             Add("de", "battle_unit_picked_up", "{0} vom Feld aufgenommen.");
             Add("de", "battle_move_hint", "Pfeiltasten waehlen einen Zielplatz oder die Rueckrufzone, Enter bestaetigt, Escape bricht ab.");
+            Add("de", "tutorial_drag_hint", "Zum Auswaehlen und Ablegen: Enter auf der Karte druecken, das Ziel mit den Pfeiltasten waehlen, dann erneut Enter druecken.");
             Add("de", "battle_unit_moved", "{0} bewegt.");
             Add("de", "battle_unit_recalled", "{0} zurueckgerufen.");
             Add("de", "battle_free_action", "Freie Aktion, dein Zug geht weiter.");
@@ -874,6 +924,7 @@ namespace WildfrostAccessibility
             Add("es", "help_battle", "Batalla. Arriba y abajo cambian de grupo: mano, tu tablero, tablero enemigo, campana y pilas. Izquierda y derecha se mueven dentro del grupo. Enter en una carta de la mano la coge, las flechas eligen objetivo, Enter la coloca. Enter en una de tus unidades del tablero la coge para moverla: una casilla libre la mueve, una ocupada intercambia o empuja, la zona de retirada la saca del tablero. Mover y retirar son acciones gratuitas que no terminan tu turno. Escape devuelve la carta cogida. Jugar una carta o tocar la campana termina tu turno. Teclas de lectura: H mano, B tablero, W oleadas, R campana, T turno, G oro, M campanas de modificador. Pulsa O para el menu del juego con los ajustes.");
             Add("es", "battle_unit_picked_up", "{0} levantada del tablero.");
             Add("es", "battle_move_hint", "Las flechas eligen una casilla de destino o la zona de retirada, Enter confirma, Escape cancela.");
+            Add("es", "tutorial_drag_hint", "Para seleccionar y colocar: pulsa Enter sobre la carta, elige el destino con las flechas y pulsa Enter otra vez.");
             Add("es", "battle_unit_moved", "{0} movida.");
             Add("es", "battle_unit_recalled", "{0} retirada.");
             Add("es", "battle_free_action", "Accion gratuita, tu turno continua.");
@@ -1076,6 +1127,7 @@ namespace WildfrostAccessibility
             Add("fr", "help_battle", "Bataille. Haut et bas changent de groupe: main, votre plateau, plateau ennemi, cloche et piles. Gauche et droite se deplacent dans le groupe. Entree sur une carte de la main la prend, les fleches choisissent une cible, Entree la pose. Entree sur une de vos unites du plateau la prend pour la deplacer: une case libre la deplace, une case occupee echange ou pousse, la zone de rappel la retire du plateau. Deplacer et rappeler sont des actions gratuites qui ne terminent pas votre tour. Echap repose une carte prise. Jouer une carte ou sonner la cloche termine votre tour. Touches de lecture: H main, B plateau, W vagues, R cloche, T tour, G or, M cloches de modificateur. Appuyez sur O pour le menu du jeu avec les reglages.");
             Add("fr", "battle_unit_picked_up", "{0} prise du plateau.");
             Add("fr", "battle_move_hint", "Les fleches choisissent une case de destination ou la zone de rappel, Entree confirme, Echap annule.");
+            Add("fr", "tutorial_drag_hint", "Pour selectionner et placer: appuyez sur Entree sur la carte, choisissez la destination avec les fleches, puis appuyez encore sur Entree.");
             Add("fr", "battle_unit_moved", "{0} deplacee.");
             Add("fr", "battle_unit_recalled", "{0} rappelee.");
             Add("fr", "battle_free_action", "Action gratuite, votre tour continue.");
