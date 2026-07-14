@@ -21,6 +21,10 @@ namespace WildfrostAccessibility
         private float _nextInspectPoll;
         private float _inspectSuppressUntil;
 
+        private InspectSystem _inspectView;
+        private float _nextInspectViewSearch;
+        private float _inspectViewOpenTime;
+
         /// <summary>Seconds to wait after entry before announcing the screen (lets UI settle).</summary>
         protected virtual float AnnounceDelay => 0.5f;
 
@@ -38,6 +42,10 @@ namespace WildfrostAccessibility
             _inspectWasRunning = false;
             _nextInspectPoll = 0f;
             _inspectSuppressUntil = 0f;
+            _inspectView = null;
+            _nextInspectViewSearch = 0f;
+            _inspectViewOpenTime = 0f;
+            DeckpackNavigator.Reset();
         }
 
         public override void OnExit()
@@ -82,8 +90,96 @@ namespace WildfrostAccessibility
             // Give the UI a moment to initialize before accepting input
             if (Time.unscaledTime - _enterTime < 0.3f) return;
 
-            HandleInput();
+            // The game's inspect view owns the keyboard while it is open;
+            // after that, the inventory overlay (deckpack) takes the keys
+            if (!RouteInputToInspectView() && !DeckpackNavigator.RouteInput(this))
+                HandleInput();
             CheckAndAnnounceFocus();
+        }
+
+        // ---- The game's inspect view (InspectSystem) ----
+        // The zoomed card view the game opens on right-click. I opens it on
+        // the focused card via the game's real ActionInspect: tutorials gate
+        // on the resulting Events.OnInspect ("inspect the Ooba Bear"), so the
+        // mod's spoken description alone does not satisfy them.
+
+        /// <summary>The scene's InspectSystem, or null where none exists.</summary>
+        protected InspectSystem GetInspectSystem(bool forceSearch = false)
+        {
+            // Throttled: screens without an InspectSystem would otherwise pay
+            // a scene-wide search every frame
+            if (_inspectView == null
+                && (forceSearch || Time.unscaledTime >= _nextInspectViewSearch))
+            {
+                _nextInspectViewSearch = Time.unscaledTime + 1f;
+                _inspectView = Object.FindObjectOfType<InspectSystem>();
+            }
+            return _inspectView;
+        }
+
+        /// <summary>
+        /// While the inspect view is open, every key routes to it: Escape,
+        /// Enter or I closes; everything else is swallowed so navigation and
+        /// screen shortcuts do not run underneath the zoomed card.
+        /// Returns true while the view is open.
+        /// </summary>
+        private bool RouteInputToInspectView()
+        {
+            var inspectView = GetInspectSystem();
+            if (inspectView == null || inspectView.inspect == null)
+                return false;
+
+            bool close = NavigationHelper.IsBackPressed()
+                || NavigationHelper.IsConfirmPressed()
+                || Input.GetKeyDown(KeyCode.I);
+            // Give the open animation a moment; InspectSystem has the same guard
+            if (close && Time.unscaledTime - _inspectViewOpenTime > 0.3f)
+            {
+                inspectView.InspectEnd();
+                ScreenReader.Say(Loc.Get("inspect_closed"), interrupt: true);
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// I pressed. Default: the game's real inspect on the focused card.
+        /// Screens whose I key reads a different info surface (town buildings,
+        /// map nodes) override this.
+        /// </summary>
+        protected virtual void OnInspectKey()
+        {
+            InspectFocusedCard();
+        }
+
+        internal void InspectFocusedCard()
+        {
+            var navSystem = MonoBehaviourSingleton<UINavigationSystem>.instance;
+            var item = navSystem?.currentNavigationItem;
+            Entity entity = item != null ? item.GetComponentInParent<Entity>() : null;
+            if (entity == null && item?.clickHandler != null)
+                entity = item.clickHandler.GetComponentInParent<Entity>();
+
+            var inspectView = GetInspectSystem(forceSearch: true);
+            if (entity == null || entity.display == null || inspectView == null)
+            {
+                ScreenReader.Say(Loc.Get("nothing_to_inspect"), interrupt: true);
+                return;
+            }
+
+            DebugLogger.LogInput(Name, $"Inspect: {entity.data?.title ?? entity.name}");
+            var action = new ActionInspect(entity, inspectView);
+            if (Events.CheckAction(action))
+            {
+                action.Process();
+                _inspectViewOpenTime = Time.unscaledTime;
+                ScreenReader.Say(
+                    Loc.Get("inspect_opened", entity.data?.title ?? CleanName(entity.name)),
+                    interrupt: true);
+            }
+            else
+            {
+                ScreenReader.Say(Loc.Get("select_blocked"), interrupt: true);
+            }
         }
 
         // ---- Inspect/confirm panel (InspectNewUnitSequence) ----
@@ -162,9 +258,39 @@ namespace WildfrostAccessibility
         private bool InspectPanelSuppression
             => _inspectWasRunning || Time.unscaledTime < _inspectSuppressUntil;
 
+        /// <summary>
+        /// Keep focus changes silent for a moment so they don't talk over an
+        /// announcement that matters more (deckpack pickups, menu openings).
+        /// Focus is still tracked — the item is just not spoken.
+        /// </summary>
+        internal void SuppressFocusFor(float seconds)
+        {
+            _inspectSuppressUntil = Mathf.Max(
+                _inspectSuppressUntil, Time.unscaledTime + seconds);
+        }
+
         /// <summary>Arrow key navigation and Enter activation. Override for custom input.</summary>
         protected virtual void HandleInput()
         {
+            // I: inspect the focused item. Not while the chosen-card confirm
+            // panel is open (Enter/Escape drive that) or while typing.
+            if (Input.GetKeyDown(KeyCode.I) && ActiveInspectPanel == null
+                && !NavigationHelper.IsTextInputFocused())
+            {
+                OnInspectKey();
+                return;
+            }
+
+            // P: open the run inventory (deck, reserve, charms) where one exists.
+            // Closing is handled by the deckpack routing, which owns the keys then.
+            if (Input.GetKeyDown(KeyCode.P) && ActiveInspectPanel == null
+                && !NavigationHelper.IsTextInputFocused())
+            {
+                DebugLogger.LogInput(Name, "Inventory");
+                DeckpackNavigator.ToggleInventory();
+                return;
+            }
+
             NavDirection dir = NavigationHelper.GetNavigationInput();
             if (dir != NavDirection.None)
             {

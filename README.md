@@ -71,6 +71,7 @@ Every screen announces itself when it opens, and every focused element is descri
 - **Battle** - announces turns, phases, and the redraw bell. Cards are read with stats, status effects (Snow, Frost...), and fully expanded keyword descriptions. Cards are played with Enter: pick up, choose a target with the arrows (only valid targets are reachable), Enter again to place.
 - **Story events** - event titles, prompts, and story text ("Break the ice!", "Choose a new companion!"...) are read as they appear and whenever they change. The frozen-companion ice block announces each crack; offered cards are read in full. If the game refuses a choice (the tutorial requires inspecting a card first), the reason is spoken.
 - **Deck piles** - draw and discard piles announce their card counts everywhere they appear.
+- **Inventory (backpack)** - P opens it wherever the backpack exists (map, events, battle). It announces your deck, reserve, charm and crown counts. Up/down switch groups, left/right move within one. Enter on a charm picks it up, the arrows move between the cards that can take it, and Enter attaches it - permanently, as in the game. Enter on a card opens the game's own options: rename, take crown, move between deck and reserve.
 
 ## Controls
 
@@ -80,6 +81,7 @@ Every screen announces itself when it opens, and every focused element is descri
 - F10: toggle debug mode
 - Arrow keys: navigate
 - Enter: activate / pick up / place
+- P: open or close the inventory (deck, reserve, charms, crowns) wherever the backpack exists
 
 ### Town
 
@@ -112,6 +114,15 @@ Every screen announces itself when it opens, and every focused element is descri
 - R: read the redraw bell state
 - T: read the turn and phase
 - G: read your gold
+
+### Inventory (P)
+
+- Up/Down: switch group - deck, reserve, charms, crowns, buttons
+- Left/Right: move within the group
+- Enter on a charm or crown: pick it up; the arrows then move between the cards that can take it, Enter attaches it (permanent, as in the game), Escape puts it back
+- Enter on a card: open its options - rename, take crown, move between deck and reserve
+- I: inspect the focused card
+- P or Escape: close the inventory
 
 ## Supported Languages
 

@@ -331,6 +331,20 @@ namespace WildfrostAccessibility
         }
 
         /// <summary>
+        /// I inspects the focused card — but not while holding one: opening
+        /// the zoomed inspect view mid-placement would fight the drag state.
+        /// </summary>
+        protected override void OnInspectKey()
+        {
+            if (IsTargeting())
+            {
+                ScreenReader.Say(Loc.Get("select_blocked"), interrupt: true);
+                return;
+            }
+            base.OnInspectKey();
+        }
+
+        /// <summary>
         /// While holding a card: all arrows move between valid targets (the game
         /// disables everything else). Otherwise: Up/Down switch groups, Left/Right
         /// move within the current group.

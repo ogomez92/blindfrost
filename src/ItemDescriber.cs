@@ -18,6 +18,13 @@ namespace WildfrostAccessibility
         {
             if (item == null) return null;
 
+            // Inside the open inventory overlay, some items read differently:
+            // card-menu buttons get role names, and while a charm is held the
+            // eligible cards read as assignment targets (charm slots first).
+            string deckpack = DeckpackNavigator.DescribeItem(item, owner);
+            if (deckpack != null)
+                return deckpack;
+
             // The battle bells' nav items reference their systems through
             // serialized fields, not the hierarchy — a component walk from the
             // item finds nothing and they'd read as their object name ("Bell").

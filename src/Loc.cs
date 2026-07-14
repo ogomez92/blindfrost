@@ -438,7 +438,7 @@ namespace WildfrostAccessibility
             Add("en", "map_zone", "Zone: {0}.");
             Add("en", "map_you_are_at", "You are at {0}.");
             Add("en", "map_destinations", "{0} destinations: {1}.");
-            Add("en", "map_hint", "Left and right arrows move along the path, Enter travels. M reads the whole map, I reads details, G reads gold.");
+            Add("en", "map_hint", "Left and right arrows move along the path, Enter travels. M reads the whole map, I reads details, G reads gold, P opens the inventory.");
             Add("en", "map_node_here", "you are here");
             Add("en", "map_node_enter", "press Enter to enter");
             Add("en", "map_only_location", "This is the only revealed location right now.");
@@ -453,7 +453,47 @@ namespace WildfrostAccessibility
             Add("en", "map_overview", "Map overview, {0} known locations.");
             Add("en", "map_hidden_nodes", "{0} more locations not yet revealed");
             Add("en", "map_wave_enemies", "Wave {0}: {1}");
-            Add("en", "help_map", "Campaign map. Your journey is a path of locations. Left and right arrows move between locations. Enter travels to an available location. Up and down arrows reach your deck piles and other controls. M reads the whole map, I reads details of the focused location including enemies, G reads your gold.");
+            Add("en", "help_map", "Campaign map. Your journey is a path of locations. Left and right arrows move between locations. Enter travels to an available location. Up and down arrows reach your deck piles and other controls. M reads the whole map, I reads details of the focused location including enemies, G reads your gold. P opens your inventory with your deck and charms.");
+
+            // Inventory overlay (deckpack): deck, reserve, charms, crowns
+            Add("en", "deckpack_unavailable", "No inventory on this screen.");
+            Add("en", "deckpack_blocked", "The inventory can't be opened right now.");
+            Add("en", "deckpack_open", "Inventory open.");
+            Add("en", "deckpack_closed", "Inventory closed.");
+            Add("en", "deckpack_part_deck", "{0} in the deck");
+            Add("en", "deckpack_part_reserve", "{0} in reserve");
+            Add("en", "deckpack_part_charms", "{0} charms");
+            Add("en", "deckpack_part_charm_one", "1 charm");
+            Add("en", "deckpack_part_crowns", "{0} crowns");
+            Add("en", "deckpack_part_crown_one", "1 crown");
+            Add("en", "deckpack_hint", "Up and down arrows switch groups, left and right move within a group. Enter on a charm picks it up, Enter on a card opens its options. P or Escape closes. F1 for full help.");
+            Add("en", "deckpack_group_deck", "Deck, {0} cards");
+            Add("en", "deckpack_group_deck_one", "Deck, 1 card");
+            Add("en", "deckpack_group_reserve", "Reserve, {0} cards");
+            Add("en", "deckpack_group_reserve_one", "Reserve, 1 card");
+            Add("en", "deckpack_group_charms", "Charms, {0}");
+            Add("en", "deckpack_group_crowns", "Crowns, {0}");
+            Add("en", "deckpack_group_controls", "Buttons");
+            Add("en", "deckpack_pickup", "{0} picked up. {1} cards can take it. Arrows move between them, Enter attaches permanently, Escape puts it back.");
+            Add("en", "deckpack_pickup_one", "{0} picked up. One card can take it. Enter attaches permanently, Escape puts it back.");
+            Add("en", "deckpack_pickup_none", "{0}: no card can take this right now. Put back.");
+            Add("en", "deckpack_battle_blocked", "Charms can't be attached during battle.");
+            Add("en", "deckpack_returned", "{0} put back.");
+            Add("en", "deckpack_applying", "Attaching {0} to {1}.");
+            Add("en", "deckpack_applied", "{0} attached.");
+            Add("en", "deckpack_not_eligible", "This card can't take {0}.");
+            Add("en", "deckpack_target_slots", "{0} of {1} charm slots used");
+            Add("en", "deckpack_menu_open", "Options for {0}: {1}. Left and right arrows choose, Enter activates, Escape closes.");
+            Add("en", "deckpack_menu_closed", "Options closed.");
+            Add("en", "deckpack_option_rename", "Rename");
+            Add("en", "deckpack_option_take_crown", "Take crown");
+            Add("en", "deckpack_option_move_reserve", "Move to reserve");
+            Add("en", "deckpack_option_move_deck", "Move to deck");
+            Add("en", "deckpack_moved_reserve", "{0} moved to the reserve.");
+            Add("en", "deckpack_moved_deck", "{0} moved to the deck.");
+            Add("en", "deckpack_crown_taken", "Crown removed from {0} and returned to the inventory.");
+            Add("en", "deckpack_card_blocked", "Card options are not available right now.");
+            Add("en", "help_deckpack", "Inventory. Your deck, reserve cards, and collected charms and crowns. Up and down arrows switch groups: deck, reserve, charms, crowns, and buttons. Left and right arrows move within a group. Enter on a charm or crown picks it up: arrows then move between the cards that can take it, Enter attaches it permanently, Escape puts it back. Enter on a card opens its options, like moving it between deck and reserve. I inspects the focused card. P or Escape closes the inventory.");
 
             // Map node categories
             Add("en", "node_type_boss", "boss battle");
@@ -513,7 +553,7 @@ namespace WildfrostAccessibility
             Add("en", "battle_dodged", "{0} dodged.");
             Add("en", "battle_destroyed", "{0} destroyed.");
             Add("en", "battle_status_applied", "{0} {1} applied to {2}.");
-            Add("en", "help_battle", "Battle. Up and down arrows switch groups: hand, your board, enemy board, bell and piles. Left and right arrows move within a group. Enter on a hand card picks it up, arrows choose a target, Enter places it. Enter on one of your units on the board picks it up to move it: a free slot moves it, an occupied slot swaps or shoves, the recall zone takes it off the board. Moving and recalling are free actions that do not end your turn. Escape puts a picked-up card back. Playing a card or ringing the bell ends your turn. Readout keys: H hand, B board, W waves, R bell, T turn, G gold, M modifier bells. Press O for the game menu with settings.");
+            Add("en", "help_battle", "Battle. Up and down arrows switch groups: hand, your board, enemy board, bell and piles. Left and right arrows move within a group. Enter on a hand card picks it up, arrows choose a target, Enter places it. Enter on one of your units on the board picks it up to move it: a free slot moves it, an occupied slot swaps or shoves, the recall zone takes it off the board. Moving and recalling are free actions that do not end your turn. Escape puts a picked-up card back. I inspects the focused card, Escape closes the inspect view. Playing a card or ringing the bell ends your turn. Readout keys: H hand, B board, W waves, R bell, T turn, G gold, M modifier bells. P opens your inventory. Press O for the game menu with settings.");
             Add("en", "battle_unit_picked_up", "{0} picked up from the board.");
             Add("en", "battle_move_hint", "Arrow keys choose a destination slot or the recall zone, Enter confirms, Escape cancels.");
             Add("en", "tutorial_drag_hint", "To select and place: press Enter on the card, choose the destination with the arrow keys, then press Enter again.");
@@ -590,7 +630,7 @@ namespace WildfrostAccessibility
             Add("en", "inspect_opened", "Inspecting {0}. Press Escape to close.");
             Add("en", "inspect_closed", "Inspect closed.");
             Add("en", "nothing_to_inspect", "Nothing to inspect here.");
-            Add("en", "help_event", "Event screen. A story event on your journey; its title and story are read as they appear. Arrow keys move between items, Enter activates. I inspects the focused card the way right-click does for sighted players, Escape closes the inspect view.");
+            Add("en", "help_event", "Event screen. A story event on your journey; its title and story are read as they appear. Arrow keys move between items, Enter activates. I inspects the focused card the way right-click does for sighted players, Escape closes the inspect view. P opens your inventory.");
 
             // ----- German -------------------------------------------------------
 
@@ -647,7 +687,7 @@ namespace WildfrostAccessibility
             Add("de", "map_zone", "Zone: {0}.");
             Add("de", "map_you_are_at", "Du bist bei {0}.");
             Add("de", "map_destinations", "{0} Ziele: {1}.");
-            Add("de", "map_hint", "Pfeiltasten links und rechts bewegen sich auf dem Pfad, Enter reist. M liest die ganze Karte, I liest Details, G liest Gold.");
+            Add("de", "map_hint", "Pfeiltasten links und rechts bewegen sich auf dem Pfad, Enter reist. M liest die ganze Karte, I liest Details, G liest Gold, P oeffnet das Inventar.");
             Add("de", "map_node_here", "du bist hier");
             Add("de", "map_node_enter", "Enter betritt den Ort");
             Add("de", "map_only_location", "Das ist gerade der einzige aufgedeckte Ort.");
@@ -662,7 +702,47 @@ namespace WildfrostAccessibility
             Add("de", "map_overview", "Kartenuebersicht, {0} bekannte Orte.");
             Add("de", "map_hidden_nodes", "{0} weitere Orte noch nicht aufgedeckt");
             Add("de", "map_wave_enemies", "Welle {0}: {1}");
-            Add("de", "help_map", "Reisekarte. Deine Reise ist ein Pfad aus Orten. Pfeiltasten links und rechts wechseln zwischen Orten. Enter reist zu einem verfuegbaren Ort. Hoch und runter erreichen Kartenstapel und weitere Elemente. M liest die ganze Karte, I liest Details samt Gegnern, G liest dein Gold.");
+            Add("de", "help_map", "Reisekarte. Deine Reise ist ein Pfad aus Orten. Pfeiltasten links und rechts wechseln zwischen Orten. Enter reist zu einem verfuegbaren Ort. Hoch und runter erreichen Kartenstapel und weitere Elemente. M liest die ganze Karte, I liest Details samt Gegnern, G liest dein Gold. P oeffnet dein Inventar mit Deck und Talismanen.");
+
+            // Inventar-Overlay (Deckpack): Deck, Reserve, Talismane, Kronen
+            Add("de", "deckpack_unavailable", "Kein Inventar auf diesem Bildschirm.");
+            Add("de", "deckpack_blocked", "Das Inventar kann gerade nicht geoeffnet werden.");
+            Add("de", "deckpack_open", "Inventar geoeffnet.");
+            Add("de", "deckpack_closed", "Inventar geschlossen.");
+            Add("de", "deckpack_part_deck", "{0} im Deck");
+            Add("de", "deckpack_part_reserve", "{0} in der Reserve");
+            Add("de", "deckpack_part_charms", "{0} Talismane");
+            Add("de", "deckpack_part_charm_one", "1 Talisman");
+            Add("de", "deckpack_part_crowns", "{0} Kronen");
+            Add("de", "deckpack_part_crown_one", "1 Krone");
+            Add("de", "deckpack_hint", "Hoch und runter wechseln die Gruppen, links und rechts bewegen sich innerhalb. Enter auf einem Talisman nimmt ihn auf, Enter auf einer Karte oeffnet ihre Optionen. P oder Escape schliesst. F1 fuer die volle Hilfe.");
+            Add("de", "deckpack_group_deck", "Deck, {0} Karten");
+            Add("de", "deckpack_group_deck_one", "Deck, 1 Karte");
+            Add("de", "deckpack_group_reserve", "Reserve, {0} Karten");
+            Add("de", "deckpack_group_reserve_one", "Reserve, 1 Karte");
+            Add("de", "deckpack_group_charms", "Talismane, {0}");
+            Add("de", "deckpack_group_crowns", "Kronen, {0}");
+            Add("de", "deckpack_group_controls", "Schaltflaechen");
+            Add("de", "deckpack_pickup", "{0} aufgenommen. {1} Karten koennen ihn tragen. Pfeiltasten wechseln zwischen ihnen, Enter befestigt dauerhaft, Escape legt zurueck.");
+            Add("de", "deckpack_pickup_one", "{0} aufgenommen. Eine Karte kann ihn tragen. Enter befestigt dauerhaft, Escape legt zurueck.");
+            Add("de", "deckpack_pickup_none", "{0}: keine Karte kann das gerade tragen. Zurueckgelegt.");
+            Add("de", "deckpack_battle_blocked", "Talismane koennen im Kampf nicht angebracht werden.");
+            Add("de", "deckpack_returned", "{0} zurueckgelegt.");
+            Add("de", "deckpack_applying", "{0} wird an {1} angebracht.");
+            Add("de", "deckpack_applied", "{0} angebracht.");
+            Add("de", "deckpack_not_eligible", "Diese Karte kann {0} nicht tragen.");
+            Add("de", "deckpack_target_slots", "{0} von {1} Talisman-Plaetzen belegt");
+            Add("de", "deckpack_menu_open", "Optionen fuer {0}: {1}. Links und rechts waehlen, Enter aktiviert, Escape schliesst.");
+            Add("de", "deckpack_menu_closed", "Optionen geschlossen.");
+            Add("de", "deckpack_option_rename", "Umbenennen");
+            Add("de", "deckpack_option_take_crown", "Krone abnehmen");
+            Add("de", "deckpack_option_move_reserve", "In die Reserve");
+            Add("de", "deckpack_option_move_deck", "Ins Deck");
+            Add("de", "deckpack_moved_reserve", "{0} in die Reserve verschoben.");
+            Add("de", "deckpack_moved_deck", "{0} ins Deck verschoben.");
+            Add("de", "deckpack_crown_taken", "Krone von {0} abgenommen und ins Inventar gelegt.");
+            Add("de", "deckpack_card_blocked", "Kartenoptionen sind gerade nicht verfuegbar.");
+            Add("de", "help_deckpack", "Inventar. Dein Deck, Reservekarten und gesammelte Talismane und Kronen. Hoch und runter wechseln die Gruppen: Deck, Reserve, Talismane, Kronen und Schaltflaechen. Links und rechts bewegen sich innerhalb einer Gruppe. Enter auf einem Talisman oder einer Krone nimmt sie auf: Pfeiltasten wechseln dann zwischen den Karten, die sie tragen koennen, Enter befestigt dauerhaft, Escape legt zurueck. Enter auf einer Karte oeffnet ihre Optionen, etwa zwischen Deck und Reserve verschieben. I untersucht die fokussierte Karte. P oder Escape schliesst das Inventar.");
             Add("de", "node_type_boss", "Bosskampf");
             Add("de", "node_type_battle", "Kampf");
             Add("de", "node_type_shop", "Laden");
@@ -718,7 +798,7 @@ namespace WildfrostAccessibility
             Add("de", "battle_dodged", "{0} ist ausgewichen.");
             Add("de", "battle_destroyed", "{0} zerstoert.");
             Add("de", "battle_status_applied", "{0} {1} auf {2} angewendet.");
-            Add("de", "help_battle", "Kampf. Hoch und runter wechseln die Gruppen: Hand, dein Feld, Gegnerfeld, Glocke und Stapel. Links und rechts bewegen sich innerhalb einer Gruppe. Enter auf einer Handkarte nimmt sie auf, Pfeiltasten waehlen ein Ziel, Enter legt ab. Enter auf einer deiner Einheiten auf dem Feld nimmt sie zum Bewegen auf: ein freier Platz bewegt sie, ein besetzter Platz tauscht oder schiebt, die Rueckrufzone nimmt sie vom Feld. Bewegen und Zurueckrufen sind freie Aktionen und beenden deinen Zug nicht. Escape legt eine aufgenommene Karte zurueck. Eine Karte spielen oder die Glocke laeuten beendet deinen Zug. Vorlesetasten: H Hand, B Feld, W Wellen, R Glocke, T Runde, G Gold, M Modifikator-Glocken. O oeffnet das Spielmenue mit Einstellungen.");
+            Add("de", "help_battle", "Kampf. Hoch und runter wechseln die Gruppen: Hand, dein Feld, Gegnerfeld, Glocke und Stapel. Links und rechts bewegen sich innerhalb einer Gruppe. Enter auf einer Handkarte nimmt sie auf, Pfeiltasten waehlen ein Ziel, Enter legt ab. Enter auf einer deiner Einheiten auf dem Feld nimmt sie zum Bewegen auf: ein freier Platz bewegt sie, ein besetzter Platz tauscht oder schiebt, die Rueckrufzone nimmt sie vom Feld. Bewegen und Zurueckrufen sind freie Aktionen und beenden deinen Zug nicht. Escape legt eine aufgenommene Karte zurueck. I untersucht die fokussierte Karte, Escape schliesst die Untersuchung. Eine Karte spielen oder die Glocke laeuten beendet deinen Zug. Vorlesetasten: H Hand, B Feld, W Wellen, R Glocke, T Runde, G Gold, M Modifikator-Glocken. P oeffnet dein Inventar. O oeffnet das Spielmenue mit Einstellungen.");
             Add("de", "battle_unit_picked_up", "{0} vom Feld aufgenommen.");
             Add("de", "battle_move_hint", "Pfeiltasten waehlen einen Zielplatz oder die Rueckrufzone, Enter bestaetigt, Escape bricht ab.");
             Add("de", "tutorial_drag_hint", "Zum Auswaehlen und Ablegen: Enter auf der Karte druecken, das Ziel mit den Pfeiltasten waehlen, dann erneut Enter druecken.");
@@ -793,7 +873,7 @@ namespace WildfrostAccessibility
             Add("de", "inspect_opened", "Untersuche {0}. Escape schliesst.");
             Add("de", "inspect_closed", "Untersuchung geschlossen.");
             Add("de", "nothing_to_inspect", "Hier gibt es nichts zu untersuchen.");
-            Add("de", "help_event", "Ereignis-Bildschirm. Ein Story-Ereignis auf deiner Reise; Titel und Text werden vorgelesen, sobald sie erscheinen. Pfeiltasten wechseln zwischen Elementen, Enter aktiviert. I untersucht die fokussierte Karte, so wie Rechtsklick fuer sehende Spieler, Escape schliesst die Untersuchung.");
+            Add("de", "help_event", "Ereignis-Bildschirm. Ein Story-Ereignis auf deiner Reise; Titel und Text werden vorgelesen, sobald sie erscheinen. Pfeiltasten wechseln zwischen Elementen, Enter aktiviert. I untersucht die fokussierte Karte, so wie Rechtsklick fuer sehende Spieler, Escape schliesst die Untersuchung. P oeffnet dein Inventar.");
 
             // ----- Spanish ------------------------------------------------------
 
@@ -850,7 +930,7 @@ namespace WildfrostAccessibility
             Add("es", "map_zone", "Zona: {0}.");
             Add("es", "map_you_are_at", "Estas en {0}.");
             Add("es", "map_destinations", "{0} destinos: {1}.");
-            Add("es", "map_hint", "Flechas izquierda y derecha recorren el camino, Enter viaja. M lee todo el mapa, I lee detalles, G lee el oro.");
+            Add("es", "map_hint", "Flechas izquierda y derecha recorren el camino, Enter viaja. M lee todo el mapa, I lee detalles, G lee el oro, P abre el inventario.");
             Add("es", "map_node_here", "estas aqui");
             Add("es", "map_node_enter", "Enter para entrar");
             Add("es", "map_only_location", "Este es el unico lugar revelado por ahora.");
@@ -865,7 +945,47 @@ namespace WildfrostAccessibility
             Add("es", "map_overview", "Resumen del mapa, {0} lugares conocidos.");
             Add("es", "map_hidden_nodes", "{0} lugares mas sin revelar");
             Add("es", "map_wave_enemies", "Oleada {0}: {1}");
-            Add("es", "help_map", "Mapa del viaje. Tu viaje es un camino de lugares. Flechas izquierda y derecha cambian de lugar. Enter viaja a un lugar disponible. Arriba y abajo alcanzan los mazos y otros controles. M lee todo el mapa, I lee detalles del lugar seleccionado incluidos enemigos, G lee tu oro.");
+            Add("es", "help_map", "Mapa del viaje. Tu viaje es un camino de lugares. Flechas izquierda y derecha cambian de lugar. Enter viaja a un lugar disponible. Arriba y abajo alcanzan los mazos y otros controles. M lee todo el mapa, I lee detalles del lugar seleccionado incluidos enemigos, G lee tu oro. P abre tu inventario con el mazo y los amuletos.");
+
+            // Inventario (deckpack): mazo, reserva, amuletos, coronas
+            Add("es", "deckpack_unavailable", "No hay inventario en esta pantalla.");
+            Add("es", "deckpack_blocked", "El inventario no se puede abrir ahora.");
+            Add("es", "deckpack_open", "Inventario abierto.");
+            Add("es", "deckpack_closed", "Inventario cerrado.");
+            Add("es", "deckpack_part_deck", "{0} en el mazo");
+            Add("es", "deckpack_part_reserve", "{0} en la reserva");
+            Add("es", "deckpack_part_charms", "{0} amuletos");
+            Add("es", "deckpack_part_charm_one", "1 amuleto");
+            Add("es", "deckpack_part_crowns", "{0} coronas");
+            Add("es", "deckpack_part_crown_one", "1 corona");
+            Add("es", "deckpack_hint", "Arriba y abajo cambian de grupo, izquierda y derecha se mueven dentro. Enter en un amuleto lo coge, Enter en una carta abre sus opciones. P o Escape cierra. F1 para la ayuda completa.");
+            Add("es", "deckpack_group_deck", "Mazo, {0} cartas");
+            Add("es", "deckpack_group_deck_one", "Mazo, 1 carta");
+            Add("es", "deckpack_group_reserve", "Reserva, {0} cartas");
+            Add("es", "deckpack_group_reserve_one", "Reserva, 1 carta");
+            Add("es", "deckpack_group_charms", "Amuletos, {0}");
+            Add("es", "deckpack_group_crowns", "Coronas, {0}");
+            Add("es", "deckpack_group_controls", "Botones");
+            Add("es", "deckpack_pickup", "{0} cogido. {1} cartas pueden llevarlo. Las flechas cambian entre ellas, Enter lo fija de forma permanente, Escape lo devuelve.");
+            Add("es", "deckpack_pickup_one", "{0} cogido. Una carta puede llevarlo. Enter lo fija de forma permanente, Escape lo devuelve.");
+            Add("es", "deckpack_pickup_none", "{0}: ninguna carta puede llevarlo ahora. Devuelto.");
+            Add("es", "deckpack_battle_blocked", "Los amuletos no se pueden fijar durante la batalla.");
+            Add("es", "deckpack_returned", "{0} devuelto.");
+            Add("es", "deckpack_applying", "Fijando {0} a {1}.");
+            Add("es", "deckpack_applied", "{0} fijado.");
+            Add("es", "deckpack_not_eligible", "Esta carta no puede llevar {0}.");
+            Add("es", "deckpack_target_slots", "{0} de {1} huecos de amuleto usados");
+            Add("es", "deckpack_menu_open", "Opciones de {0}: {1}. Izquierda y derecha eligen, Enter activa, Escape cierra.");
+            Add("es", "deckpack_menu_closed", "Opciones cerradas.");
+            Add("es", "deckpack_option_rename", "Renombrar");
+            Add("es", "deckpack_option_take_crown", "Quitar corona");
+            Add("es", "deckpack_option_move_reserve", "Mover a la reserva");
+            Add("es", "deckpack_option_move_deck", "Mover al mazo");
+            Add("es", "deckpack_moved_reserve", "{0} movida a la reserva.");
+            Add("es", "deckpack_moved_deck", "{0} movida al mazo.");
+            Add("es", "deckpack_crown_taken", "Corona quitada de {0} y devuelta al inventario.");
+            Add("es", "deckpack_card_blocked", "Las opciones de carta no estan disponibles ahora.");
+            Add("es", "help_deckpack", "Inventario. Tu mazo, cartas de reserva y los amuletos y coronas conseguidos. Arriba y abajo cambian de grupo: mazo, reserva, amuletos, coronas y botones. Izquierda y derecha se mueven dentro del grupo. Enter en un amuleto o corona lo coge: las flechas cambian entre las cartas que pueden llevarlo, Enter lo fija de forma permanente, Escape lo devuelve. Enter en una carta abre sus opciones, como moverla entre mazo y reserva. I inspecciona la carta enfocada. P o Escape cierra el inventario.");
             Add("es", "node_type_boss", "batalla de jefe");
             Add("es", "node_type_battle", "batalla");
             Add("es", "node_type_shop", "tienda");
@@ -921,7 +1041,7 @@ namespace WildfrostAccessibility
             Add("es", "battle_dodged", "{0} esquivo el golpe.");
             Add("es", "battle_destroyed", "{0} destruido.");
             Add("es", "battle_status_applied", "{0} de {1} aplicado a {2}.");
-            Add("es", "help_battle", "Batalla. Arriba y abajo cambian de grupo: mano, tu tablero, tablero enemigo, campana y pilas. Izquierda y derecha se mueven dentro del grupo. Enter en una carta de la mano la coge, las flechas eligen objetivo, Enter la coloca. Enter en una de tus unidades del tablero la coge para moverla: una casilla libre la mueve, una ocupada intercambia o empuja, la zona de retirada la saca del tablero. Mover y retirar son acciones gratuitas que no terminan tu turno. Escape devuelve la carta cogida. Jugar una carta o tocar la campana termina tu turno. Teclas de lectura: H mano, B tablero, W oleadas, R campana, T turno, G oro, M campanas de modificador. Pulsa O para el menu del juego con los ajustes.");
+            Add("es", "help_battle", "Batalla. Arriba y abajo cambian de grupo: mano, tu tablero, tablero enemigo, campana y pilas. Izquierda y derecha se mueven dentro del grupo. Enter en una carta de la mano la coge, las flechas eligen objetivo, Enter la coloca. Enter en una de tus unidades del tablero la coge para moverla: una casilla libre la mueve, una ocupada intercambia o empuja, la zona de retirada la saca del tablero. Mover y retirar son acciones gratuitas que no terminan tu turno. Escape devuelve la carta cogida. I inspecciona la carta enfocada, Escape cierra la inspeccion. Jugar una carta o tocar la campana termina tu turno. Teclas de lectura: H mano, B tablero, W oleadas, R campana, T turno, G oro, M campanas de modificador. P abre tu inventario. Pulsa O para el menu del juego con los ajustes.");
             Add("es", "battle_unit_picked_up", "{0} levantada del tablero.");
             Add("es", "battle_move_hint", "Las flechas eligen una casilla de destino o la zona de retirada, Enter confirma, Escape cancela.");
             Add("es", "tutorial_drag_hint", "Para seleccionar y colocar: pulsa Enter sobre la carta, elige el destino con las flechas y pulsa Enter otra vez.");
@@ -996,7 +1116,7 @@ namespace WildfrostAccessibility
             Add("es", "inspect_opened", "Inspeccionando {0}. Escape para cerrar.");
             Add("es", "inspect_closed", "Inspeccion cerrada.");
             Add("es", "nothing_to_inspect", "No hay nada que inspeccionar aqui.");
-            Add("es", "help_event", "Pantalla de evento. Un evento de historia en tu viaje; su titulo y texto se leen cuando aparecen. Las flechas mueven entre elementos, Enter activa. I inspecciona la carta enfocada, como el clic derecho para jugadores videntes, Escape cierra la inspeccion.");
+            Add("es", "help_event", "Pantalla de evento. Un evento de historia en tu viaje; su titulo y texto se leen cuando aparecen. Las flechas mueven entre elementos, Enter activa. I inspecciona la carta enfocada, como el clic derecho para jugadores videntes, Escape cierra la inspeccion. P abre tu inventario.");
 
             // ----- French -------------------------------------------------------
 
@@ -1053,7 +1173,7 @@ namespace WildfrostAccessibility
             Add("fr", "map_zone", "Zone: {0}.");
             Add("fr", "map_you_are_at", "Vous etes a {0}.");
             Add("fr", "map_destinations", "{0} destinations: {1}.");
-            Add("fr", "map_hint", "Fleches gauche et droite parcourent le chemin, Entree voyage. M lit toute la carte, I lit les details, G lit l'or.");
+            Add("fr", "map_hint", "Fleches gauche et droite parcourent le chemin, Entree voyage. M lit toute la carte, I lit les details, G lit l'or, P ouvre l'inventaire.");
             Add("fr", "map_node_here", "vous etes ici");
             Add("fr", "map_node_enter", "Entree pour y entrer");
             Add("fr", "map_only_location", "C'est le seul lieu revele pour le moment.");
@@ -1068,7 +1188,47 @@ namespace WildfrostAccessibility
             Add("fr", "map_overview", "Apercu de la carte, {0} lieux connus.");
             Add("fr", "map_hidden_nodes", "{0} autres lieux non reveles");
             Add("fr", "map_wave_enemies", "Vague {0}: {1}");
-            Add("fr", "help_map", "Carte du voyage. Votre voyage est un chemin de lieux. Fleches gauche et droite changent de lieu. Entree voyage vers un lieu disponible. Haut et bas atteignent les piles de cartes et autres controles. M lit toute la carte, I lit les details du lieu selectionne, ennemis compris, G lit votre or.");
+            Add("fr", "help_map", "Carte du voyage. Votre voyage est un chemin de lieux. Fleches gauche et droite changent de lieu. Entree voyage vers un lieu disponible. Haut et bas atteignent les piles de cartes et autres controles. M lit toute la carte, I lit les details du lieu selectionne, ennemis compris, G lit votre or. P ouvre votre inventaire avec le deck et les talismans.");
+
+            // Inventaire (deckpack): deck, reserve, talismans, couronnes
+            Add("fr", "deckpack_unavailable", "Pas d'inventaire sur cet ecran.");
+            Add("fr", "deckpack_blocked", "L'inventaire ne peut pas etre ouvert maintenant.");
+            Add("fr", "deckpack_open", "Inventaire ouvert.");
+            Add("fr", "deckpack_closed", "Inventaire ferme.");
+            Add("fr", "deckpack_part_deck", "{0} dans le deck");
+            Add("fr", "deckpack_part_reserve", "{0} en reserve");
+            Add("fr", "deckpack_part_charms", "{0} talismans");
+            Add("fr", "deckpack_part_charm_one", "1 talisman");
+            Add("fr", "deckpack_part_crowns", "{0} couronnes");
+            Add("fr", "deckpack_part_crown_one", "1 couronne");
+            Add("fr", "deckpack_hint", "Haut et bas changent de groupe, gauche et droite se deplacent a l'interieur. Entree sur un talisman le prend, Entree sur une carte ouvre ses options. P ou Echap ferme. F1 pour l'aide complete.");
+            Add("fr", "deckpack_group_deck", "Deck, {0} cartes");
+            Add("fr", "deckpack_group_deck_one", "Deck, 1 carte");
+            Add("fr", "deckpack_group_reserve", "Reserve, {0} cartes");
+            Add("fr", "deckpack_group_reserve_one", "Reserve, 1 carte");
+            Add("fr", "deckpack_group_charms", "Talismans, {0}");
+            Add("fr", "deckpack_group_crowns", "Couronnes, {0}");
+            Add("fr", "deckpack_group_controls", "Boutons");
+            Add("fr", "deckpack_pickup", "{0} pris. {1} cartes peuvent le porter. Les fleches passent de l'une a l'autre, Entree le fixe definitivement, Echap le repose.");
+            Add("fr", "deckpack_pickup_one", "{0} pris. Une carte peut le porter. Entree le fixe definitivement, Echap le repose.");
+            Add("fr", "deckpack_pickup_none", "{0}: aucune carte ne peut le porter pour le moment. Repose.");
+            Add("fr", "deckpack_battle_blocked", "Les talismans ne peuvent pas etre fixes pendant la bataille.");
+            Add("fr", "deckpack_returned", "{0} repose.");
+            Add("fr", "deckpack_applying", "Fixation de {0} sur {1}.");
+            Add("fr", "deckpack_applied", "{0} fixe.");
+            Add("fr", "deckpack_not_eligible", "Cette carte ne peut pas porter {0}.");
+            Add("fr", "deckpack_target_slots", "{0} emplacements de talisman sur {1} utilises");
+            Add("fr", "deckpack_menu_open", "Options de {0}: {1}. Gauche et droite choisissent, Entree active, Echap ferme.");
+            Add("fr", "deckpack_menu_closed", "Options fermees.");
+            Add("fr", "deckpack_option_rename", "Renommer");
+            Add("fr", "deckpack_option_take_crown", "Retirer la couronne");
+            Add("fr", "deckpack_option_move_reserve", "Mettre en reserve");
+            Add("fr", "deckpack_option_move_deck", "Mettre dans le deck");
+            Add("fr", "deckpack_moved_reserve", "{0} mise en reserve.");
+            Add("fr", "deckpack_moved_deck", "{0} mise dans le deck.");
+            Add("fr", "deckpack_crown_taken", "Couronne retiree de {0} et rangee dans l'inventaire.");
+            Add("fr", "deckpack_card_blocked", "Les options de carte ne sont pas disponibles maintenant.");
+            Add("fr", "help_deckpack", "Inventaire. Votre deck, vos cartes en reserve et les talismans et couronnes obtenus. Haut et bas changent de groupe: deck, reserve, talismans, couronnes et boutons. Gauche et droite se deplacent dans un groupe. Entree sur un talisman ou une couronne le prend: les fleches passent alors entre les cartes qui peuvent le porter, Entree le fixe definitivement, Echap le repose. Entree sur une carte ouvre ses options, comme la deplacer entre deck et reserve. I inspecte la carte selectionnee. P ou Echap ferme l'inventaire.");
             Add("fr", "node_type_boss", "combat de boss");
             Add("fr", "node_type_battle", "combat");
             Add("fr", "node_type_shop", "boutique");
@@ -1124,7 +1284,7 @@ namespace WildfrostAccessibility
             Add("fr", "battle_dodged", "{0} a esquive.");
             Add("fr", "battle_destroyed", "{0} detruit.");
             Add("fr", "battle_status_applied", "{0} {1} applique a {2}.");
-            Add("fr", "help_battle", "Bataille. Haut et bas changent de groupe: main, votre plateau, plateau ennemi, cloche et piles. Gauche et droite se deplacent dans le groupe. Entree sur une carte de la main la prend, les fleches choisissent une cible, Entree la pose. Entree sur une de vos unites du plateau la prend pour la deplacer: une case libre la deplace, une case occupee echange ou pousse, la zone de rappel la retire du plateau. Deplacer et rappeler sont des actions gratuites qui ne terminent pas votre tour. Echap repose une carte prise. Jouer une carte ou sonner la cloche termine votre tour. Touches de lecture: H main, B plateau, W vagues, R cloche, T tour, G or, M cloches de modificateur. Appuyez sur O pour le menu du jeu avec les reglages.");
+            Add("fr", "help_battle", "Bataille. Haut et bas changent de groupe: main, votre plateau, plateau ennemi, cloche et piles. Gauche et droite se deplacent dans le groupe. Entree sur une carte de la main la prend, les fleches choisissent une cible, Entree la pose. Entree sur une de vos unites du plateau la prend pour la deplacer: une case libre la deplace, une case occupee echange ou pousse, la zone de rappel la retire du plateau. Deplacer et rappeler sont des actions gratuites qui ne terminent pas votre tour. Echap repose une carte prise. I inspecte la carte selectionnee, Echap ferme l'inspection. Jouer une carte ou sonner la cloche termine votre tour. Touches de lecture: H main, B plateau, W vagues, R cloche, T tour, G or, M cloches de modificateur. P ouvre votre inventaire. Appuyez sur O pour le menu du jeu avec les reglages.");
             Add("fr", "battle_unit_picked_up", "{0} prise du plateau.");
             Add("fr", "battle_move_hint", "Les fleches choisissent une case de destination ou la zone de rappel, Entree confirme, Echap annule.");
             Add("fr", "tutorial_drag_hint", "Pour selectionner et placer: appuyez sur Entree sur la carte, choisissez la destination avec les fleches, puis appuyez encore sur Entree.");
@@ -1199,7 +1359,7 @@ namespace WildfrostAccessibility
             Add("fr", "inspect_opened", "Inspection de {0}. Echap pour fermer.");
             Add("fr", "inspect_closed", "Inspection fermee.");
             Add("fr", "nothing_to_inspect", "Rien a inspecter ici.");
-            Add("fr", "help_event", "Ecran d'evenement. Un evenement d'histoire sur votre voyage; son titre et son texte sont lus quand ils apparaissent. Les fleches naviguent entre les elements, Entree active. I inspecte la carte selectionnee, comme le clic droit pour les joueurs voyants, Echap ferme l'inspection.");
+            Add("fr", "help_event", "Ecran d'evenement. Un evenement d'histoire sur votre voyage; son titre et son texte sont lus quand ils apparaissent. Les fleches naviguent entre les elements, Entree active. I inspecte la carte selectionnee, comme le clic droit pour les joueurs voyants, Echap ferme l'inspection. P ouvre votre inventaire.");
         }
     }
 }

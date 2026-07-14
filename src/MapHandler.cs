@@ -59,17 +59,19 @@ namespace WildfrostAccessibility
                 AnnounceOverview();
             }
 
-            if (Input.GetKeyDown(KeyCode.I))
-            {
-                DebugLogger.LogInput(Name, "Info");
-                AnnounceFocusedNodeDetails();
-            }
-
             if (Input.GetKeyDown(KeyCode.G))
             {
                 DebugLogger.LogInput(Name, "Gold");
                 AnnounceGold();
             }
+        }
+
+        /// <summary>I: full details of the focused map node — nodes have no
+        /// card to inspect.</summary>
+        protected override void OnInspectKey()
+        {
+            DebugLogger.LogInput(Name, "Info");
+            AnnounceFocusedNodeDetails();
         }
 
         /// <summary>

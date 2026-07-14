@@ -21,16 +21,12 @@ namespace WildfrostAccessibility
             return true;
         }
 
-        protected override void HandleInput()
+        /// <summary>I: the focused building's in-game help text — buildings
+        /// have no card to inspect.</summary>
+        protected override void OnInspectKey()
         {
-            base.HandleInput();
-
-            // I: read the focused building's in-game help text
-            if (Input.GetKeyDown(KeyCode.I))
-            {
-                DebugLogger.LogInput(Name, "Info");
-                AnnounceFocusedBuildingHelp();
-            }
+            DebugLogger.LogInput(Name, "Info");
+            AnnounceFocusedBuildingHelp();
         }
 
         protected override string GetItemDescription(UINavigationItem item)

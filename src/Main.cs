@@ -239,7 +239,11 @@ namespace WildfrostAccessibility
 
         private void AnnounceHelp()
         {
-            string help = ScreenManager.ActiveHandler?.GetHelpText() ?? Loc.Get("help_text");
+            // The inventory overlay sits on top of whatever screen is active —
+            // while it is open, its keys are what the player needs to hear
+            string help = DeckpackNavigator.IsOpen
+                ? Loc.Get("help_deckpack")
+                : ScreenManager.ActiveHandler?.GetHelpText() ?? Loc.Get("help_text");
             ScreenReader.Say(help, interrupt: true);
         }
 
