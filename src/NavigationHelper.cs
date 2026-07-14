@@ -293,7 +293,19 @@ namespace WildfrostAccessibility
 
             if (current.clickHandler == null) return;
 
-            var clickHandler = current.clickHandler;
+            PressObject(current.clickHandler);
+        }
+
+        /// <summary>
+        /// Simulate a full pointer press on a click handler: down now, up + click
+        /// next frame. Also used for buttons that have no UINavigationItem at all
+        /// (the BattleWin Continue button — that screen expects the free-moving
+        /// controller cursor, which a blind player never aims).
+        /// </summary>
+        public static void PressObject(GameObject clickHandler)
+        {
+            if (clickHandler == null) return;
+
             var pointerData = new PointerEventData(EventSystem.current);
 
             // Simulate full click sequence: down -> up -> click

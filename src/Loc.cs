@@ -346,6 +346,12 @@ namespace WildfrostAccessibility
             Add("en", "scene_BattleWin", "Battle won! Victory screen.");
             Add("en", "scene_CampaignEnd", "Journey over.");
 
+            // Victory screen
+            Add("en", "battlewin_continue", "Press Enter to continue.");
+            Add("en", "battlewin_injuries", "Injured this battle: {0}.");
+            Add("en", "battlewin_not_ready", "The victory screen is still appearing, one moment.");
+            Add("en", "help_battlewin", "Victory screen after winning a battle. It may list companions injured in the fight. Press Enter to continue the journey.");
+
             // Character select
             Add("en", "charselect_leaders", "Choose your leader. Arrow keys browse the leaders, Enter selects one.");
             Add("en", "charselect_chosen", "{0} chosen. Press Enter to confirm, or Escape to put the card back.");
@@ -549,6 +555,10 @@ namespace WildfrostAccessibility
             Add("de", "scene_BossReward", "Boss-Belohnung.");
             Add("de", "scene_BattleWin", "Kampf gewonnen! Siegesbildschirm.");
             Add("de", "scene_CampaignEnd", "Reise beendet.");
+            Add("de", "battlewin_continue", "Druecke Enter, um fortzufahren.");
+            Add("de", "battlewin_injuries", "In diesem Kampf verletzt: {0}.");
+            Add("de", "battlewin_not_ready", "Der Siegesbildschirm erscheint noch, einen Moment.");
+            Add("de", "help_battlewin", "Siegesbildschirm nach einem gewonnenen Kampf. Zeigt gegebenenfalls im Kampf verletzte Gefaehrten. Enter setzt die Reise fort.");
             Add("de", "charselect_leaders", "Waehle deinen Anfuehrer. Pfeiltasten wechseln zwischen den Anfuehrern, Enter waehlt aus.");
             Add("de", "charselect_chosen", "{0} gewaehlt. Enter bestaetigt, Escape legt die Karte zurueck.");
             Add("de", "charselect_chosen_generic", "Karte gewaehlt. Enter bestaetigt, Escape legt sie zurueck.");
@@ -739,6 +749,10 @@ namespace WildfrostAccessibility
             Add("es", "scene_BossReward", "Recompensa de jefe.");
             Add("es", "scene_BattleWin", "Batalla ganada! Pantalla de victoria.");
             Add("es", "scene_CampaignEnd", "Fin del viaje.");
+            Add("es", "battlewin_continue", "Pulsa Enter para continuar.");
+            Add("es", "battlewin_injuries", "Heridos en esta batalla: {0}.");
+            Add("es", "battlewin_not_ready", "La pantalla de victoria todavia esta apareciendo, un momento.");
+            Add("es", "help_battlewin", "Pantalla de victoria tras ganar una batalla. Puede mostrar companeros heridos en el combate. Enter continua el viaje.");
             Add("es", "charselect_leaders", "Elige a tu lider. Las flechas cambian de lider, Enter selecciona.");
             Add("es", "charselect_chosen", "{0} elegido. Enter confirma, Escape devuelve la carta.");
             Add("es", "charselect_chosen_generic", "Carta elegida. Enter confirma, Escape la devuelve.");
@@ -929,6 +943,10 @@ namespace WildfrostAccessibility
             Add("fr", "scene_BossReward", "Recompense de boss.");
             Add("fr", "scene_BattleWin", "Bataille gagnee! Ecran de victoire.");
             Add("fr", "scene_CampaignEnd", "Fin du voyage.");
+            Add("fr", "battlewin_continue", "Appuyez sur Entree pour continuer.");
+            Add("fr", "battlewin_injuries", "Blesses dans cette bataille: {0}.");
+            Add("fr", "battlewin_not_ready", "L'ecran de victoire est encore en train d'apparaitre, un instant.");
+            Add("fr", "help_battlewin", "Ecran de victoire apres une bataille gagnee. Peut afficher les compagnons blesses au combat. Entree continue le voyage.");
             Add("fr", "charselect_leaders", "Choisissez votre chef. Les fleches changent de chef, Entree selectionne.");
             Add("fr", "charselect_chosen", "{0} choisi. Entree confirme, Echap remet la carte.");
             Add("fr", "charselect_chosen_generic", "Carte choisie. Entree confirme, Echap la remet.");
