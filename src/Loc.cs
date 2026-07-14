@@ -533,6 +533,16 @@ namespace WildfrostAccessibility
             Add("en", "stat_no_value", "none");
             Add("en", "help_pause", "Game menu. Up and down arrows move through the page items, Enter activates. Left and right arrows move through the tabs, or change the value when on a setting. T jumps to the tab strip. Escape goes back one level, for example out of a settings category. Tab and Shift Tab also step through the page. Press O to close the menu.");
 
+            // Story events (Event scene, cinema bar text)
+            Add("en", "event_prompt_action", "Press Enter.");
+            Add("en", "event_crack", "Crack {0} of 4.");
+            Add("en", "select_blocked", "This cannot be chosen right now.");
+            Add("en", "select_blocked_reason", "Not allowed yet. {0}");
+            Add("en", "inspect_opened", "Inspecting {0}. Press Escape to close.");
+            Add("en", "inspect_closed", "Inspect closed.");
+            Add("en", "nothing_to_inspect", "Nothing to inspect here.");
+            Add("en", "help_event", "Event screen. A story event on your journey; its title and story are read as they appear. Arrow keys move between items, Enter activates. I inspects the focused card the way right-click does for sighted players, Escape closes the inspect view.");
+
             // ----- German -------------------------------------------------------
 
             Add("de", "stat_health", "{0} Leben");
@@ -726,6 +736,14 @@ namespace WildfrostAccessibility
             Add("de", "pause_lore_closed", "Seite geschlossen.");
             Add("de", "stat_no_value", "keine");
             Add("de", "help_pause", "Spielmenue. Hoch und runter bewegen sich durch die Seitenelemente, Enter aktiviert. Links und rechts bewegen sich durch die Tabs oder aendern den Wert einer Einstellung. T springt zur Tab-Leiste. Escape geht eine Ebene zurueck, zum Beispiel aus einer Einstellungskategorie. Tab und Umschalt Tab gehen ebenfalls durch die Seite. O schliesst das Menue.");
+            Add("de", "event_prompt_action", "Enter druecken.");
+            Add("de", "event_crack", "Riss {0} von 4.");
+            Add("de", "select_blocked", "Das kann gerade nicht gewaehlt werden.");
+            Add("de", "select_blocked_reason", "Noch nicht moeglich. {0}");
+            Add("de", "inspect_opened", "Untersuche {0}. Escape schliesst.");
+            Add("de", "inspect_closed", "Untersuchung geschlossen.");
+            Add("de", "nothing_to_inspect", "Hier gibt es nichts zu untersuchen.");
+            Add("de", "help_event", "Ereignis-Bildschirm. Ein Story-Ereignis auf deiner Reise; Titel und Text werden vorgelesen, sobald sie erscheinen. Pfeiltasten wechseln zwischen Elementen, Enter aktiviert. I untersucht die fokussierte Karte, so wie Rechtsklick fuer sehende Spieler, Escape schliesst die Untersuchung.");
 
             // ----- Spanish ------------------------------------------------------
 
@@ -920,6 +938,14 @@ namespace WildfrostAccessibility
             Add("es", "pause_lore_closed", "Pagina cerrada.");
             Add("es", "stat_no_value", "ninguno");
             Add("es", "help_pause", "Menu del juego. Arriba y abajo se mueven por los elementos de la pagina, Enter activa. Izquierda y derecha se mueven por las pestanas, o cambian el valor de un ajuste. T salta a las pestanas. Escape vuelve un nivel atras, por ejemplo fuera de una categoria de ajustes. Tab y Mayus Tab tambien recorren la pagina. Pulsa O para cerrar el menu.");
+            Add("es", "event_prompt_action", "Pulsa Enter.");
+            Add("es", "event_crack", "Grieta {0} de 4.");
+            Add("es", "select_blocked", "Esto no se puede elegir ahora mismo.");
+            Add("es", "select_blocked_reason", "Aun no permitido. {0}");
+            Add("es", "inspect_opened", "Inspeccionando {0}. Escape para cerrar.");
+            Add("es", "inspect_closed", "Inspeccion cerrada.");
+            Add("es", "nothing_to_inspect", "No hay nada que inspeccionar aqui.");
+            Add("es", "help_event", "Pantalla de evento. Un evento de historia en tu viaje; su titulo y texto se leen cuando aparecen. Las flechas mueven entre elementos, Enter activa. I inspecciona la carta enfocada, como el clic derecho para jugadores videntes, Escape cierra la inspeccion.");
 
             // ----- French -------------------------------------------------------
 
@@ -1114,6 +1140,14 @@ namespace WildfrostAccessibility
             Add("fr", "pause_lore_closed", "Page fermee.");
             Add("fr", "stat_no_value", "aucun");
             Add("fr", "help_pause", "Menu du jeu. Haut et bas parcourent les elements de la page, Entree active. Gauche et droite parcourent les onglets, ou modifient la valeur d'un reglage. T va aux onglets. Echap revient d'un niveau, par exemple hors d'une categorie de reglages. Tab et Maj Tab parcourent aussi la page. Appuyez sur O pour fermer le menu.");
+            Add("fr", "event_prompt_action", "Appuyez sur Entree.");
+            Add("fr", "event_crack", "Fissure {0} sur 4.");
+            Add("fr", "select_blocked", "Impossible de choisir ceci pour le moment.");
+            Add("fr", "select_blocked_reason", "Pas encore autorise. {0}");
+            Add("fr", "inspect_opened", "Inspection de {0}. Echap pour fermer.");
+            Add("fr", "inspect_closed", "Inspection fermee.");
+            Add("fr", "nothing_to_inspect", "Rien a inspecter ici.");
+            Add("fr", "help_event", "Ecran d'evenement. Un evenement d'histoire sur votre voyage; son titre et son texte sont lus quand ils apparaissent. Les fleches naviguent entre les elements, Entree active. I inspecte la carte selectionnee, comme le clic droit pour les joueurs voyants, Echap ferme l'inspection.");
         }
     }
 }

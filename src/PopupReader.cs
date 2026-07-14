@@ -138,11 +138,42 @@ namespace WildfrostAccessibility
         }
 
         /// <summary>
+        /// The processed text of the currently visible tutorial prompt, or null.
+        /// Used to explain WHY an action was refused (tutorial gates shake this
+        /// prompt as their only feedback).
+        /// </summary>
+        public static string ActivePromptText()
+        {
+            try
+            {
+                Prompt prompt = PromptSystem.Prompt;
+                if (prompt != null && prompt.active)
+                {
+                    string text = GetPromptText(prompt);
+                    if (!string.IsNullOrEmpty(text))
+                        return MakeDragAccessible(text);
+                }
+            }
+            catch
+            {
+                // PromptSystem not initialized
+            }
+            return null;
+        }
+
+        /// <summary>
         /// Replace "drag" instructions with keyboard/gamepad accessible language.
         /// Blind players use select-and-place, not drag-and-drop.
         /// </summary>
         private static string MakeDragAccessible(string text)
         {
+            // "Right Click" inspects a card with a mouse; the mod binds I for
+            // keyboard users ("Press Right Click on any card to Inspect it")
+            text = Regex.Replace(text,
+                @"\bright[\s-]?click(ing)?\b",
+                "the I key",
+                RegexOptions.IgnoreCase);
+
             // "drag X from Y on to Z" → "select X from Y and place it on Z"
             text = Regex.Replace(text,
                 @"\bdrag\b(.+?)\bfrom\b(.+?)\bon\s*to\b",

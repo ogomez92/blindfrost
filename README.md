@@ -57,6 +57,7 @@ Every screen announces itself when it opens, and every focused element is descri
 - **Continue journey screen** - announces your run in progress: start date, leader with health and attack, and the full deck list with duplicate counts. The Let's Go and Back buttons explain what they do.
 - **Campaign map** - announces the zone, where you are, and which destinations you can travel to. Locations are announced with their name, category (battle, shop, boss...), and state (you are here, cleared, available, further ahead, not reachable). Battle locations include their wave count; details include the exact enemies per wave.
 - **Battle** - announces turns, phases, and the redraw bell. Cards are read with stats, status effects (Snow, Frost...), and fully expanded keyword descriptions. Cards are played with Enter: pick up, choose a target with the arrows (only valid targets are reachable), Enter again to place.
+- **Story events** - event titles, prompts, and story text ("Break the ice!", "Choose a new companion!"...) are read as they appear and whenever they change. The frozen-companion ice block announces each crack; offered cards are read in full. If the game refuses a choice (the tutorial requires inspecting a card first), the reason is spoken.
 - **Deck piles** - draw and discard piles announce their card counts everywhere they appear.
 
 ## Controls
@@ -80,6 +81,13 @@ Every screen announces itself when it opens, and every focused element is descri
 - M: read the whole map
 - I: read details of the focused location, including enemies and rewards
 - G: read your gold
+
+### Story events
+
+- Left/Right: move between the offered cards
+- Enter: hit the ice block / choose the focused card
+- I: inspect the focused card (the keyboard equivalent of right-click; the tutorial asks for this before letting you choose)
+- Escape or I: close the inspect view
 
 ### Battle
 

@@ -36,6 +36,7 @@ namespace WildfrostAccessibility
             Register("Battle", new BattleHandler());
             Register("BattleWin", new BattleWinHandler());
             Register("CharacterSelect", new CharacterSelectHandler());
+            Register("Event", new EventScreenHandler());
 
             // The campaign map spans two scenes: "Campaign" loads the systems,
             // "MapNew" is the visible map. One handler serves both.

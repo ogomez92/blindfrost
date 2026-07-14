@@ -346,6 +346,26 @@ namespace WildfrostAccessibility
             if (entity.flipper != null && entity.flipper.flipped)
                 return false;
 
+            // The game may refuse the selection (tutorial gates block choosing
+            // a companion until a card has been inspected) — and its only
+            // refusal feedback is a visual prompt shake. Ask first and voice
+            // the refusal instead of pressing into silence.
+            bool allowed = true;
+            try { allowed = Events.CheckAction(new ActionSelect(entity, delegate { })); }
+            catch { /* no listeners / event system not ready */ }
+            if (!allowed)
+            {
+                string reason = PopupReader.ActivePromptText();
+                ScreenReader.Say(
+                    string.IsNullOrEmpty(reason)
+                        ? Loc.Get("select_blocked")
+                        : Loc.Get("select_blocked_reason", reason),
+                    interrupt: true);
+                DebugLogger.LogInput("NavigationHelper",
+                    $"Select-card blocked: {entity.data?.title ?? entity.name}");
+                return true; // handled — the refusal was spoken
+            }
+
             DebugLogger.LogInput("NavigationHelper",
                 $"Select-card press: {entity.data?.title ?? entity.name}");
 
