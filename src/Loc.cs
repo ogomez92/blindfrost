@@ -654,6 +654,16 @@ namespace WildfrostAccessibility
             Add("en", "gate_start_run", "Starts a new journey");
             Add("en", "help_town", "Town. Your base between journeys. Buildings unlock new cards and challenges. Arrow keys move between buildings, I reads what a building does, Enter opens it. The Gate starts or continues your journey.");
 
+            // Daily Voyage balloon
+            Add("en", "balloon_start_run", "Starts the daily run: a fixed deck and modifiers, scored on the leaderboard. Enter opens today's voyage");
+            Add("en", "balloon_continue_run", "Your daily run is in progress. Press Enter to continue it");
+            Add("en", "balloon_deck", "Fixed deck of {0} cards: {1}");
+            Add("en", "balloon_modifiers", "{0} modifiers: {1}");
+            Add("en", "balloon_loading", "Daily voyage. Loading today's run.");
+            Add("en", "balloon_play_desc", "Starts today's daily run");
+            Add("en", "balloon_scores_desc", "Opens the leaderboard for today's run");
+            Add("en", "balloon_buttons_hint", "Left and right move between Let's Go and Scores, Enter chooses, I reads this again, Escape leaves");
+
             // ContinueRun
             Add("en", "screen_continue_run", "Continue journey. You have a journey in progress.");
             Add("en", "continue_missing_data", "This journey uses missing content and cannot be continued.");
@@ -915,6 +925,16 @@ namespace WildfrostAccessibility
             Add("de", "gate_start_tutorial", "Startet deine erste Reise. Das Spiel bietet dir das Tutorial an");
             Add("de", "gate_continue_run", "Deine Reise laeuft. Enter setzt sie fort");
             Add("de", "gate_start_run", "Startet eine neue Reise");
+
+            // Daily Voyage balloon
+            Add("de", "balloon_start_run", "Startet die taegliche Reise: ein festes Deck und Modifikatoren, gewertet in der Bestenliste. Enter oeffnet die heutige Reise");
+            Add("de", "balloon_continue_run", "Deine taegliche Reise laeuft. Enter setzt sie fort");
+            Add("de", "balloon_deck", "Festes Deck mit {0} Karten: {1}");
+            Add("de", "balloon_modifiers", "{0} Modifikatoren: {1}");
+            Add("de", "balloon_loading", "Taegliche Reise. Heutige Reise wird geladen.");
+            Add("de", "balloon_play_desc", "Startet die heutige taegliche Reise");
+            Add("de", "balloon_scores_desc", "Oeffnet die Bestenliste der heutigen Reise");
+            Add("de", "balloon_buttons_hint", "Links und rechts wechseln zwischen Los geht's und Bestenliste, Enter waehlt, I liest erneut vor, Escape verlaesst");
             Add("de", "help_town", "Stadt. Dein Lager zwischen den Reisen. Gebaeude schalten neue Karten und Herausforderungen frei. Pfeiltasten wechseln zwischen Gebaeuden, I liest die Funktion vor, Enter oeffnet. Das Tor startet deine Reise oder setzt sie fort.");
             Add("de", "screen_continue_run", "Reise fortsetzen. Du hast eine laufende Reise.");
             Add("de", "continue_missing_data", "Diese Reise nutzt fehlende Inhalte und kann nicht fortgesetzt werden.");
@@ -1167,6 +1187,16 @@ namespace WildfrostAccessibility
             Add("es", "gate_start_tutorial", "Comienza tu primer viaje. El juego te ofrecera el tutorial");
             Add("es", "gate_continue_run", "Tu viaje esta en curso. Pulsa Enter para continuarlo");
             Add("es", "gate_start_run", "Comienza un nuevo viaje");
+
+            // Daily Voyage balloon
+            Add("es", "balloon_start_run", "Comienza el viaje diario: un mazo fijo y modificadores, puntuado en la clasificacion. Enter abre el viaje de hoy");
+            Add("es", "balloon_continue_run", "Tu viaje diario esta en curso. Pulsa Enter para continuarlo");
+            Add("es", "balloon_deck", "Mazo fijo de {0} cartas: {1}");
+            Add("es", "balloon_modifiers", "{0} modificadores: {1}");
+            Add("es", "balloon_loading", "Viaje diario. Cargando el viaje de hoy.");
+            Add("es", "balloon_play_desc", "Comienza el viaje diario de hoy");
+            Add("es", "balloon_scores_desc", "Abre la clasificacion del viaje de hoy");
+            Add("es", "balloon_buttons_hint", "Izquierda y derecha cambian entre Vamos y Clasificacion, Enter elige, I lo lee otra vez, Escape sale");
             Add("es", "help_town", "Pueblo. Tu base entre viajes. Los edificios desbloquean cartas y desafios. Las flechas cambian de edificio, I lee su funcion, Enter lo abre. La Puerta comienza o continua tu viaje.");
             Add("es", "screen_continue_run", "Continuar viaje. Tienes un viaje en curso.");
             Add("es", "continue_missing_data", "Este viaje usa contenido que falta y no puede continuarse.");
@@ -1419,6 +1449,16 @@ namespace WildfrostAccessibility
             Add("fr", "gate_start_tutorial", "Commence votre premier voyage. Le jeu vous proposera le tutoriel");
             Add("fr", "gate_continue_run", "Votre voyage est en cours. Appuyez sur Entree pour le continuer");
             Add("fr", "gate_start_run", "Commence un nouveau voyage");
+
+            // Daily Voyage balloon
+            Add("fr", "balloon_start_run", "Commence le voyage quotidien: un deck fixe et des modificateurs, classe au tableau des scores. Entree ouvre le voyage du jour");
+            Add("fr", "balloon_continue_run", "Votre voyage quotidien est en cours. Appuyez sur Entree pour le continuer");
+            Add("fr", "balloon_deck", "Deck fixe de {0} cartes: {1}");
+            Add("fr", "balloon_modifiers", "{0} modificateurs: {1}");
+            Add("fr", "balloon_loading", "Voyage quotidien. Chargement du voyage du jour.");
+            Add("fr", "balloon_play_desc", "Commence le voyage quotidien du jour");
+            Add("fr", "balloon_scores_desc", "Ouvre le tableau des scores du jour");
+            Add("fr", "balloon_buttons_hint", "Gauche et droite alternent entre C'est parti et Scores, Entree choisit, I relit, Echap quitte");
             Add("fr", "help_town", "Village. Votre base entre les voyages. Les batiments debloquent cartes et defis. Les fleches changent de batiment, I lit sa fonction, Entree l'ouvre. La Porte commence ou continue votre voyage.");
             Add("fr", "screen_continue_run", "Continuer le voyage. Vous avez un voyage en cours.");
             Add("fr", "continue_missing_data", "Ce voyage utilise du contenu manquant et ne peut pas continuer.");

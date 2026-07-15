@@ -463,6 +463,11 @@ namespace WildfrostAccessibility
                 if (item.overrideVertical) flags.Add("overrideV");
                 if (item.clickHandler == null) flags.Add("noClick");
 
+                // On-screen state: the game's CheckLayer treats an off-screen
+                // item as non-navigable, so this reveals items that have scrolled
+                // out of reach (e.g. the town Gate after moving into town).
+                if (!IsInView(item)) flags.Add("offScreen");
+
                 var comps = new List<string>();
                 var journalTab = item.GetComponentInParent<JournalTab>();
                 if (journalTab != null) comps.Add("JournalTab:" + journalTab.gameObject.name);
@@ -477,6 +482,39 @@ namespace WildfrostAccessibility
                     + (flags.Count > 0 ? " | " + string.Join(",", flags) : "")
                     + (comps.Count > 0 ? " | " + string.Join(",", comps) : ""));
             }
+
+            // Buildings including inactive ones, to tell "scrolled off-screen but
+            // still registered" apart from "deactivated and unregistered".
+            var buildings = Object.FindObjectsOfType<Building>(includeInactive: true);
+            if (buildings.Length > 0)
+            {
+                DebugLogger.Log(DebugLogger.LogCategory.State, "NavDump",
+                    $"Buildings (incl. inactive): {buildings.Length}");
+                foreach (var b in buildings)
+                {
+                    if (b == null) continue;
+                    var nav = b.GetComponentInChildren<UINavigationItem>(includeInactive: true);
+                    bool registered = nav != null && navSystem.AvailableNavigationItems.Contains(nav);
+                    DebugLogger.Log(DebugLogger.LogCategory.State, "NavDump",
+                        $"{GetPath(b.transform)}"
+                        + $" | active={b.gameObject.activeInHierarchy}"
+                        + $" | navItem={(nav != null ? "yes" : "none")}"
+                        + $" | registered={registered}"
+                        + (nav != null ? $" | inView={IsInView(nav)}" : ""));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Whether an item's position is inside the main camera's view — the same
+        /// test the game's CheckLayer uses to decide if an item is navigable.
+        /// </summary>
+        private static bool IsInView(UINavigationItem item)
+        {
+            var cam = Camera.main;
+            if (cam == null) return true;
+            Vector3 v = cam.WorldToViewportPoint(item.Position);
+            return v.z > 0f && v.x >= 0f && v.x <= 1f && v.y >= 0f && v.y <= 1f;
         }
 
         /// <summary>Hierarchy path of a transform, up to 6 ancestors deep.</summary>
