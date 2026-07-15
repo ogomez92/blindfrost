@@ -141,6 +141,7 @@ namespace WildfrostAccessibility
             Loc.Initialize();
             Loc.LoadLanguageOverride(ModDirectory);
             ScreenManager.Initialize();
+            LoadVerbosity();
             CreateUpdateHook();
 
             Debug.Log("[WildfrostAccessibility] All systems initialized, attempting speech");
@@ -205,6 +206,16 @@ namespace WildfrostAccessibility
                 TogglePauseMenu();
             }
 
+            // V cycles focus verbosity: short reads (name, stats, effect names;
+            // details wait in the review buffers) or the full verbose reads
+            if (Input.GetKeyDown(KeyCode.V) && !NavigationHelper.IsTextInputFocused())
+            {
+                ToggleVerbosity();
+            }
+
+            // Ctrl+arrows: review buffers (event history, details, hand...)
+            ReviewBuffers.Update();
+
             // F9 (debug mode only): dump the navigation state to the log
             if (debugMode && Input.GetKeyDown(KeyCode.F9))
             {
@@ -237,6 +248,42 @@ namespace WildfrostAccessibility
             CinemaBarReader.Update();
         }
 
+        /// <summary>
+        /// Restore the focus verbosity chosen with V on a previous run.
+        /// Defaults to short reads (the review buffers carry the details).
+        /// </summary>
+        private void LoadVerbosity()
+        {
+            try
+            {
+                // Stored as a string ("1"/"0"): SaveSystem.LoadProgressData<T>
+                // constrains T to a reference type, so bool can't be used directly.
+                string stored = SaveSystem.LoadProgressData<string>("accessibilityVerboseFocus");
+                ItemDescriber.VerboseFocus = stored == "1";
+            }
+            catch
+            {
+                ItemDescriber.VerboseFocus = false;
+            }
+        }
+
+        private void ToggleVerbosity()
+        {
+            ItemDescriber.VerboseFocus = !ItemDescriber.VerboseFocus;
+            try
+            {
+                SaveSystem.SaveProgressData("accessibilityVerboseFocus",
+                    ItemDescriber.VerboseFocus ? "1" : "0");
+            }
+            catch
+            {
+                // Not persisted this run; the toggle still applies until quit
+            }
+            ScreenReader.Say(Loc.Get(ItemDescriber.VerboseFocus
+                ? "verbosity_verbose"
+                : "verbosity_short"), interrupt: true);
+        }
+
         private void AnnounceHelp()
         {
             // The inventory overlay sits on top of whatever screen is active —
@@ -244,6 +291,13 @@ namespace WildfrostAccessibility
             string help = DeckpackNavigator.IsOpen
                 ? Loc.Get("help_deckpack")
                 : ScreenManager.ActiveHandler?.GetHelpText() ?? Loc.Get("help_text");
+
+            // The review buffers and verbosity toggle work on every screen, so
+            // append them to whatever per-screen help was chosen (unless it is
+            // the global help, which already lists them)
+            if (help != Loc.Get("help_text"))
+                help += " " + Loc.Get("help_buffers");
+
             ScreenReader.Say(help, interrupt: true);
         }
 

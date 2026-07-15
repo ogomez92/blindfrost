@@ -173,7 +173,7 @@ namespace WildfrostAccessibility
             string hint = HintOnce("pause_hint");
             if (hint != null)
                 msg += " " + hint;
-            ScreenReader.Say(msg, interrupt: true);
+            ScreenReader.SayEvent(msg, interrupt: true);
             return true;
         }
 

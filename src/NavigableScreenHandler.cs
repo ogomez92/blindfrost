@@ -25,6 +25,9 @@ namespace WildfrostAccessibility
         private float _nextInspectViewSearch;
         private float _inspectViewOpenTime;
 
+        /// <summary>Deadline (unscaled time) for an in-progress RequestRefocus, or 0.</summary>
+        private float _refocusDeadline;
+
         /// <summary>Seconds to wait after entry before announcing the screen (lets UI settle).</summary>
         protected virtual float AnnounceDelay => 0.5f;
 
@@ -45,6 +48,7 @@ namespace WildfrostAccessibility
             _inspectView = null;
             _nextInspectViewSearch = 0f;
             _inspectViewOpenTime = 0f;
+            _refocusDeadline = 0f;
             DeckpackNavigator.Reset();
         }
 
@@ -94,6 +98,7 @@ namespace WildfrostAccessibility
             // after that, the inventory overlay (deckpack) takes the keys
             if (!RouteInputToInspectView() && !DeckpackNavigator.RouteInput(this))
                 HandleInput();
+            PumpRefocus();
             CheckAndAnnounceFocus();
         }
 
@@ -360,6 +365,60 @@ namespace WildfrostAccessibility
         protected virtual List<UINavigationItem> GetItems()
         {
             return NavigationHelper.GetNavigableItems();
+        }
+
+        /// <summary>
+        /// The item to land focus on when nothing sensible is focused — after an
+        /// overlay (the inventory) closes and the game leaves focus in limbo.
+        /// Defaults to the first navigable item; battle puts it on the hand.
+        /// </summary>
+        protected virtual UINavigationItem DefaultFocusItem()
+        {
+            var items = GetItems();
+            return items.Count > 0 ? items[0] : null;
+        }
+
+        /// <summary>
+        /// Ask the screen to put focus back on its default item over the next
+        /// short window. Used when the inventory closes — the game frequently
+        /// leaves the screen with no focus at all.
+        /// </summary>
+        public void RequestRefocus()
+        {
+            _refocusDeadline = Time.unscaledTime + 1f;
+        }
+
+        /// <summary>
+        /// Drive a pending RequestRefocus. Waits until the target item is
+        /// actually navigable again (an overlay's close animation can still own
+        /// the layer — focusing an item the game hasn't re-registered would just
+        /// null the selection), then focuses it and announces it fresh.
+        /// </summary>
+        private void PumpRefocus()
+        {
+            if (_refocusDeadline <= 0f)
+                return;
+            if (Time.unscaledTime > _refocusDeadline)
+            {
+                _refocusDeadline = 0f;
+                return;
+            }
+
+            var navSystem = MonoBehaviourSingleton<UINavigationSystem>.instance;
+            if (navSystem == null)
+                return;
+
+            var item = DefaultFocusItem();
+            if (item == null || !navSystem.AvailableNavigationItems.Contains(item))
+                return; // not ready yet — try again next frame
+
+            NavigationHelper.FocusItem(item);
+            _refocusDeadline = 0f;
+
+            // We deliberately moved focus, so let it be spoken even if the close
+            // transition asked to stay quiet, and force a fresh announcement.
+            _inspectSuppressUntil = 0f;
+            _lastFocused = null;
         }
 
         /// <summary>

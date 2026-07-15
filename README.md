@@ -68,7 +68,7 @@ Every screen announces itself when it opens, and every focused element is descri
 - **Town (base camp)** - arrow keys move between buildings. Each building is announced with its name and state. The Gate says what Enter will do: start a new journey, continue the one in progress, or begin the tutorial.
 - **Continue journey screen** - announces your run in progress: start date, leader with health and attack, and the full deck list with duplicate counts. The Let's Go and Back buttons explain what they do.
 - **Campaign map** - announces the zone, where you are, and which destinations you can travel to. Locations are announced with their name, category (battle, shop, boss...), and state (you are here, cleared, available, further ahead, not reachable). Battle locations include their wave count; details include the exact enemies per wave.
-- **Battle** - announces turns, phases, and the redraw bell. Cards are read with stats, status effects (Snow, Frost...), and fully expanded keyword descriptions. Cards are played with Enter: pick up, choose a target with the arrows (only valid targets are reachable), Enter again to place.
+- **Battle** - announces turns, phases, and the redraw bell. Cards are read with their stats and the names of their status effects (Snow, Frost...); the full keyword descriptions wait in the Details buffer (Ctrl+Up), or press V for full descriptions on focus. Cards are played with Enter: pick up, choose a target with the arrows (only valid targets are reachable), Enter again to place.
 - **Story events** - event titles, prompts, and story text ("Break the ice!", "Choose a new companion!"...) are read as they appear and whenever they change. The frozen-companion ice block announces each crack; offered cards are read in full. If the game refuses a choice (the tutorial requires inspecting a card first), the reason is spoken.
 - **Deck piles** - draw and discard piles announce their card counts everywhere they appear.
 - **Inventory (backpack)** - P opens it wherever the backpack exists (map, events, battle). It announces your deck, reserve, charm and crown counts. Up/down switch groups, left/right move within one. Enter on a charm picks it up, the arrows move between the cards that can take it, and Enter attaches it - permanently, as in the game. Enter on a card opens the game's own options: rename, take crown, move between deck and reserve.
@@ -82,6 +82,31 @@ Every screen announces itself when it opens, and every focused element is descri
 - Arrow keys: navigate
 - Enter: activate / pick up / place
 - P: open or close the inventory (deck, reserve, charms, crowns) wherever the backpack exists
+- V: switch between short and full descriptions (see Review buffers below)
+- Ctrl + arrow keys: review buffers (see below)
+
+### Review buffers (Ctrl + arrow keys)
+
+Buffers are review lists for extra information, separate from normal focus navigation: moving focus chooses what is available, and the buffer commands let you inspect it without moving focus away. While Ctrl is held the arrow keys never move your real selection, so reviewing is always safe.
+
+| Key | Action |
+|-----|--------|
+| Ctrl + Up | Read the next item in the current buffer |
+| Ctrl + Down | Move back toward the start of the buffer |
+| Ctrl + Right | Switch to the next available buffer |
+| Ctrl + Left | Switch to the previous available buffer |
+
+By default, focus announcements are kept short: a card reads its name, stats, and the names of its effects and status stacks - not the full keyword explanations. Those details always wait in the buffers. Press **V** to switch to full descriptions (the old behavior) and back; your choice is remembered.
+
+Available buffers (only those with content are offered when cycling):
+
+- **Events**: every unsolicited announcement - battle damage, deaths, status effects, turns, story text, popups, screen changes. The first Ctrl+Up reads the newest; further presses step back through history. Global and rolling, so you can still review what happened after the screen moves on.
+- **Details**: full details of the currently focused item - card stats, effect text, and one item per keyword explanation. The information the short focus read leaves out.
+- **Hand** (battle): one item per card in your hand.
+- **Board** (battle): one item per unit on the boards, yours first, each with its position.
+- **Resources** (battle): gold, redraw bell, turn and phase, draw and discard counts, and the next-wave counter, as separate items.
+- **Waves** (battle): one item per incoming enemy wave.
+- **Map locations** (campaign map): one item per revealed location with its category and state.
 
 ### Town
 

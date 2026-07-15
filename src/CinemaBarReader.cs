@@ -110,7 +110,7 @@ namespace WildfrostAccessibility
 
             // Queue, don't interrupt: bar text often lands right after another
             // announcement (a hit, a focus change) that must finish first.
-            ScreenReader.Say(text, interrupt: false);
+            ScreenReader.SayEvent(text, interrupt: false);
             DebugLogger.Log(DebugLogger.LogCategory.Handler, "CinemaBarReader",
                 $"Bar text: {text}");
         }

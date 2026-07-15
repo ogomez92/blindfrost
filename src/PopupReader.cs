@@ -132,7 +132,7 @@ namespace WildfrostAccessibility
             // Replace drag-based instructions with accessible select-and-place language
             text = MakeDragAccessible(text);
 
-            ScreenReader.Say(Loc.Get("tutorial_prompt", text), interrupt: false);
+            ScreenReader.SayEvent(Loc.Get("tutorial_prompt", text), interrupt: false);
             DebugLogger.Log(DebugLogger.LogCategory.Handler, "PopupReader",
                 $"Tutorial prompt: {text}");
         }
@@ -240,9 +240,15 @@ namespace WildfrostAccessibility
             text = Regex.Replace(text, @"\bdrag\b", "select and place",
                 RegexOptions.IgnoreCase);
 
-            // Any rewritten drag instruction gets the keyboard how-to appended
+            // Any rewritten drag instruction gets the keyboard how-to appended.
+            // "In front of a unit" placements are chosen by selecting that unit
+            // (your card takes its slot and pushes it back), which the generic
+            // "choose the destination" wording doesn't make obvious.
             if (text != beforeDrag)
-                text += " " + Loc.Get("tutorial_drag_hint");
+            {
+                bool inFront = Regex.IsMatch(text, @"\bin front of\b", RegexOptions.IgnoreCase);
+                text += " " + Loc.Get(inFront ? "tutorial_drag_hint_infront" : "tutorial_drag_hint");
+            }
 
             return text;
         }
@@ -295,7 +301,7 @@ namespace WildfrostAccessibility
             {
                 // Help panels give mouse instructions too ("drag", "click")
                 string announcement = MakeDragAccessible(string.Join(". ", parts));
-                ScreenReader.Say(announcement, interrupt: true);
+                ScreenReader.SayEvent(announcement, interrupt: true);
                 DebugLogger.Log(DebugLogger.LogCategory.Handler, "PopupReader",
                     $"Help panel: {announcement}");
             }

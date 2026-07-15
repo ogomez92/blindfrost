@@ -97,7 +97,7 @@ namespace WildfrostAccessibility
             if (hint != null)
                 parts.Add(hint);
 
-            ScreenReader.Say(string.Join(" ", parts), interrupt: true);
+            ScreenReader.SayEvent(string.Join(" ", parts), interrupt: true);
             return true;
         }
 
@@ -117,19 +117,19 @@ namespace WildfrostAccessibility
                     string msg = Loc.Get("battle_your_turn", hand);
                     if (wave != null)
                         msg += " " + wave;
-                    ScreenReader.Say(msg);
+                    ScreenReader.SayEvent(msg);
                     break;
                 case Battle.Phase.Battle:
-                    ScreenReader.Say(Loc.Get("battle_resolving"));
+                    ScreenReader.SayEvent(Loc.Get("battle_resolving"));
                     break;
                 case Battle.Phase.End:
-                    ScreenReader.Say(Loc.Get("battle_over"));
+                    ScreenReader.SayEvent(Loc.Get("battle_over"));
                     break;
                 case Battle.Phase.LastStand:
                     // A dice standoff: the game blocks until Roll is pressed
                     _lastStandResultSeen = -1;
                     string subject = LastStandSystem.subject?.data?.title;
-                    ScreenReader.Say(subject != null
+                    ScreenReader.SayEvent(subject != null
                         ? Loc.Get("battle_last_stand", subject)
                         : Loc.Get("battle_last_stand_generic"), interrupt: true);
                     break;
@@ -141,8 +141,34 @@ namespace WildfrostAccessibility
 
         public override void OnUpdate()
         {
+            RedirectFromUseOnHandAnchor();
             base.OnUpdate();
             WatchLastStand();
+        }
+
+        /// <summary>
+        /// At battle start the game parks focus on the "use on hand" targeting
+        /// anchor, which reads as the meaningless "Use On Hand Anchor". It only
+        /// matters while holding a self-target card, so when nothing is held move
+        /// focus to the hand instead.
+        /// </summary>
+        private void RedirectFromUseOnHandAnchor()
+        {
+            var controller = Battle.instance?.playerCardController as CardControllerBattle;
+            var anchor = controller?.useOnHandAnchor;
+            if (anchor == null || controller.dragging != null)
+                return;
+
+            var navSystem = MonoBehaviourSingleton<UINavigationSystem>.instance;
+            if (navSystem == null || navSystem.currentNavigationItem != anchor)
+                return;
+
+            var hand = GetGroupItems(Group.Hand);
+            if (hand.Count > 0)
+            {
+                _group = Group.Hand;
+                NavigationHelper.FocusItem(hand[0]);
+            }
         }
 
         /// <summary>
@@ -162,7 +188,7 @@ namespace WildfrostAccessibility
             if (result != -1 && result != _lastStandResultSeen)
             {
                 _lastStandResultSeen = result;
-                ScreenReader.Say(Loc.Get(result == 0
+                ScreenReader.SayEvent(Loc.Get(result == 0
                     ? "battle_last_stand_won"
                     : "battle_last_stand_lost"), interrupt: true);
             }
@@ -172,17 +198,17 @@ namespace WildfrostAccessibility
         private void OnCardInjured(CardData card)
         {
             if (card == null) return;
-            ScreenReader.Say(Loc.Get("battle_companion_injured", card.title));
+            ScreenReader.SayEvent(Loc.Get("battle_companion_injured", card.title));
         }
 
         private void OnTurnStart(int turn)
         {
-            ScreenReader.Say(Loc.Get("battle_turn", turn));
+            ScreenReader.SayEvent(Loc.Get("battle_turn", turn));
         }
 
         private void OnRedrawBellHit(RedrawBellSystem bell)
         {
-            ScreenReader.Say(Loc.Get("battle_bell_rung"));
+            ScreenReader.SayEvent(Loc.Get("battle_bell_rung"));
         }
 
         // ---- Combat narration ------------------------------------------------
@@ -205,20 +231,20 @@ namespace WildfrostAccessibility
 
             if (hit.dodged)
             {
-                ScreenReader.Say(Loc.Get("battle_dodged", target));
+                ScreenReader.SayEvent(Loc.Get("battle_dodged", target));
                 return;
             }
 
             if (hit.damageDealt > 0)
             {
                 if (hit.attacker?.data != null)
-                    ScreenReader.Say(Loc.Get("battle_hit", hit.attacker.data.title, target, hit.damageDealt));
+                    ScreenReader.SayEvent(Loc.Get("battle_hit", hit.attacker.data.title, target, hit.damageDealt));
                 else
-                    ScreenReader.Say(Loc.Get("battle_takes_damage", target, hit.damageDealt));
+                    ScreenReader.SayEvent(Loc.Get("battle_takes_damage", target, hit.damageDealt));
             }
             else if (hit.damageDealt < 0)
             {
-                ScreenReader.Say(Loc.Get("battle_healed", target, -hit.damageDealt));
+                ScreenReader.SayEvent(Loc.Get("battle_healed", target, -hit.damageDealt));
             }
             // Zero-damage hits (pure status applications) are narrated by OnStatusApplied
         }
@@ -226,7 +252,7 @@ namespace WildfrostAccessibility
         private void OnEntityKilled(Entity entity, DeathType deathType)
         {
             if (!InCombat() || entity?.data == null) return;
-            ScreenReader.Say(Loc.Get("battle_destroyed", entity.data.title));
+            ScreenReader.SayEvent(Loc.Get("battle_destroyed", entity.data.title));
         }
 
         private void OnStatusApplied(StatusEffectApply apply)
@@ -235,7 +261,7 @@ namespace WildfrostAccessibility
             if (apply?.effectData == null || apply.target?.data == null) return;
             if (!apply.effectData.visible || apply.count <= 0) return;
 
-            ScreenReader.Say(Loc.Get("battle_status_applied",
+            ScreenReader.SayEvent(Loc.Get("battle_status_applied",
                 apply.count, ItemDescriber.GetStatusName(apply.effectData), apply.target.data.title));
         }
 
@@ -253,13 +279,13 @@ namespace WildfrostAccessibility
             // The game skips a snowed unit's trigger entirely (ActionProcessTrigger)
             if (trigger.entity.IsSnowed)
             {
-                ScreenReader.Say(Loc.Get("battle_trigger_snowed", name));
+                ScreenReader.SayEvent(Loc.Get("battle_trigger_snowed", name));
                 return;
             }
 
             if (trigger.nullified)
             {
-                ScreenReader.Say(Loc.Get("battle_trigger_nullified", name));
+                ScreenReader.SayEvent(Loc.Get("battle_trigger_nullified", name));
                 return;
             }
 
@@ -267,13 +293,13 @@ namespace WildfrostAccessibility
             {
                 case "smackback":
                     string attacker = trigger.triggeredBy?.data?.title;
-                    ScreenReader.Say(attacker != null
+                    ScreenReader.SayEvent(attacker != null
                         ? Loc.Get("battle_trigger_smackback", name, attacker)
                         : Loc.Get("battle_trigger_acts", name));
                     break;
 
                 case "laststand":
-                    ScreenReader.Say(Loc.Get("battle_trigger_laststand", name));
+                    ScreenReader.SayEvent(Loc.Get("battle_trigger_laststand", name));
                     break;
 
                 default:
@@ -282,9 +308,9 @@ namespace WildfrostAccessibility
                     Entity by = trigger.triggeredBy;
                     if (by != null && by != trigger.entity && by.data != null
                         && by != trigger.entity.owner?.entity)
-                        ScreenReader.Say(Loc.Get("battle_trigger_chain", name, by.data.title));
+                        ScreenReader.SayEvent(Loc.Get("battle_trigger_chain", name, by.data.title));
                     else
-                        ScreenReader.Say(Loc.Get("battle_trigger_acts", name));
+                        ScreenReader.SayEvent(Loc.Get("battle_trigger_acts", name));
                     break;
             }
         }
@@ -293,7 +319,7 @@ namespace WildfrostAccessibility
         private void OnKillCombo(int combo)
         {
             if (!InCombat()) return;
-            ScreenReader.Say(Loc.Get("battle_kill_combo", combo));
+            ScreenReader.SayEvent(Loc.Get("battle_kill_combo", combo));
         }
 
         /// <summary>Announce gold earned during battle (combo bonuses, bounties).</summary>
@@ -301,7 +327,7 @@ namespace WildfrostAccessibility
         {
             if (!InCombat() || amount <= 0) return;
             if (owner != null && References.Player != null && owner != References.Player) return;
-            ScreenReader.Say(Loc.Get("battle_gold_dropped", amount));
+            ScreenReader.SayEvent(Loc.Get("battle_gold_dropped", amount));
         }
 
         // ---- Input ----------------------------------------------------------
@@ -375,6 +401,31 @@ namespace WildfrostAccessibility
                 items, navSystem?.currentNavigationItem, dir, vertical: false);
             if (next != null)
                 NavigationHelper.FocusItem(next);
+        }
+
+        /// <summary>
+        /// After an overlay (the inventory) closes, land focus on the first hand
+        /// card rather than wherever the game left it. Falls back to any group
+        /// with cards if the hand is empty.
+        /// </summary>
+        protected override UINavigationItem DefaultFocusItem()
+        {
+            var hand = GetGroupItems(Group.Hand);
+            if (hand.Count > 0)
+            {
+                _group = Group.Hand;
+                return hand[0];
+            }
+            foreach (Group group in new[] { Group.PlayerBoard, Group.EnemyBoard, Group.System })
+            {
+                var items = GetGroupItems(group);
+                if (items.Count > 0)
+                {
+                    _group = group;
+                    return items[0];
+                }
+            }
+            return null;
         }
 
         /// <summary>Move to the next/previous group and focus its first item.</summary>
@@ -586,17 +637,17 @@ namespace WildfrostAccessibility
                         string msg = Loc.Get("battle_unit_recalled", title);
                         if (fromBoard)
                             msg += " " + Loc.Get("battle_free_action");
-                        ScreenReader.Say(msg);
+                        ScreenReader.SayEvent(msg);
                     }
                     else if (acted && fromBoard)
                     {
                         // Repositioning a board unit is free — the turn continues
-                        ScreenReader.Say(Loc.Get("battle_unit_moved", title)
+                        ScreenReader.SayEvent(Loc.Get("battle_unit_moved", title)
                             + " " + Loc.Get("battle_free_action"));
                     }
                     else if (acted)
                     {
-                        ScreenReader.Say(Loc.Get("battle_card_released", title));
+                        ScreenReader.SayEvent(Loc.Get("battle_card_released", title));
                     }
                     else
                     {
@@ -887,6 +938,136 @@ namespace WildfrostAccessibility
                 parts.Add(wave);
 
             ScreenReader.Say(string.Join(". ", parts), interrupt: true);
+        }
+
+        // ---- Review buffer sources -------------------------------------------
+
+        /// <summary>Hand buffer: one item per hand card, as its short read.</summary>
+        internal List<string> BuildHandItems()
+        {
+            var hand = Battle.instance?.player?.handContainer;
+            if (hand == null) return null;
+
+            var items = new List<string>();
+            foreach (Entity entity in hand)
+            {
+                string desc = ItemDescriber.DescribeEntityShort(entity);
+                if (desc != null)
+                    items.Add(desc);
+            }
+            return items;
+        }
+
+        /// <summary>Board buffer: one item per unit with its position, your side first.</summary>
+        internal List<string> BuildBoardItems()
+        {
+            var battle = Battle.instance;
+            if (battle == null) return null;
+
+            var items = new List<string>();
+            AddSideBufferItems(items, battle.player);
+            AddSideBufferItems(items, battle.enemy);
+            return items;
+        }
+
+        private static void AddSideBufferItems(List<string> items, Character character)
+        {
+            if (character == null) return;
+            for (int row = 0; row < 2; row++)
+            {
+                CardSlotLane lane = GetLane(character, row);
+                if (lane?.slots == null) continue;
+                foreach (CardSlot slot in lane.slots)
+                {
+                    Entity occupant = slot != null ? slot.GetTop() : null;
+                    if (occupant?.data == null) continue;
+
+                    string summary = ItemDescriber.SummarizeEntity(occupant);
+                    if (summary == null) continue;
+
+                    string position = ItemDescriber.GetSlotPosition(slot);
+                    items.Add(string.IsNullOrEmpty(position)
+                        ? summary
+                        : position + ": " + summary);
+                }
+            }
+        }
+
+        /// <summary>Resources buffer: gold, bell, turn, piles, wave counter.</summary>
+        internal List<string> BuildResourceItems()
+        {
+            var battle = Battle.instance;
+            if (battle == null) return null;
+
+            var items = new List<string>();
+
+            try
+            {
+                items.Add(Loc.Get("gold_amount", References.Player.data.inventory.gold.Value));
+            }
+            catch { }
+
+            var bell = Object.FindObjectOfType<RedrawBellSystem>();
+            if (bell != null)
+            {
+                items.Add(bell.IsCharged
+                    ? Loc.Get("battle_bell_charged")
+                    : Loc.Get("battle_bell_charging", bell.counter.current));
+            }
+
+            items.Add(Loc.Get("battle_turn", battle.turnCount) + ". "
+                + (battle.phase == Battle.Phase.Play
+                    ? Loc.Get("battle_phase_play")
+                    : Loc.Get("battle_phase_other")));
+
+            var draw = battle.player?.drawContainer;
+            if (draw != null)
+                items.Add(Loc.Get(draw.Count == 1 ? "pocket_draw_one" : "pocket_draw", draw.Count));
+
+            var discard = battle.player?.discardContainer;
+            if (discard != null)
+                items.Add(Loc.Get(discard.Count == 1 ? "pocket_discard_one" : "pocket_discard", discard.Count));
+
+            string wave = GetWaveCounterText();
+            if (wave != null)
+                items.Add(wave);
+
+            return items;
+        }
+
+        /// <summary>Waves buffer: the counter plus one item per remaining wave.</summary>
+        internal List<string> BuildWaveItems()
+        {
+            var waveManager = GetWaveManager();
+            if (waveManager?.list == null) return null;
+
+            var items = new List<string>();
+            string counterText = GetWaveCounterText();
+            if (counterText != null)
+                items.Add(counterText);
+
+            int index = 0;
+            foreach (var wave in waveManager.list)
+            {
+                index++;
+                if (wave == null || wave.spawned) continue;
+
+                var names = new List<string>();
+                if (wave.units != null)
+                {
+                    foreach (CardData unit in wave.units)
+                    {
+                        if (unit != null)
+                            names.Add(unit.title);
+                    }
+                }
+
+                string desc = Loc.Get("battle_wave_n", index, string.Join(", ", names));
+                if (wave.isBossWave)
+                    desc += ", " + Loc.Get("battle_boss_wave");
+                items.Add(desc);
+            }
+            return items;
         }
 
         public override string GetHelpText()

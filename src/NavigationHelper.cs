@@ -22,6 +22,15 @@ namespace WildfrostAccessibility
         /// </summary>
         public static NavDirection GetNavigationInput()
         {
+            // Ctrl+arrows belong to the review buffers (ReviewBuffers) —
+            // while Ctrl is held the real selection must never move, so
+            // reviewing is always safe.
+            if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
+            {
+                _navHeld = false;
+                return NavDirection.None;
+            }
+
             NavDirection dir = NavDirection.None;
 
             if (Input.GetKey(KeyCode.UpArrow)) dir = NavDirection.Up;

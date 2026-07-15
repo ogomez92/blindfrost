@@ -45,7 +45,7 @@ namespace WildfrostAccessibility
             if (hint != null)
                 parts.Add(hint);
 
-            ScreenReader.Say(string.Join(" ", parts), interrupt: true);
+            ScreenReader.SayEvent(string.Join(" ", parts), interrupt: true);
             return true;
         }
 
@@ -350,6 +350,39 @@ namespace WildfrostAccessibility
             ScreenReader.Say(string.Join(". ", parts), interrupt: true);
         }
 
+        /// <summary>
+        /// Map buffer: one review item per revealed location in journey order,
+        /// plus the count of locations not yet revealed.
+        /// </summary>
+        internal List<string> BuildLocationItems()
+        {
+            var campaign = Campaign.instance;
+            if (campaign?.nodes == null || References.Map == null)
+                return null;
+
+            var revealed = campaign.nodes
+                .Where(n => n != null && n.revealed && n.type != null && n.type.interactable)
+                .OrderBy(n => n.tier)
+                .ThenBy(n => n.positionIndex)
+                .ToList();
+
+            var items = new List<string>();
+            foreach (CampaignNode node in revealed)
+            {
+                MapNode mapNode = References.Map.FindNode(node);
+                items.Add(mapNode != null
+                    ? DescribeNode(mapNode, includeHints: false)
+                    : ScreenHandler.CleanName(node.name));
+            }
+
+            int hidden = campaign.nodes.Count(
+                n => n != null && !n.revealed && n.type != null && n.type.interactable);
+            if (hidden > 0)
+                items.Add(Loc.Get("map_hidden_nodes", hidden));
+
+            return items;
+        }
+
         /// <summary>I: details of the focused node — enemies per wave, rewards.</summary>
         private void AnnounceFocusedNodeDetails()
         {
@@ -365,11 +398,34 @@ namespace WildfrostAccessibility
                     mapNode = References.Map.FindNode(playerNode);
             }
 
-            if (mapNode?.campaignNode == null)
+            var items = BuildNodeDetailItems(mapNode);
+            if (items == null || items.Count == 0)
             {
                 ScreenReader.Say(Loc.Get("no_info_available"), interrupt: true);
                 return;
             }
+
+            ScreenReader.Say(string.Join(". ", items), interrupt: true);
+        }
+
+        /// <summary>
+        /// Details buffer for a focused map node: the same waves/enemies/reward
+        /// breakdown the I key reads, as steppable items.
+        /// </summary>
+        public override List<string> GetFocusedDetailParts(UINavigationItem item)
+        {
+            var mapNode = GetMapNode(item);
+            return mapNode != null ? BuildNodeDetailItems(mapNode) : null;
+        }
+
+        /// <summary>
+        /// Node summary, then one item per battle wave's enemy roster, then the
+        /// game's reward tooltip. Null when the node has nothing to describe.
+        /// </summary>
+        private List<string> BuildNodeDetailItems(MapNode mapNode)
+        {
+            if (mapNode?.campaignNode == null)
+                return null;
 
             var node = mapNode.campaignNode;
             var parts = new List<string> { DescribeNode(mapNode, includeHints: false) };
@@ -416,7 +472,7 @@ namespace WildfrostAccessibility
             }
             catch { /* nodes without reward data */ }
 
-            ScreenReader.Say(string.Join(". ", parts), interrupt: true);
+            return parts;
         }
 
         /// <summary>G: announce the player's gold.</summary>

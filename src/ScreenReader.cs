@@ -139,6 +139,19 @@ namespace WildfrostAccessibility
         }
 
         /// <summary>
+        /// Speak an unsolicited announcement — battle narration, story text,
+        /// popups, screen changes — and record it in the Events review buffer
+        /// so it can be re-read with Ctrl+Up later. Focus echoes and
+        /// on-demand readouts use Say instead: recording those would bury
+        /// the events under navigation chatter.
+        /// </summary>
+        public static void SayEvent(string text, bool interrupt = false)
+        {
+            ReviewBuffers.RecordEvent(text);
+            Say(text, interrupt);
+        }
+
+        /// <summary>
         /// Stop all current speech output.
         /// </summary>
         public static void Silence()

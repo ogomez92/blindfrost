@@ -41,6 +41,27 @@ namespace WildfrostAccessibility
         /// </summary>
         public static string ProcessForScreenReader(string rawText, IEnumerable<string> extraKeywords)
         {
+            var explanations = new List<string>();
+            string plainText = ProcessDescriptionParts(rawText, extraKeywords, explanations);
+
+            var sb = new StringBuilder(plainText);
+            foreach (string explanation in explanations)
+            {
+                if (sb.Length > 0) sb.Append(". ");
+                sb.Append(explanation);
+            }
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Same processing, but the keyword explanations come back as separate
+        /// strings ("Title: body. Note: note") instead of being appended, so
+        /// the Details review buffer can offer them one item at a time.
+        /// Card mention summaries stay inline in the returned text.
+        /// </summary>
+        public static string ProcessDescriptionParts(
+            string rawText, IEnumerable<string> extraKeywords, List<string> explanations)
+        {
             var mentionedKeywords = new List<KeywordInfo>();
             var mentionedCards = new List<CardData>();
 
@@ -77,27 +98,58 @@ namespace WildfrostAccessibility
                 sb.Append(summary);
             }
 
-            // Append keyword descriptions
+            // Collect keyword descriptions
             var seen = new HashSet<string>();
             foreach (var kw in mentionedKeywords)
             {
                 if (seen.Contains(kw.Title)) continue;
                 seen.Add(kw.Title);
 
-                if (!string.IsNullOrEmpty(kw.Description))
-                {
-                    string desc = StripRichText(kw.Description);
-                    if (sb.Length > 0) sb.Append(". ");
-                    sb.Append($"{kw.Title}: {desc}");
-                }
+                if (string.IsNullOrEmpty(kw.Description)) continue;
+                string explanation = $"{kw.Title}: {StripRichText(kw.Description)}";
                 if (!string.IsNullOrEmpty(kw.Note))
-                {
-                    string note = StripRichText(kw.Note);
-                    if (sb.Length > 0) sb.Append(". ");
-                    sb.Append($"Note: {note}");
-                }
+                    explanation += $". Note: {StripRichText(kw.Note)}";
+                explanations.Add(explanation);
             }
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// Keyword ids that render as inline stat glyphs (the heart, sword, and
+        /// hourglass icons a card's text draws mid-sentence). The short focus
+        /// read already announces those values as the card's stats, so echoing
+        /// them again as bare effect names ("Health" with no amount) is noise.
+        /// </summary>
+        private static readonly HashSet<string> StatIconKeywords =
+            new HashSet<string> { "health", "attack", "counter" };
+
+        /// <summary>
+        /// The effect names a card's text mentions, as the text renders them
+        /// ("Snow 2", "Consume") — no explanations. Used by the short focus
+        /// read, where the meaning waits in the Details review buffer.
+        /// </summary>
+        public static List<string> ExtractKeywordMentions(string rawText)
+        {
+            var result = new List<string>();
+            if (string.IsNullOrEmpty(rawText))
+                return result;
+
+            foreach (Match match in Regex.Matches(rawText, @"<keyword=([^>]+)>"))
+            {
+                string[] parts = match.Groups[1].Value.Trim().Split(' ');
+                if (StatIconKeywords.Contains(parts[0].ToLowerInvariant()))
+                    continue;
+
+                var kwInfo = GetKeywordInfo(parts[0]);
+
+                string text = kwInfo.Title;
+                if (parts.Length > 1 && int.TryParse(parts[1], out int count))
+                    text += $" {count}";
+
+                if (!result.Contains(text))
+                    result.Add(text);
+            }
+            return result;
         }
 
         /// <summary>

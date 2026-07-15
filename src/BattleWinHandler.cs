@@ -39,7 +39,7 @@ namespace WildfrostAccessibility
 
         protected override bool TryAnnounceScreen()
         {
-            ScreenReader.Say(Loc.Get("scene_BattleWin"), interrupt: true);
+            ScreenReader.SayEvent(Loc.Get("scene_BattleWin"), interrupt: true);
             return true;
         }
 
@@ -56,7 +56,7 @@ namespace WildfrostAccessibility
                 _promptSpoken = true;
                 string injuries = DescribeInjuries();
                 string prompt = Loc.Get("battlewin_continue");
-                ScreenReader.Say(injuries != null ? injuries + " " + prompt : prompt);
+                ScreenReader.SayEvent(injuries != null ? injuries + " " + prompt : prompt);
             }
 
             // Safety net: if the simulated press reached nothing (button wired

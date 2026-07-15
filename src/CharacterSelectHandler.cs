@@ -51,7 +51,7 @@ namespace WildfrostAccessibility
             string msg = (_leaderSelection != null && _leaderSelection.running)
                 ? Loc.Get("charselect_leaders")
                 : Loc.Get("scene_CharacterSelect");
-            ScreenReader.Say(msg, interrupt: true);
+            ScreenReader.SayEvent(msg, interrupt: true);
             return true;
         }
 

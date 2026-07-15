@@ -36,7 +36,7 @@ namespace WildfrostAccessibility
             // Known scenes have a curated localized name — always correct, available instantly
             if (Loc.TryGet("scene_" + _sceneName, out string knownName))
             {
-                ScreenReader.Say(knownName, interrupt: true);
+                ScreenReader.SayEvent(knownName, interrupt: true);
                 DebugLogger.Log(DebugLogger.LogCategory.Handler, Name, $"Screen title (known scene): {knownName}");
                 return true;
             }
@@ -48,7 +48,7 @@ namespace WildfrostAccessibility
             string title = FindScreenTitle();
             if (title != null)
             {
-                ScreenReader.Say(title, interrupt: true);
+                ScreenReader.SayEvent(title, interrupt: true);
                 DebugLogger.Log(DebugLogger.LogCategory.Handler, Name, $"Screen title: {title}");
                 return true;
             }
@@ -57,7 +57,7 @@ namespace WildfrostAccessibility
             if (_titleRetries >= 4)
             {
                 // Give up and announce the scene name
-                ScreenReader.Say(CleanName(_sceneName), interrupt: true);
+                ScreenReader.SayEvent(CleanName(_sceneName), interrupt: true);
                 return true;
             }
 

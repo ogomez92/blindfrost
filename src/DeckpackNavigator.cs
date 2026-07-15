@@ -133,8 +133,11 @@ namespace WildfrostAccessibility
             DebugLogger.LogState("Deckpack", "open", "closed");
             ResetDragState();
             ScreenReader.Say(Loc.Get("deckpack_closed"), interrupt: true);
-            // The underlying screen restores its focus — don't talk over this
+            // The game often leaves focus in limbo here — put it back on a real
+            // item (the first hand card in battle). Stay quiet through the close
+            // transition; RequestRefocus announces the item it lands on.
             owner?.SuppressFocusFor(1.5f);
+            owner?.RequestRefocus();
         }
 
         /// <summary>Inventory contents: deck, reserve, charm and crown counts.</summary>

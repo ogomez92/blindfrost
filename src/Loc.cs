@@ -181,7 +181,7 @@ namespace WildfrostAccessibility
             // English
             Add("en", "mod_loaded", "Wildfrost Accessibility loaded. Press F1 for help.");
             Add("en", "mod_unloaded", "Wildfrost Accessibility unloaded.");
-            Add("en", "help_text", "Wildfrost Accessibility. F1: this help. F10: toggle debug mode. Arrow keys: navigate. Enter: activate.");
+            Add("en", "help_text", "Wildfrost Accessibility. F1: this help. F10: toggle debug mode. Arrow keys: navigate. Enter: activate. Control plus arrow keys: review buffers. V: short or full descriptions.");
             Add("en", "screen_main_menu", "Main Menu. Use up and down arrows to navigate, Enter to select.");
             Add("en", "tutorial_prompt", "Tutorial: {0}");
             Add("en", "slot_your_side", "Your side");
@@ -196,7 +196,7 @@ namespace WildfrostAccessibility
             // German
             Add("de", "mod_loaded", "Wildfrost Barrierefreiheit geladen. F1 fuer Hilfe.");
             Add("de", "mod_unloaded", "Wildfrost Barrierefreiheit deaktiviert.");
-            Add("de", "help_text", "Wildfrost Barrierefreiheit. F1: diese Hilfe. F10: Debug-Modus umschalten. Pfeiltasten: navigieren. Enter: auswaehlen.");
+            Add("de", "help_text", "Wildfrost Barrierefreiheit. F1: diese Hilfe. F10: Debug-Modus umschalten. Pfeiltasten: navigieren. Enter: auswaehlen. Strg plus Pfeiltasten: Lesepuffer. V: kurze oder ausfuehrliche Beschreibungen.");
             Add("de", "screen_main_menu", "Hauptmenue. Pfeiltasten hoch und runter zum Navigieren, Enter zum Auswaehlen.");
             Add("de", "tutorial_prompt", "Anleitung: {0}");
             Add("de", "slot_your_side", "Deine Seite");
@@ -211,7 +211,7 @@ namespace WildfrostAccessibility
             // French
             Add("fr", "mod_loaded", "Accessibilite Wildfrost chargee. F1 pour l'aide.");
             Add("fr", "mod_unloaded", "Accessibilite Wildfrost dechargee.");
-            Add("fr", "help_text", "Accessibilite Wildfrost. F1: cette aide. F10: basculer le mode debogage. Fleches: naviguer. Entree: selectionner.");
+            Add("fr", "help_text", "Accessibilite Wildfrost. F1: cette aide. F10: basculer le mode debogage. Fleches: naviguer. Entree: selectionner. Ctrl plus fleches: tampons de lecture. V: descriptions courtes ou completes.");
             Add("fr", "screen_main_menu", "Menu principal. Fleches haut et bas pour naviguer, Entree pour selectionner.");
             Add("fr", "tutorial_prompt", "Tutoriel: {0}");
             Add("fr", "slot_your_side", "Votre cote");
@@ -226,7 +226,7 @@ namespace WildfrostAccessibility
             // Spanish
             Add("es", "mod_loaded", "Accesibilidad de Wildfrost cargada. F1 para ayuda.");
             Add("es", "mod_unloaded", "Accesibilidad de Wildfrost descargada.");
-            Add("es", "help_text", "Accesibilidad de Wildfrost. F1: esta ayuda. F10: alternar modo de depuracion. Flechas: navegar. Enter: seleccionar.");
+            Add("es", "help_text", "Accesibilidad de Wildfrost. F1: esta ayuda. F10: alternar modo de depuracion. Flechas: navegar. Enter: seleccionar. Ctrl mas flechas: buferes de revision. V: descripciones cortas o completas.");
             Add("es", "screen_main_menu", "Menu principal. Flechas arriba y abajo para navegar, Enter para seleccionar.");
             Add("es", "tutorial_prompt", "Tutorial: {0}");
             Add("es", "slot_your_side", "Tu lado");
@@ -241,7 +241,7 @@ namespace WildfrostAccessibility
             // Japanese
             Add("ja", "mod_loaded", "Wildfrost アクセシビリティが読み込まれました。F1でヘルプ。");
             Add("ja", "mod_unloaded", "Wildfrost アクセシビリティが無効になりました。");
-            Add("ja", "help_text", "Wildfrost アクセシビリティ。F1: ヘルプ。F10: デバッグモード切替。矢印キー: 移動。Enter: 決定。");
+            Add("ja", "help_text", "Wildfrost アクセシビリティ。F1: ヘルプ。F10: デバッグモード切替。矢印キー: 移動。Enter: 決定。Ctrl+矢印キー: レビューバッファ。V: 説明の長さ切替。");
             Add("ja", "screen_main_menu", "メインメニュー。上下矢印キーで移動、Enterで選択。");
             Add("ja", "tutorial_prompt", "チュートリアル: {0}");
             Add("ja", "slot_your_side", "味方側");
@@ -254,7 +254,7 @@ namespace WildfrostAccessibility
             // Korean
             Add("ko", "mod_loaded", "Wildfrost 접근성 모드 로드됨. F1 도움말.");
             Add("ko", "mod_unloaded", "Wildfrost 접근성 모드 해제됨.");
-            Add("ko", "help_text", "Wildfrost 접근성. F1: 도움말. F10: 디버그 모드 전환. 방향키: 탐색. Enter: 선택.");
+            Add("ko", "help_text", "Wildfrost 접근성. F1: 도움말. F10: 디버그 모드 전환. 방향키: 탐색. Enter: 선택. Ctrl+방향키: 검토 버퍼. V: 설명 길이 전환.");
             Add("ko", "screen_main_menu", "메인 메뉴. 위아래 방향키로 탐색, Enter로 선택.");
             Add("ko", "tutorial_prompt", "튜토리얼: {0}");
             Add("ko", "slot_your_side", "아군 측");
@@ -267,7 +267,7 @@ namespace WildfrostAccessibility
             // Simplified Chinese
             Add("zh-Hans", "mod_loaded", "Wildfrost 无障碍已加载。按F1获取帮助。");
             Add("zh-Hans", "mod_unloaded", "Wildfrost 无障碍已卸载。");
-            Add("zh-Hans", "help_text", "Wildfrost 无障碍。F1: 帮助。F10: 切换调试模式。方向键: 导航。回车: 确认。");
+            Add("zh-Hans", "help_text", "Wildfrost 无障碍。F1: 帮助。F10: 切换调试模式。方向键: 导航。回车: 确认。Ctrl加方向键: 查看缓冲区。V: 切换描述长短。");
             Add("zh-Hans", "screen_main_menu", "主菜单。上下方向键导航，回车键选择。");
             Add("zh-Hans", "tutorial_prompt", "教程: {0}");
             Add("zh-Hans", "slot_your_side", "己方");
@@ -280,7 +280,7 @@ namespace WildfrostAccessibility
             // Traditional Chinese
             Add("zh-Hant", "mod_loaded", "Wildfrost 無障礙已載入。按F1取得說明。");
             Add("zh-Hant", "mod_unloaded", "Wildfrost 無障礙已卸載。");
-            Add("zh-Hant", "help_text", "Wildfrost 無障礙。F1: 說明。F10: 切換偵錯模式。方向鍵: 導航。Enter: 確認。");
+            Add("zh-Hant", "help_text", "Wildfrost 無障礙。F1: 說明。F10: 切換偵錯模式。方向鍵: 導航。Enter: 確認。Ctrl加方向鍵: 檢視緩衝區。V: 切換描述長短。");
             Add("zh-Hant", "screen_main_menu", "主選單。上下方向鍵導航，Enter鍵選擇。");
             Add("zh-Hant", "tutorial_prompt", "教學: {0}");
             Add("zh-Hant", "slot_your_side", "己方");
@@ -293,7 +293,7 @@ namespace WildfrostAccessibility
             // Italian
             Add("it", "mod_loaded", "Accessibilita Wildfrost caricata. F1 per aiuto.");
             Add("it", "mod_unloaded", "Accessibilita Wildfrost disattivata.");
-            Add("it", "help_text", "Accessibilita Wildfrost. F1: aiuto. F10: attiva/disattiva debug. Frecce: navigare. Invio: selezionare.");
+            Add("it", "help_text", "Accessibilita Wildfrost. F1: aiuto. F10: attiva/disattiva debug. Frecce: navigare. Invio: selezionare. Ctrl piu frecce: buffer di revisione. V: descrizioni brevi o complete.");
             Add("it", "screen_main_menu", "Menu principale. Frecce su e giu per navigare, Invio per selezionare.");
             Add("it", "tutorial_prompt", "Tutorial: {0}");
             Add("it", "slot_your_side", "Il tuo lato");
@@ -306,7 +306,7 @@ namespace WildfrostAccessibility
             // Portuguese
             Add("pt", "mod_loaded", "Acessibilidade Wildfrost carregada. F1 para ajuda.");
             Add("pt", "mod_unloaded", "Acessibilidade Wildfrost descarregada.");
-            Add("pt", "help_text", "Acessibilidade Wildfrost. F1: ajuda. F10: alternar modo de depuracao. Setas: navegar. Enter: selecionar.");
+            Add("pt", "help_text", "Acessibilidade Wildfrost. F1: ajuda. F10: alternar modo de depuracao. Setas: navegar. Enter: selecionar. Ctrl mais setas: buffers de revisao. V: descricoes curtas ou completas.");
             Add("pt", "screen_main_menu", "Menu principal. Setas para cima e para baixo para navegar, Enter para selecionar.");
             Add("pt", "tutorial_prompt", "Tutorial: {0}");
             Add("pt", "slot_your_side", "Seu lado");
@@ -319,7 +319,7 @@ namespace WildfrostAccessibility
             // Russian
             Add("ru", "mod_loaded", "Доступность Wildfrost загружена. F1 для справки.");
             Add("ru", "mod_unloaded", "Доступность Wildfrost выгружена.");
-            Add("ru", "help_text", "Доступность Wildfrost. F1: справка. F10: режим отладки. Стрелки: навигация. Enter: выбрать.");
+            Add("ru", "help_text", "Доступность Wildfrost. F1: справка. F10: режим отладки. Стрелки: навигация. Enter: выбрать. Ctrl со стрелками: буферы просмотра. V: краткие или полные описания.");
             Add("ru", "screen_main_menu", "Главное меню. Стрелки вверх и вниз для навигации, Enter для выбора.");
             Add("ru", "tutorial_prompt", "Обучение: {0}");
             Add("ru", "slot_your_side", "Ваша сторона");
@@ -332,7 +332,7 @@ namespace WildfrostAccessibility
             // Polish
             Add("pl", "mod_loaded", "Dostepnosc Wildfrost zaladowana. F1 aby uzyskac pomoc.");
             Add("pl", "mod_unloaded", "Dostepnosc Wildfrost wylaczona.");
-            Add("pl", "help_text", "Dostepnosc Wildfrost. F1: pomoc. F10: tryb debugowania. Strzalki: nawigacja. Enter: wybierz.");
+            Add("pl", "help_text", "Dostepnosc Wildfrost. F1: pomoc. F10: tryb debugowania. Strzalki: nawigacja. Enter: wybierz. Ctrl plus strzalki: bufory przegladu. V: krotkie lub pelne opisy.");
             Add("pl", "screen_main_menu", "Menu glowne. Strzalki gora i dol do nawigacji, Enter aby wybrac.");
             Add("pl", "tutorial_prompt", "Samouczek: {0}");
             Add("pl", "slot_your_side", "Twoja strona");
@@ -345,7 +345,7 @@ namespace WildfrostAccessibility
             // Turkish
             Add("tr", "mod_loaded", "Wildfrost Erisilebilirlik yuklendi. Yardim icin F1.");
             Add("tr", "mod_unloaded", "Wildfrost Erisilebilirlik devre disi.");
-            Add("tr", "help_text", "Wildfrost Erisilebilirlik. F1: yardim. F10: hata ayiklama modu. Ok tuslari: gezinme. Enter: sec.");
+            Add("tr", "help_text", "Wildfrost Erisilebilirlik. F1: yardim. F10: hata ayiklama modu. Ok tuslari: gezinme. Enter: sec. Ctrl arti ok tuslari: inceleme arabellekleri. V: kisa veya tam aciklamalar.");
             Add("tr", "screen_main_menu", "Ana menu. Yukari ve asagi ok tuslariyla gezinin, Enter ile secin.");
             Add("tr", "tutorial_prompt", "Egitim: {0}");
             Add("tr", "slot_your_side", "Sizin taraf");
@@ -358,7 +358,212 @@ namespace WildfrostAccessibility
             // More languages can be added as needed.
             // The game supports many more locales; they will fall back to English until translated.
 
+            RegisterReviewBufferStrings();
             RegisterHandlerStrings();
+        }
+
+        /// <summary>
+        /// Review buffer strings (Ctrl+arrows) and the V verbosity toggle,
+        /// for every core language.
+        /// </summary>
+        private static void RegisterReviewBufferStrings()
+        {
+            // English
+            Add("en", "buffer_events", "Events");
+            Add("en", "buffer_details", "Details");
+            Add("en", "buffer_hand", "Hand");
+            Add("en", "buffer_board", "Board");
+            Add("en", "buffer_resources", "Resources");
+            Add("en", "buffer_waves", "Waves");
+            Add("en", "buffer_map", "Map locations");
+            Add("en", "buffer_switched", "{0}, {1} items");
+            Add("en", "buffer_switched_one", "{0}, 1 item");
+            Add("en", "buffer_none", "Nothing to review");
+            Add("en", "verbosity_short", "Short descriptions. Details are in the review buffers.");
+            Add("en", "verbosity_verbose", "Full descriptions");
+
+            // German
+            Add("de", "buffer_events", "Ereignisse");
+            Add("de", "buffer_details", "Details");
+            Add("de", "buffer_hand", "Hand");
+            Add("de", "buffer_board", "Spielfeld");
+            Add("de", "buffer_resources", "Ressourcen");
+            Add("de", "buffer_waves", "Wellen");
+            Add("de", "buffer_map", "Orte auf der Karte");
+            Add("de", "buffer_switched", "{0}, {1} Eintraege");
+            Add("de", "buffer_switched_one", "{0}, 1 Eintrag");
+            Add("de", "buffer_none", "Nichts zum Nachlesen");
+            Add("de", "verbosity_short", "Kurze Beschreibungen. Details stehen in den Lesepuffern.");
+            Add("de", "verbosity_verbose", "Ausfuehrliche Beschreibungen");
+
+            // French
+            Add("fr", "buffer_events", "Evenements");
+            Add("fr", "buffer_details", "Details");
+            Add("fr", "buffer_hand", "Main");
+            Add("fr", "buffer_board", "Plateau");
+            Add("fr", "buffer_resources", "Ressources");
+            Add("fr", "buffer_waves", "Vagues");
+            Add("fr", "buffer_map", "Lieux de la carte");
+            Add("fr", "buffer_switched", "{0}, {1} elements");
+            Add("fr", "buffer_switched_one", "{0}, 1 element");
+            Add("fr", "buffer_none", "Rien a relire");
+            Add("fr", "verbosity_short", "Descriptions courtes. Les details sont dans les tampons de lecture.");
+            Add("fr", "verbosity_verbose", "Descriptions completes");
+
+            // Spanish
+            Add("es", "buffer_events", "Eventos");
+            Add("es", "buffer_details", "Detalles");
+            Add("es", "buffer_hand", "Mano");
+            Add("es", "buffer_board", "Tablero");
+            Add("es", "buffer_resources", "Recursos");
+            Add("es", "buffer_waves", "Oleadas");
+            Add("es", "buffer_map", "Lugares del mapa");
+            Add("es", "buffer_switched", "{0}, {1} elementos");
+            Add("es", "buffer_switched_one", "{0}, 1 elemento");
+            Add("es", "buffer_none", "Nada que revisar");
+            Add("es", "verbosity_short", "Descripciones cortas. Los detalles estan en los buferes de revision.");
+            Add("es", "verbosity_verbose", "Descripciones completas");
+
+            // Japanese
+            Add("ja", "buffer_events", "イベント");
+            Add("ja", "buffer_details", "詳細");
+            Add("ja", "buffer_hand", "手札");
+            Add("ja", "buffer_board", "盤面");
+            Add("ja", "buffer_resources", "リソース");
+            Add("ja", "buffer_waves", "ウェーブ");
+            Add("ja", "buffer_map", "マップの場所");
+            Add("ja", "buffer_switched", "{0}、{1}件");
+            Add("ja", "buffer_switched_one", "{0}、1件");
+            Add("ja", "buffer_none", "確認できる情報はありません");
+            Add("ja", "verbosity_short", "短い説明。詳細はレビューバッファにあります。");
+            Add("ja", "verbosity_verbose", "完全な説明");
+
+            // Korean
+            Add("ko", "buffer_events", "이벤트");
+            Add("ko", "buffer_details", "상세 정보");
+            Add("ko", "buffer_hand", "손패");
+            Add("ko", "buffer_board", "전장");
+            Add("ko", "buffer_resources", "자원");
+            Add("ko", "buffer_waves", "웨이브");
+            Add("ko", "buffer_map", "지도 위치");
+            Add("ko", "buffer_switched", "{0}, {1}개 항목");
+            Add("ko", "buffer_switched_one", "{0}, 1개 항목");
+            Add("ko", "buffer_none", "검토할 내용 없음");
+            Add("ko", "verbosity_short", "짧은 설명. 자세한 내용은 검토 버퍼에 있습니다.");
+            Add("ko", "verbosity_verbose", "전체 설명");
+
+            // Simplified Chinese
+            Add("zh-Hans", "buffer_events", "事件");
+            Add("zh-Hans", "buffer_details", "详情");
+            Add("zh-Hans", "buffer_hand", "手牌");
+            Add("zh-Hans", "buffer_board", "战场");
+            Add("zh-Hans", "buffer_resources", "资源");
+            Add("zh-Hans", "buffer_waves", "波次");
+            Add("zh-Hans", "buffer_map", "地图地点");
+            Add("zh-Hans", "buffer_switched", "{0}，{1}项");
+            Add("zh-Hans", "buffer_switched_one", "{0}，1项");
+            Add("zh-Hans", "buffer_none", "没有可查看的内容");
+            Add("zh-Hans", "verbosity_short", "简短描述。详细信息在查看缓冲区中。");
+            Add("zh-Hans", "verbosity_verbose", "完整描述");
+
+            // Traditional Chinese
+            Add("zh-Hant", "buffer_events", "事件");
+            Add("zh-Hant", "buffer_details", "詳情");
+            Add("zh-Hant", "buffer_hand", "手牌");
+            Add("zh-Hant", "buffer_board", "戰場");
+            Add("zh-Hant", "buffer_resources", "資源");
+            Add("zh-Hant", "buffer_waves", "波次");
+            Add("zh-Hant", "buffer_map", "地圖地點");
+            Add("zh-Hant", "buffer_switched", "{0}，{1}項");
+            Add("zh-Hant", "buffer_switched_one", "{0}，1項");
+            Add("zh-Hant", "buffer_none", "沒有可查看的內容");
+            Add("zh-Hant", "verbosity_short", "簡短描述。詳細資訊在檢視緩衝區中。");
+            Add("zh-Hant", "verbosity_verbose", "完整描述");
+
+            // Italian
+            Add("it", "buffer_events", "Eventi");
+            Add("it", "buffer_details", "Dettagli");
+            Add("it", "buffer_hand", "Mano");
+            Add("it", "buffer_board", "Campo");
+            Add("it", "buffer_resources", "Risorse");
+            Add("it", "buffer_waves", "Ondate");
+            Add("it", "buffer_map", "Luoghi della mappa");
+            Add("it", "buffer_switched", "{0}, {1} elementi");
+            Add("it", "buffer_switched_one", "{0}, 1 elemento");
+            Add("it", "buffer_none", "Niente da rivedere");
+            Add("it", "verbosity_short", "Descrizioni brevi. I dettagli sono nei buffer di revisione.");
+            Add("it", "verbosity_verbose", "Descrizioni complete");
+
+            // Portuguese
+            Add("pt", "buffer_events", "Eventos");
+            Add("pt", "buffer_details", "Detalhes");
+            Add("pt", "buffer_hand", "Mao");
+            Add("pt", "buffer_board", "Tabuleiro");
+            Add("pt", "buffer_resources", "Recursos");
+            Add("pt", "buffer_waves", "Ondas");
+            Add("pt", "buffer_map", "Locais do mapa");
+            Add("pt", "buffer_switched", "{0}, {1} itens");
+            Add("pt", "buffer_switched_one", "{0}, 1 item");
+            Add("pt", "buffer_none", "Nada para rever");
+            Add("pt", "verbosity_short", "Descricoes curtas. Os detalhes estao nos buffers de revisao.");
+            Add("pt", "verbosity_verbose", "Descricoes completas");
+
+            // Russian
+            Add("ru", "buffer_events", "События");
+            Add("ru", "buffer_details", "Подробности");
+            Add("ru", "buffer_hand", "Рука");
+            Add("ru", "buffer_board", "Поле");
+            Add("ru", "buffer_resources", "Ресурсы");
+            Add("ru", "buffer_waves", "Волны");
+            Add("ru", "buffer_map", "Места на карте");
+            Add("ru", "buffer_switched", "{0}, элементов: {1}");
+            Add("ru", "buffer_switched_one", "{0}, 1 элемент");
+            Add("ru", "buffer_none", "Нечего просматривать");
+            Add("ru", "verbosity_short", "Краткие описания. Подробности в буферах просмотра.");
+            Add("ru", "verbosity_verbose", "Полные описания");
+
+            // Polish
+            Add("pl", "buffer_events", "Zdarzenia");
+            Add("pl", "buffer_details", "Szczegoly");
+            Add("pl", "buffer_hand", "Reka");
+            Add("pl", "buffer_board", "Plansza");
+            Add("pl", "buffer_resources", "Zasoby");
+            Add("pl", "buffer_waves", "Fale");
+            Add("pl", "buffer_map", "Miejsca na mapie");
+            Add("pl", "buffer_switched", "{0}, elementow: {1}");
+            Add("pl", "buffer_switched_one", "{0}, 1 element");
+            Add("pl", "buffer_none", "Nie ma nic do przejrzenia");
+            Add("pl", "verbosity_short", "Krotkie opisy. Szczegoly sa w buforach przegladu.");
+            Add("pl", "verbosity_verbose", "Pelne opisy");
+
+            // Turkish
+            Add("tr", "buffer_events", "Olaylar");
+            Add("tr", "buffer_details", "Ayrintilar");
+            Add("tr", "buffer_hand", "El");
+            Add("tr", "buffer_board", "Saha");
+            Add("tr", "buffer_resources", "Kaynaklar");
+            Add("tr", "buffer_waves", "Dalgalar");
+            Add("tr", "buffer_map", "Harita konumlari");
+            Add("tr", "buffer_switched", "{0}, {1} oge");
+            Add("tr", "buffer_switched_one", "{0}, 1 oge");
+            Add("tr", "buffer_none", "Incelenecek bir sey yok");
+            Add("tr", "verbosity_short", "Kisa aciklamalar. Ayrintilar inceleme arabelleklerinde.");
+            Add("tr", "verbosity_verbose", "Tam aciklamalar");
+
+            // Buffer hint appended to every screen's F1 help
+            Add("en", "help_buffers", "Control plus up or down steps through a review buffer; control plus left or right switches buffers. V toggles short or full descriptions.");
+            Add("de", "help_buffers", "Strg plus Hoch oder Runter blaettert durch einen Lesepuffer; Strg plus Links oder Rechts wechselt den Puffer. V schaltet zwischen kurzen und ausfuehrlichen Beschreibungen um.");
+            Add("fr", "help_buffers", "Ctrl plus haut ou bas parcourt un tampon de lecture; Ctrl plus gauche ou droite change de tampon. V bascule entre descriptions courtes et completes.");
+            Add("es", "help_buffers", "Ctrl mas arriba o abajo recorre un bufer de revision; Ctrl mas izquierda o derecha cambia de bufer. V alterna descripciones cortas o completas.");
+            Add("ja", "help_buffers", "Ctrl+上下でレビューバッファ内を移動、Ctrl+左右でバッファ切替。Vで説明の長さを切替。");
+            Add("ko", "help_buffers", "Ctrl+위아래로 검토 버퍼 이동, Ctrl+좌우로 버퍼 전환. V로 설명 길이 전환.");
+            Add("zh-Hans", "help_buffers", "Ctrl加上下键在查看缓冲区中移动，Ctrl加左右键切换缓冲区。V键切换描述长短。");
+            Add("zh-Hant", "help_buffers", "Ctrl加上下鍵在檢視緩衝區中移動，Ctrl加左右鍵切換緩衝區。V鍵切換描述長短。");
+            Add("it", "help_buffers", "Ctrl piu su o giu scorre un buffer di revisione; Ctrl piu sinistra o destra cambia buffer. V alterna descrizioni brevi o complete.");
+            Add("pt", "help_buffers", "Ctrl mais cima ou baixo percorre um buffer de revisao; Ctrl mais esquerda ou direita troca de buffer. V alterna descricoes curtas ou completas.");
+            Add("ru", "help_buffers", "Ctrl со стрелками вверх или вниз перемещает по буферу просмотра; Ctrl влево или вправо переключает буферы. V переключает краткие или полные описания.");
+            Add("pl", "help_buffers", "Ctrl plus gora lub dol przewija bufor przegladu; Ctrl plus lewo lub prawo zmienia bufor. V przelacza krotkie lub pelne opisy.");
+            Add("tr", "help_buffers", "Ctrl arti yukari veya asagi bir inceleme arabelleginde gezinir; Ctrl arti sol veya sag arabellek degistirir. V kisa veya tam aciklamalari degistirir.");
         }
 
         /// <summary>
@@ -394,6 +599,17 @@ namespace WildfrostAccessibility
             Add("en", "scene_BattleWin", "Battle won! Victory screen.");
             Add("en", "scene_CampaignEnd", "Journey over.");
 
+            // CampaignEnd score screen (win / defeat / vanquished run summary)
+            Add("en", "campaignend_win", "Victory!");
+            Add("en", "campaignend_defeat", "Defeated.");
+            Add("en", "campaignend_vanquished", "Vanquished!");
+            Add("en", "campaignend_time", "Time");
+            Add("en", "campaignend_battles", "Battles won");
+            Add("en", "campaignend_blings", "Blings");
+            Add("en", "campaignend_score", "Your score: {0}.");
+            Add("en", "campaignend_town_progress", "Town progress: {0}.");
+            Add("en", "help_campaignend", "Run summary shown when a journey ends: your result, run stats, town progress, and final score. Arrow keys reach Back To Town and Scores, Enter selects. Ctrl+Up replays the summary.");
+
             // Victory screen
             Add("en", "battlewin_continue", "Press Enter to continue.");
             Add("en", "battlewin_injuries", "Injured this battle: {0}.");
@@ -416,6 +632,22 @@ namespace WildfrostAccessibility
             // Town
             Add("en", "screen_town", "Town, your base camp.");
             Add("en", "town_hint", "Arrow keys move between buildings, Enter selects, I describes the focused building. F1 for help.");
+            Add("en", "building_overlay_hint", "Arrow keys move between banners, Enter opens one, Escape leaves, I reads again.");
+            Add("en", "building_closed", "Closed.");
+            Add("en", "building_back", "Back.");
+            Add("en", "overlay_item", "{0}, {1} of {2}");
+            Add("en", "tribe_banner", "Tribe banner");
+            Add("en", "tribe_unlock_intro", "Complete this challenge to unlock the next tribe:");
+            Add("en", "overlay_browse", "{0} items. Use the arrow keys to browse them.");
+            Add("en", "overlay_position", "{0} of {1}");
+            Add("en", "challenge_stone", "Challenge");
+            Add("en", "challenge_hidden", "{0}, hidden challenge");
+            Add("en", "shrine_summary", "{0} incomplete, {1} completed.");
+            Add("en", "shrine_hint", "Up and down switch between incomplete and completed, left and right browse.");
+            Add("en", "shrine_row_incomplete", "Incomplete challenges");
+            Add("en", "shrine_row_completed", "Completed challenges");
+            Add("en", "shrine_none_incomplete", "No incomplete challenges.");
+            Add("en", "shrine_none_completed", "No completed challenges.");
             Add("en", "gate_continue_tutorial", "Your tutorial journey is in progress. Press Enter to continue it");
             Add("en", "gate_start_tutorial", "Starts your first journey. The game will offer you the tutorial");
             Add("en", "gate_continue_run", "Your journey is in progress. Press Enter to continue it");
@@ -557,6 +789,7 @@ namespace WildfrostAccessibility
             Add("en", "battle_unit_picked_up", "{0} picked up from the board.");
             Add("en", "battle_move_hint", "Arrow keys choose a destination slot or the recall zone, Enter confirms, Escape cancels.");
             Add("en", "tutorial_drag_hint", "To select and place: press Enter on the card, choose the destination with the arrow keys, then press Enter again.");
+            Add("en", "tutorial_drag_hint_infront", "To do this: press Enter on the card, use the arrow keys to choose the unit you want it in front of, then press Enter — your card takes that spot and pushes the unit back.");
             Add("en", "battle_unit_moved", "{0} moved.");
             Add("en", "battle_unit_recalled", "{0} recalled.");
             Add("en", "battle_free_action", "Free action, your turn continues.");
@@ -654,6 +887,15 @@ namespace WildfrostAccessibility
             Add("de", "scene_BossReward", "Boss-Belohnung.");
             Add("de", "scene_BattleWin", "Kampf gewonnen! Siegesbildschirm.");
             Add("de", "scene_CampaignEnd", "Reise beendet.");
+            Add("de", "campaignend_win", "Sieg!");
+            Add("de", "campaignend_defeat", "Besiegt.");
+            Add("de", "campaignend_vanquished", "Bezwungen!");
+            Add("de", "campaignend_time", "Zeit");
+            Add("de", "campaignend_battles", "Gewonnene Kaempfe");
+            Add("de", "campaignend_blings", "Blings");
+            Add("de", "campaignend_score", "Deine Punktzahl: {0}.");
+            Add("de", "campaignend_town_progress", "Stadtfortschritt: {0}.");
+            Add("de", "help_campaignend", "Zusammenfassung am Ende einer Reise: Ergebnis, Laufstatistiken, Stadtfortschritt und Endpunktzahl. Pfeiltasten erreichen Zurueck zur Stadt und Punkte, Enter waehlt. Strg+Hoch wiederholt die Zusammenfassung.");
             Add("de", "battlewin_continue", "Druecke Enter, um fortzufahren.");
             Add("de", "battlewin_injuries", "In diesem Kampf verletzt: {0}.");
             Add("de", "battlewin_not_ready", "Der Siegesbildschirm erscheint noch, einen Moment.");
@@ -897,6 +1139,15 @@ namespace WildfrostAccessibility
             Add("es", "scene_BossReward", "Recompensa de jefe.");
             Add("es", "scene_BattleWin", "Batalla ganada! Pantalla de victoria.");
             Add("es", "scene_CampaignEnd", "Fin del viaje.");
+            Add("es", "campaignend_win", "Victoria!");
+            Add("es", "campaignend_defeat", "Derrotado.");
+            Add("es", "campaignend_vanquished", "Victoria total!");
+            Add("es", "campaignend_time", "Tiempo");
+            Add("es", "campaignend_battles", "Batallas ganadas");
+            Add("es", "campaignend_blings", "Blings");
+            Add("es", "campaignend_score", "Tu puntuacion: {0}.");
+            Add("es", "campaignend_town_progress", "Progreso del pueblo: {0}.");
+            Add("es", "help_campaignend", "Resumen al terminar un viaje: resultado, estadisticas de la partida, progreso del pueblo y puntuacion final. Las flechas llegan a Volver al pueblo y Puntuaciones, Enter selecciona. Ctrl+Arriba repite el resumen.");
             Add("es", "battlewin_continue", "Pulsa Enter para continuar.");
             Add("es", "battlewin_injuries", "Heridos en esta batalla: {0}.");
             Add("es", "battlewin_not_ready", "La pantalla de victoria todavia esta apareciendo, un momento.");
@@ -1140,6 +1391,15 @@ namespace WildfrostAccessibility
             Add("fr", "scene_BossReward", "Recompense de boss.");
             Add("fr", "scene_BattleWin", "Bataille gagnee! Ecran de victoire.");
             Add("fr", "scene_CampaignEnd", "Fin du voyage.");
+            Add("fr", "campaignend_win", "Victoire!");
+            Add("fr", "campaignend_defeat", "Vaincu.");
+            Add("fr", "campaignend_vanquished", "Triomphe!");
+            Add("fr", "campaignend_time", "Temps");
+            Add("fr", "campaignend_battles", "Batailles gagnees");
+            Add("fr", "campaignend_blings", "Blings");
+            Add("fr", "campaignend_score", "Votre score: {0}.");
+            Add("fr", "campaignend_town_progress", "Progression du village: {0}.");
+            Add("fr", "help_campaignend", "Resume de fin de partie: resultat, statistiques de la partie, progression du village et score final. Les fleches atteignent Retour au village et Scores, Entree valide. Ctrl+Haut repete le resume.");
             Add("fr", "battlewin_continue", "Appuyez sur Entree pour continuer.");
             Add("fr", "battlewin_injuries", "Blesses dans cette bataille: {0}.");
             Add("fr", "battlewin_not_ready", "L'ecran de victoire est encore en train d'apparaitre, un instant.");

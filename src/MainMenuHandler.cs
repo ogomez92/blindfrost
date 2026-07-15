@@ -10,7 +10,7 @@ namespace WildfrostAccessibility
 
         protected override bool TryAnnounceScreen()
         {
-            ScreenReader.Say(Loc.Get("screen_main_menu"), interrupt: true);
+            ScreenReader.SayEvent(Loc.Get("screen_main_menu"), interrupt: true);
             return true;
         }
 

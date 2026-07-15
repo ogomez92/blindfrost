@@ -12,6 +12,15 @@ namespace WildfrostAccessibility
     public static class ItemDescriber
     {
         /// <summary>
+        /// When true, focused cards read with their full text and keyword
+        /// explanations (the pre-review-buffers behavior). When false (the
+        /// default), focus reads stay short — name, stats, effect names —
+        /// and the details wait in the Details review buffer and on I.
+        /// Toggled with V, persisted in the save file.
+        /// </summary>
+        public static bool VerboseFocus;
+
+        /// <summary>
         /// Describe a navigation item using the full recognition cascade.
         /// </summary>
         public static string Describe(UINavigationItem item, ScreenHandler owner)
@@ -54,7 +63,9 @@ namespace WildfrostAccessibility
             if (upgradeDisplay == null && item.clickHandler != null)
                 upgradeDisplay = item.clickHandler.GetComponentInParent<UpgradeDisplay>();
             if (upgradeDisplay != null && upgradeDisplay.data != null)
-                return DescribeUpgradeData(upgradeDisplay.data);
+                return VerboseFocus
+                    ? DescribeUpgradeData(upgradeDisplay.data)
+                    : DescribeUpgradeDataShort(upgradeDisplay.data);
 
             // Card/entity first: a card placed on the board is a child of its CardSlot,
             // so the slot check would shadow it and lose counter/status/description info.
@@ -63,7 +74,7 @@ namespace WildfrostAccessibility
             if (boardEntity == null && item.clickHandler != null)
                 boardEntity = item.clickHandler.GetComponentInParent<Entity>();
             if (boardEntity != null)
-                return DescribeEntity(boardEntity);
+                return DescribeEntityFocus(boardEntity);
 
             // Battlefield card slot (diamond placement slots)
             var slot = item.GetComponent<CardSlot>() ?? item.GetComponentInParent<CardSlot>();
@@ -113,7 +124,17 @@ namespace WildfrostAccessibility
             // Card/entity (units, items, charms in card form)
             var entity = FindComponent<Entity>(item);
             if (entity != null)
-                return DescribeEntity(entity);
+                return DescribeEntityFocus(entity);
+
+            // Unlock/challenge banners (tribe hut flags, challenge shrine): the
+            // challenge condition and how much progress remains
+            var challenge = FindComponent<ChallengeProgressDisplay>(item);
+            if (challenge != null)
+            {
+                string challengeText = DescribeChallengeProgress(challenge);
+                if (!string.IsNullOrEmpty(challengeText))
+                    return challengeText;
+            }
 
             // Anything else that pops keyword panels on hover (stat icons, misc UI)
             string keywordPanels = DescribeKeywordPanels(item, owner);
@@ -254,6 +275,77 @@ namespace WildfrostAccessibility
                 parts.Add(Loc.Get("building_new_unlock"));
 
             return string.Join(", ", parts);
+        }
+
+        /// <summary>
+        /// True when DescribeBuilding would yield only the building's name — no
+        /// challenge line, no construction or new-unlock state. Such a name
+        /// ("Balloon") tells the player nothing on its own, so the focus read
+        /// folds in the help text rather than leaving it to the I key.
+        /// </summary>
+        public static bool BuildingFocusIsBareName(Building building)
+        {
+            if (building == null)
+                return false;
+            if (building.GetComponentInChildren<ChallengeProgressDisplay>() != null)
+                return false;
+            if (!building.built && building.buildStarted)
+                return false;
+            if (building.HasUncheckedUnlocks)
+                return false;
+            return true;
+        }
+
+        /// <summary>
+        /// A building's in-game help text (BuildingType.helpKey, packed as
+        /// "title|body|note"), split into one part per segment. This is what the
+        /// I key reads; the Details review buffer steps through the same parts.
+        /// Empty list when the building has no help.
+        /// </summary>
+        public static List<string> GetBuildingHelpParts(Building building)
+        {
+            var parts = new List<string>();
+            if (building?.type == null)
+                return parts;
+
+            try
+            {
+                if (building.type.helpKey.IsEmpty)
+                    return parts;
+
+                string packed = building.type.helpKey.GetLocalizedString();
+                foreach (string segment in packed.Split('|'))
+                {
+                    string clean = TextProcessor.StripRichText(segment)?.Trim();
+                    if (!string.IsNullOrEmpty(clean))
+                        parts.Add(clean);
+                }
+            }
+            catch
+            {
+                // Localization may not be ready — the summary read is enough
+            }
+            return parts;
+        }
+
+        /// <summary>
+        /// Describe an unlock challenge banner: the condition text and the
+        /// current progress ("Kill 100 enemies, 6 out of 100").
+        /// </summary>
+        public static string DescribeChallengeProgress(ChallengeProgressDisplay display)
+        {
+            var parts = new List<string>();
+
+            string text = display.text != null ? display.text.text?.Trim() : null;
+            if (!string.IsNullOrEmpty(text))
+                parts.Add(TextProcessor.StripRichText(text));
+
+            string progress = display.progressText != null
+                ? display.progressText.text?.Trim() : null;
+            if (!string.IsNullOrEmpty(progress))
+                parts.Add(progress);
+
+            return parts.Count > 0 ? string.Join(", ", parts) : null;
         }
 
         /// <summary>
@@ -490,6 +582,295 @@ namespace WildfrostAccessibility
                 parts.Add(processed);
 
             return parts.Count > 0 ? string.Join(", ", parts) : null;
+        }
+
+        /// <summary>Focus read for a card: short by default, full when VerboseFocus.</summary>
+        public static string DescribeEntityFocus(Entity entity)
+        {
+            string desc = VerboseFocus ? DescribeEntity(entity) : DescribeEntityShort(entity);
+
+            // For a card on the board, slot its position in right after the name
+            // in the short "Row R S" form (e.g. "Row 1 3") so the player can map
+            // the battlefield by ear before the stats.
+            string slot = GetEntitySlotShort(entity);
+            if (string.IsNullOrEmpty(slot))
+                return desc;
+            if (string.IsNullOrEmpty(desc))
+                return slot;
+
+            int afterName = desc.IndexOf(", ");
+            return afterName < 0
+                ? desc + ", " + slot
+                : desc.Substring(0, afterName) + ", " + slot + desc.Substring(afterName);
+        }
+
+        /// <summary>
+        /// A board card's slot as "Row {row} {slot}" (e.g. "Row 1 3"), or null
+        /// when the entity is not sitting in a battlefield slot (hand, shop, ...).
+        /// </summary>
+        public static string GetEntitySlotShort(Entity entity)
+        {
+            if (entity == null || References.Battle == null)
+                return null;
+
+            var slot = entity.GetComponentInParent<CardSlot>();
+            var lane = slot != null ? slot.GetComponentInParent<CardSlotLane>() : null;
+            if (lane == null)
+                return null;
+
+            int rowIndex = References.Battle.GetRowIndex(lane);
+            int slotIndex = lane.slots.IndexOf(slot);
+            if (rowIndex < 0 || slotIndex < 0)
+                return null;
+
+            return Loc.Get("slot_row", rowIndex + 1) + " " + (slotIndex + 1);
+        }
+
+        /// <summary>
+        /// Short focus read: name, stats, and effect NAMES with stack counts —
+        /// no card text, no keyword explanations. Those wait in the Details
+        /// review buffer (Ctrl+Up) and in the game's inspect view (I).
+        /// </summary>
+        public static string DescribeEntityShort(Entity entity)
+        {
+            if (entity?.data == null) return null;
+
+            var parts = new List<string>();
+
+            string title = entity.data.title;
+            if (!string.IsNullOrEmpty(title))
+                parts.Add(title);
+
+            if (entity.damage.max > 0)
+                parts.Add(Loc.Get("stat_attack", GetShownAttack(entity)));
+
+            if (entity.hp.max > 0)
+                parts.Add(Loc.Get("stat_health", entity.hp.current));
+
+            if (entity.counter.max > 0)
+            {
+                parts.Add(Loc.Get("stat_counter", entity.counter.current));
+                if (entity.IsSnowed)
+                    parts.Add(Loc.Get("counter_frozen"));
+            }
+
+            string statuses = DescribeStatusEffects(entity);
+            if (!string.IsNullOrEmpty(statuses))
+                parts.Add(statuses);
+
+            int injuryCount = 0;
+            try { injuryCount = entity.data.injuries?.Count ?? 0; } catch { }
+            if (injuryCount > 0)
+            {
+                parts.Add(injuryCount == 1
+                    ? Loc.Get("card_injured_one")
+                    : Loc.Get("card_injured", injuryCount));
+            }
+
+            // Effect names from the card text ("Snow 2", "Consume"), skipping
+            // ones the active statuses already announced
+            string rawDesc = null;
+            try { rawDesc = Card.GetDescription(entity.data); } catch { }
+            foreach (string mention in TextProcessor.ExtractKeywordMentions(rawDesc))
+            {
+                if (statuses == null || !statuses.Contains(mention))
+                    parts.Add(mention);
+            }
+
+            // Upgrades by name only — their effect text is a detail
+            AddUpgradeNames(parts, entity.data);
+
+            return parts.Count > 0 ? string.Join(", ", parts) : null;
+        }
+
+        /// <summary>Crown plus charm/token titles, without their effect text.</summary>
+        private static void AddUpgradeNames(List<string> parts, CardData data)
+        {
+            if (data?.upgrades == null || data.upgrades.Count == 0)
+                return;
+
+            var names = new List<string>();
+            foreach (var upgrade in data.upgrades)
+            {
+                if (upgrade == null) continue;
+
+                if (upgrade.type == CardUpgradeData.Type.Crown)
+                {
+                    parts.Add(Loc.Get("card_crowned"));
+                    continue;
+                }
+
+                string upgradeTitle;
+                try { upgradeTitle = upgrade.title; }
+                catch { upgradeTitle = null; }
+                names.Add(string.IsNullOrEmpty(upgradeTitle)
+                    ? ScreenHandler.CleanName(upgrade.name)
+                    : upgradeTitle);
+            }
+
+            if (names.Count == 1)
+                parts.Add(FormatSingleCharmName(names[0]));
+            else if (names.Count > 1)
+                parts.Add(Loc.Get("card_charms", names.Count, string.Join(", ", names)));
+        }
+
+        /// <summary>
+        /// The short-read label for a lone charm. Charm titles already end in the
+        /// word "Charm" ("Coldheart Charm"), so the usual "Charm: {0}" wrapper
+        /// would say charm twice. When the title already carries the localized
+        /// charm word, read it on its own; the full effect text still waits in
+        /// the Details review buffer.
+        /// </summary>
+        private static string FormatSingleCharmName(string title)
+        {
+            string charmWord = Loc.Get("upgrade_charm");
+            if (!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(charmWord)
+                && title.IndexOf(charmWord, System.StringComparison.OrdinalIgnoreCase) >= 0)
+                return title.EndsWith(".") ? title : title + ".";
+
+            return Loc.Get("card_charm_one", title);
+        }
+
+        /// <summary>Short focus read for a standalone charm or crown: name and kind.</summary>
+        public static string DescribeUpgradeDataShort(CardUpgradeData data)
+        {
+            string title;
+            try { title = data.title; }
+            catch { title = null; }
+            if (string.IsNullOrEmpty(title))
+                title = ScreenHandler.CleanName(data.name);
+
+            string kind = Loc.Get(
+                data.type == CardUpgradeData.Type.Crown ? "upgrade_crown"
+                : data.type == CardUpgradeData.Type.Token ? "upgrade_token"
+                : "upgrade_charm");
+
+            return $"{title}, {kind}";
+        }
+
+        /// <summary>
+        /// The Details review buffer for a focused item: the same information
+        /// as the verbose read, split into steppable pieces — summary, card
+        /// text, then one item per charm and per keyword explanation.
+        /// </summary>
+        public static List<string> DescribeDetailParts(UINavigationItem item, ScreenHandler owner)
+        {
+            if (item == null) return null;
+
+            // Same recognition order as Describe: charm icons are children of
+            // their card, so the upgrade check must come first
+            var upgradeDisplay = item.GetComponentInParent<UpgradeDisplay>();
+            if (upgradeDisplay == null && item.clickHandler != null)
+                upgradeDisplay = item.clickHandler.GetComponentInParent<UpgradeDisplay>();
+            if (upgradeDisplay != null && upgradeDisplay.data != null)
+                return BuildUpgradeDetailParts(upgradeDisplay.data);
+
+            var entity = FindComponent<Entity>(item);
+            if (entity != null)
+                return BuildEntityDetailParts(entity);
+
+            // Let the active screen supply the rich details for its own items —
+            // the same information its I key reads (town building help, campaign
+            // map node waves and rewards).
+            var ownerParts = owner?.GetFocusedDetailParts(item);
+            if (ownerParts != null && ownerParts.Count > 0)
+                return ownerParts;
+
+            // Anything else (bells, buttons): the full focus description, split
+            // into sentences for stepping
+            string full = Describe(item, owner);
+            return SplitSentences(full);
+        }
+
+        /// <summary>Detail pieces for a card, in reading order.</summary>
+        public static List<string> BuildEntityDetailParts(Entity entity)
+        {
+            if (entity?.data == null) return null;
+
+            var items = new List<string>();
+
+            string summary = DescribeEntityShort(entity);
+            if (!string.IsNullOrEmpty(summary))
+                items.Add(summary);
+
+            // Status keyword ids so their explanations are appended below,
+            // exactly like the verbose read does
+            var extraKeywords = new List<string>();
+            DescribeStatusEffects(entity, extraKeywords);
+
+            int injuryCount = 0;
+            try { injuryCount = entity.data.injuries?.Count ?? 0; } catch { }
+            if (injuryCount > 0)
+                extraKeywords.Add("injured");
+
+            try
+            {
+                foreach (var hidden in entity.GetHiddenKeywords())
+                {
+                    if (hidden == null) continue;
+                    TextProcessor.CacheKeyword(hidden);
+                    extraKeywords.Add(hidden.name);
+                }
+            }
+            catch
+            {
+                // Effects may not be initialized yet
+            }
+
+            string rawDesc = null;
+            try { rawDesc = Card.GetDescription(entity.data); } catch { }
+
+            var explanations = new List<string>();
+            string text = TextProcessor.ProcessDescriptionParts(rawDesc, extraKeywords, explanations);
+            if (!string.IsNullOrEmpty(text))
+                items.Add(text);
+
+            if (string.IsNullOrWhiteSpace(rawDesc))
+            {
+                string flavour = GetFlavourText(entity.data);
+                if (!string.IsNullOrEmpty(flavour))
+                    items.Add(flavour);
+            }
+
+            // One item per charm, with its full effect text
+            string upgrades = DescribeUpgrades(entity.data);
+            if (!string.IsNullOrEmpty(upgrades))
+                items.Add(upgrades);
+
+            items.AddRange(explanations);
+            return items;
+        }
+
+        /// <summary>Detail pieces for a standalone charm/crown.</summary>
+        private static List<string> BuildUpgradeDetailParts(CardUpgradeData data)
+        {
+            var items = new List<string> { DescribeUpgradeDataShort(data) };
+
+            string rawText = null;
+            try { rawText = data.text; } catch { }
+
+            var explanations = new List<string>();
+            string text = TextProcessor.ProcessDescriptionParts(rawText, null, explanations);
+            if (!string.IsNullOrEmpty(text))
+                items.Add(text);
+            items.AddRange(explanations);
+
+            return items;
+        }
+
+        /// <summary>Split a long readout into sentence-sized buffer items.</summary>
+        private static List<string> SplitSentences(string text)
+        {
+            if (string.IsNullOrEmpty(text)) return null;
+
+            var items = new List<string>();
+            foreach (string part in text.Split(new[] { ". " }, System.StringSplitOptions.RemoveEmptyEntries))
+            {
+                string trimmed = part.Trim().TrimEnd('.');
+                if (trimmed.Length > 0)
+                    items.Add(trimmed);
+            }
+            return items;
         }
 
         /// <summary>Localized flavour text (lore), shown on cards without ability text.</summary>

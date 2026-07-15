@@ -71,7 +71,7 @@ namespace WildfrostAccessibility
                 }
             }
 
-            ScreenReader.Say(BuildAnnouncement(missingData), interrupt: true);
+            ScreenReader.SayEvent(BuildAnnouncement(missingData), interrupt: true);
             return true;
         }
 

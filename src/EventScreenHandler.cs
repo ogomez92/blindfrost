@@ -66,7 +66,7 @@ namespace WildfrostAccessibility
                 text += " " + bar;
                 CinemaBarReader.SyncAnnounced();
             }
-            ScreenReader.Say(text, interrupt: true);
+            ScreenReader.SayEvent(text, interrupt: true);
             DebugLogger.Log(DebugLogger.LogCategory.Handler, Name, $"Screen: {text}");
             return true;
         }
@@ -133,7 +133,7 @@ namespace WildfrostAccessibility
             {
                 _lastCrackDamage = damage;
                 if (!_companion.broken)
-                    ScreenReader.Say(Loc.Get("event_crack", damage), interrupt: true);
+                    ScreenReader.SayEvent(Loc.Get("event_crack", damage), interrupt: true);
             }
         }
     }

@@ -106,6 +106,18 @@ namespace WildfrostAccessibility
             return Loc.Get("help_text");
         }
 
+        /// <summary>
+        /// Detail-buffer parts for the focused item when this screen knows how to
+        /// describe it in depth — the same information the I key reads (town
+        /// building help, campaign map node waves/rewards). Returns null when the
+        /// screen has nothing extra; the Details buffer then falls back to
+        /// splitting the focus read into sentences.
+        /// </summary>
+        public virtual List<string> GetFocusedDetailParts(UINavigationItem item)
+        {
+            return null;
+        }
+
         // Hint keys already spoken this game session (hints repeat only via F1)
         private static readonly HashSet<string> _spokenHints = new HashSet<string>();
 

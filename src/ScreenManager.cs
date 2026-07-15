@@ -35,6 +35,7 @@ namespace WildfrostAccessibility
             Register("ContinueRun", new ContinueRunHandler());
             Register("Battle", new BattleHandler());
             Register("BattleWin", new BattleWinHandler());
+            Register("CampaignEnd", new CampaignEndHandler());
             Register("CharacterSelect", new CharacterSelectHandler());
             Register("Event", new EventScreenHandler());
 
