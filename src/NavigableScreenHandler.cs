@@ -65,6 +65,17 @@ namespace WildfrostAccessibility
             if (!_announced && Time.unscaledTime - _enterTime >= AnnounceDelay)
             {
                 _announced = TryAnnounceScreen();
+
+                // A precondition that never becomes true (a handler waiting on
+                // state that this particular screen never reaches) must not
+                // leave the screen unnamed forever
+                if (!_announced && Time.unscaledTime - _enterTime > AnnounceDelay + 12f)
+                {
+                    _announced = true;
+                    ScreenReader.SayEvent(CleanName(Name), interrupt: true);
+                    DebugLogger.Log(DebugLogger.LogCategory.Handler, Name,
+                        "Screen announcement timed out; spoke handler name");
+                }
             }
 
             // Detect navigation layer changes (popups/panels opening within the same scene)
@@ -94,9 +105,11 @@ namespace WildfrostAccessibility
             // Give the UI a moment to initialize before accepting input
             if (Time.unscaledTime - _enterTime < 0.3f) return;
 
-            // The game's inspect view owns the keyboard while it is open;
-            // after that, the inventory overlay (deckpack) takes the keys
-            if (!RouteInputToInspectView() && !DeckpackNavigator.RouteInput(this))
+            // Blocking cinematics (card combine, final-boss shade) own the keys
+            // first; then the game's inspect view; then the inventory overlay
+            if (!OverlayWatcher.RouteInput()
+                && !RouteInputToInspectView()
+                && !DeckpackNavigator.RouteInput(this))
                 HandleInput();
             PumpRefocus();
             CheckAndAnnounceFocus();
@@ -204,16 +217,27 @@ namespace WildfrostAccessibility
             }
         }
 
-        /// <summary>Announce the panel: who was chosen and how to proceed.</summary>
+        /// <summary>Announce the panel: who was chosen, their greeting bubble,
+        /// and how to proceed.</summary>
         protected virtual void OnInspectPanelOpened(InspectNewUnitSequence panel)
         {
             Entity unit = ReflectionUtil.GetField<Entity>(panel, "unit");
             string title = unit?.data?.title;
-            ScreenReader.Say(
-                !string.IsNullOrEmpty(title)
-                    ? Loc.Get("charselect_chosen", title)
-                    : Loc.Get("charselect_chosen_generic"),
-                interrupt: true);
+            string msg = !string.IsNullOrEmpty(title)
+                ? Loc.Get("charselect_chosen", title)
+                : Loc.Get("charselect_chosen_generic");
+
+            // The unit greets from a speech bubble on the panel ("Hi! I'm
+            // <name>!") — visual-only in vanilla, so fold it in here
+            string greeting = ReflectionUtil.GetField<string>(panel, "greeting");
+            if (!string.IsNullOrEmpty(greeting) && !string.IsNullOrEmpty(title))
+            {
+                greeting = TextProcessor.StripRichText(
+                    greeting.Replace("<name>", title))?.Trim();
+                if (!string.IsNullOrEmpty(greeting))
+                    msg = greeting + " " + msg;
+            }
+            ScreenReader.Say(msg, interrupt: true);
         }
 
         /// <summary>

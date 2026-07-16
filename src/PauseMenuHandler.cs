@@ -436,7 +436,9 @@ namespace WildfrostAccessibility
             }
 
             if (parts.Count > 0)
-                ScreenReader.Say(string.Join(". ", parts) + " " + Loc.Get("pause_lore_close_hint"));
+                // Recorded as an event so the long story can be re-read line
+                // by line with Ctrl+Up instead of being lost to an interrupt
+                ScreenReader.SayEvent(string.Join(". ", parts) + " " + Loc.Get("pause_lore_close_hint"));
             else
                 ScreenReader.Say(Loc.Get("no_info_available"), interrupt: true);
         }

@@ -568,8 +568,10 @@ namespace WildfrostAccessibility
                 if (!_endAnnounced && _dragName != null)
                 {
                     // The game destroys the display when the upgrade was attached;
-                    // a surviving display means it went back to the holder
-                    ScreenReader.Say(_dragDisplay == null
+                    // a surviving display means it went back to the holder.
+                    // Recorded as an event: "which charm went where" is worth
+                    // replaying with Ctrl+Up.
+                    ScreenReader.SayEvent(_dragDisplay == null
                         ? Loc.Get("deckpack_applied", _dragName)
                         : Loc.Get("deckpack_returned", _dragName), interrupt: true);
                 }
@@ -676,7 +678,8 @@ namespace WildfrostAccessibility
 
             if (outcome != null)
             {
-                ScreenReader.Say(outcome, interrupt: true);
+                // Outcome of a deck action — recorded for Ctrl+Up review
+                ScreenReader.SayEvent(outcome, interrupt: true);
                 owner?.SuppressFocusFor(1.5f);
             }
         }

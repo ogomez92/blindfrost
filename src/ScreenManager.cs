@@ -38,6 +38,16 @@ namespace WildfrostAccessibility
             Register("CampaignEnd", new CampaignEndHandler());
             Register("CharacterSelect", new CharacterSelectHandler());
             Register("Event", new EventScreenHandler());
+            Register("BossReward", new BossRewardHandler());
+            Register("TownUnlocks", new TownUnlocksHandler());
+            Register("CardFramesUnlocked", new CardFramesUnlockedHandler());
+            Register("NewFrostGuardian", new FrostoscopeHandler());
+            Register("JournalNameHistory", new JournalNameHandler());
+
+            // Both credits scenes share one handler; it tells them apart itself
+            var creditsHandler = new CreditsHandler();
+            Register("Credits", creditsHandler);
+            Register("CreditsEnd", creditsHandler);
 
             // The campaign map spans two scenes: "Campaign" loads the systems,
             // "MapNew" is the visible map. One handler serves both.
@@ -120,7 +130,12 @@ namespace WildfrostAccessibility
         /// </summary>
         private static readonly string[] _overlayScenes =
         {
-            "ContinueRun", "BossReward", "BattleWin", "CampaignEnd", "TownUnlocks"
+            // Ordered: the credits/journal/frame celebrations can stack on top
+            // of another overlay (CreditsEnd loads over CampaignEnd), so the
+            // ones that appear on top are checked first.
+            "CreditsEnd", "Credits", "JournalNameHistory", "CardFramesUnlocked",
+            "NewFrostGuardian", "TownUnlocks", "ContinueRun", "BossReward",
+            "BattleWin", "CampaignEnd", "Mods", "DemoEnd"
         };
 
         private static string GetCurrentSceneKey()

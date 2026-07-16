@@ -141,6 +141,7 @@ namespace WildfrostAccessibility
             Loc.Initialize();
             Loc.LoadLanguageOverride(ModDirectory);
             ScreenManager.Initialize();
+            VisualNarrator.Initialize();
             LoadVerbosity();
             CreateUpdateHook();
 
@@ -153,6 +154,8 @@ namespace WildfrostAccessibility
         {
             ScreenReader.Say(Loc.Get("mod_unloaded"), interrupt: true);
 
+            VisualNarrator.Shutdown();
+            OverlayWatcher.Reset();
             ScreenManager.Shutdown();
             DestroyUpdateHook();
             ScreenReader.Shutdown();

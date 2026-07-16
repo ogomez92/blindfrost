@@ -20,6 +20,7 @@ namespace WildfrostAccessibility
         private SelectStartingPet _petSelection;
 
         private bool _petWasRunning;
+        private bool _leaderWasRunning;
         private bool _startAnnounced;
 
         public override void OnEnter()
@@ -27,6 +28,7 @@ namespace WildfrostAccessibility
             base.OnEnter();
             _screen = null;
             _petWasRunning = false;
+            _leaderWasRunning = false;
             _startAnnounced = false;
             EnsureRefs();
         }
@@ -48,11 +50,40 @@ namespace WildfrostAccessibility
         protected override bool TryAnnounceScreen()
         {
             EnsureRefs();
-            string msg = (_leaderSelection != null && _leaderSelection.running)
-                ? Loc.Get("charselect_leaders")
-                : Loc.Get("scene_CharacterSelect");
+            string msg;
+            if (_leaderSelection != null && _leaderSelection.running)
+            {
+                msg = Loc.Get("charselect_leaders");
+                _leaderWasRunning = true;
+            }
+            else if (TribeStageVisible())
+            {
+                // Normal mode starts on the tribe choice; without this the
+                // player only heard the bare screen name and flag focus reads
+                msg = Loc.Get("charselect_tribes");
+            }
+            else if (Time.unscaledTime - EnterTime < 3f)
+            {
+                // Neither stage is up yet — the flags/leaders may still be
+                // loading in. Retry instead of latching onto the bare name.
+                return false;
+            }
+            else
+            {
+                msg = Loc.Get("scene_CharacterSelect");
+            }
             ScreenReader.SayEvent(msg, interrupt: true);
             return true;
+        }
+
+        /// <summary>Tribe flags on screen mean the tribe stage is active
+        /// (SelectTribe has no running flag to ask).</summary>
+        private static bool TribeStageVisible()
+        {
+            foreach (var flag in Object.FindObjectsOfType<TribeFlagDisplay>())
+                if (flag != null && flag.gameObject.activeInHierarchy)
+                    return true;
+            return false;
         }
 
         public override void OnUpdate()
@@ -61,17 +92,23 @@ namespace WildfrostAccessibility
             EnsureRefs();
             if (_screen == null) return;
 
+            // Leader stage started (after picking a tribe)
+            bool leaderRunning = _leaderSelection != null && _leaderSelection.running;
+            if (leaderRunning && !_leaderWasRunning)
+                ScreenReader.SayEvent(Loc.Get("charselect_leaders"), interrupt: true);
+            _leaderWasRunning = leaderRunning;
+
             // Pet stage started (after confirming the leader)
             bool petRunning = _petSelection != null && _petSelection.running;
             if (petRunning && !_petWasRunning)
-                ScreenReader.Say(Loc.Get("charselect_pets"), interrupt: true);
+                ScreenReader.SayEvent(Loc.Get("charselect_pets"), interrupt: true);
             _petWasRunning = petRunning;
 
             // Final confirm pressed: the run is being created
             if (!_startAnnounced && ReflectionUtil.GetBoolField(_screen, "loadingToCampaign", false))
             {
                 _startAnnounced = true;
-                ScreenReader.Say(Loc.Get("charselect_starting"), interrupt: true);
+                ScreenReader.SayEvent(Loc.Get("charselect_starting"), interrupt: true);
             }
         }
 

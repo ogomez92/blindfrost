@@ -570,8 +570,11 @@ namespace WildfrostAccessibility
             string processed = TextProcessor.ProcessForScreenReader(rawDesc, extraKeywords);
 
             // Cards with no ability text show italic flavour text in the
-            // description box instead (Card.SetDescription) — read it there too
-            if (string.IsNullOrWhiteSpace(rawDesc))
+            // description box instead (Card.SetDescription) — read it there
+            // too. A description made only of sprite icons processes down to
+            // nothing, so that counts as empty as well: without this, such
+            // cards were completely silent about what they do or say.
+            if (string.IsNullOrWhiteSpace(rawDesc) || string.IsNullOrEmpty(processed))
             {
                 string flavour = GetFlavourText(entity.data);
                 if (!string.IsNullOrEmpty(flavour))

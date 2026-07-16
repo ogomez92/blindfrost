@@ -107,6 +107,16 @@ namespace WildfrostAccessibility
         {
             if (!ContinueReady)
             {
+                // If the continue layout never shows up (reflection failed, or
+                // the sequence is wired unexpectedly), Enter must still lead
+                // out — being stuck on the victory screen ends the whole run.
+                if (Time.unscaledTime - EnterTime > 8f && _sequence != null)
+                {
+                    DebugLogger.LogInput(Name, "Continue layout never appeared; calling End() directly");
+                    _sequence.End();
+                    return;
+                }
+
                 // Screen still animating in — say so instead of dead silence
                 ScreenReader.Say(Loc.Get("battlewin_not_ready"), interrupt: true);
                 return;

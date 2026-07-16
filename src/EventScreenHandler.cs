@@ -33,6 +33,7 @@ namespace WildfrostAccessibility
             _companionSearched = false;
             _nextCrackPoll = 0f;
             _lastCrackDamage = -1;
+            _dragController = null;
         }
 
         public override string GetHelpText() => Loc.Get("help_event");
@@ -41,6 +42,76 @@ namespace WildfrostAccessibility
         {
             base.OnUpdate();
             AnnounceCrackProgress();
+        }
+
+        // ---- Card pickup (muncher and other feed-a-card events) -----------
+        // The muncher event asks the player to DRAG a deck card onto it; its
+        // cards use a plain CardController, so the select-card Enter path
+        // never fired and the event was a keyboard dead-end. Mirrors the
+        // battle pickup: press via reflection, the game's own navigation
+        // state then restricts arrows to valid targets, Enter releases.
+
+        private CardController _dragController;
+
+        private bool IsDraggingCard =>
+            _dragController != null && _dragController.dragging != null;
+
+        protected override void HandleInput()
+        {
+            // Escape puts a held card back
+            if (IsDraggingCard && NavigationHelper.IsBackPressed())
+            {
+                string title = _dragController.dragging?.data?.title ?? "";
+                DebugLogger.LogInput(Name, "Cancel event card pickup");
+                _dragController.DragCancel();
+                ScreenReader.Say(Loc.Get("battle_pickup_cancelled", title), interrupt: true);
+                return;
+            }
+            base.HandleInput();
+        }
+
+        protected override void Confirm()
+        {
+            // Holding a card: release it on the focused target (the muncher)
+            if (IsDraggingCard)
+            {
+                string title = _dragController.dragging?.data?.title ?? "";
+                DebugLogger.LogInput(Name, "Release event card");
+                if (ReflectionUtil.InvokeMethod(_dragController, "Release"))
+                    ScreenReader.SayEvent(Loc.Get("event_card_released", title));
+                return;
+            }
+
+            // A focused own card with a plain drag controller: pick it up.
+            // Select-card controllers keep their existing path in base.Confirm.
+            var navSystem = MonoBehaviourSingleton<UINavigationSystem>.instance;
+            var current = navSystem?.currentNavigationItem;
+            Entity entity = current != null ? current.GetComponentInParent<Entity>() : null;
+            if (entity == null && current?.clickHandler != null)
+                entity = current.clickHandler.GetComponentInParent<Entity>();
+
+            var controller = entity?.display?.hover?.controller;
+            if (entity != null && controller != null
+                && !(controller is CardControllerSelectCard)
+                && controller.enabled && controller.canPress)
+            {
+                DebugLogger.LogInput(Name, $"Pick up event card: {entity.data?.title}");
+                controller.hoverEntity = entity;
+                if (ReflectionUtil.SetField(controller, "pressEntity", entity)
+                    && ReflectionUtil.InvokeMethod(controller, "Press")
+                    && controller.dragging != null)
+                {
+                    _dragController = controller;
+                    string msg = Loc.Get("event_card_picked_up", entity.data?.title ?? "");
+                    string hint = HintOnce("event_pickup_hint");
+                    if (hint != null)
+                        msg += " " + hint;
+                    ScreenReader.Say(msg, interrupt: true);
+                    return;
+                }
+            }
+
+            base.Confirm();
         }
 
         /// <summary>

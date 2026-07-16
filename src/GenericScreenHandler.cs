@@ -20,6 +20,8 @@ namespace WildfrostAccessibility
             _sceneName = sceneName ?? "Unknown";
         }
 
+        public override string GetHelpText() => Loc.Get("help_generic_screen");
+
         public override void OnEnter()
         {
             base.OnEnter();
