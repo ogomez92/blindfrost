@@ -119,6 +119,21 @@ Test protocol (simulates a fresh player):
 
 ## Pending Tests
 
+- **Screen-coverage round (2026-07-16, v-next):**
+  1. **Boss reward:** beat a boss with rewards — "Boss reward selection" + prompt announced? Enter opens the chest ("It creaks open..."), ~2s later "The rewards are revealed..."? Arrows read "Option 1 of 3: ..." for each token, Enter takes one ("Taken: ...") and the remaining-count prompt updates?
+  2. **Card frames:** after a run that earned frames, entering Town announces "Card frames unlocked!" + banner + card names, Enter continues?
+  3. **Town unlocks:** with a pending unlock, each panel reads "Unlocked: <building>..." and Enter advances to the next / back to Town?
+  4. **Frostoscope reveal:** after beating a final boss, the NewFrostGuardian scene announces itself and reads the next boss roster; Enter exits (second Enter force-unloads if stuck)?
+  5. **Journal vignette:** starting a run (name written) and dying (name crossed out) both get a spoken line; screen passes on its own ~2s later?
+  6. **Credits:** Main menu → Credits announces + Enter skips back to the menu (menu re-announces)? True-ending credits skippable the same way?
+  7. **Combine:** collect a combo (e.g. the Sunlight/Moonlight items) — "Your cards swirl together..." at the start, bar title + prompt read at the end, Enter continues (this was a HARD STUCK before)?
+  8. **Final boss shade:** on a boss kill, "A dark wisp... flees into the storm."? At the final boss: possession narration, prompts read, Enter advances the prompts?
+  9. **Muncher:** arrow to a deck card, Enter picks it up ("X picked up" + hint), arrows to the muncher, Enter feeds ("X given") — and the muncher's speech bubbles are read? Escape cancels a pickup?
+  10. **Speech bubbles:** town building greeters / shopkeeper lines read aloud as they appear, one at a time (not a burst)?
+  11. **Battle narration:** miniboss arrival ("A powerful enemy slams onto the battlefield..."), wave deploy ("The wave bell tolls!"), boss transform line on phase change — and not spammed?
+  12. **Character select (normal mode):** tribe stage announced ("Choose your tribe..."), then leaders on stage change, chosen unit's greeting read on the confirm panel?
+  13. **Regression:** BattleWin continue, CampaignEnd summary + buttons, pause menu, map, shops still behave as before.
+
 - **Character select round 2: dedicated handler (2026-07-13):**
   1. Town gate → "Choose your Leader": announced as "Choose your leader..." with browse hint?
   2. Arrow to a leader, Enter — hear "<Name> chosen. Press Enter to confirm, or Escape to put the card back."?
