@@ -322,6 +322,12 @@ namespace WildfrostAccessibility
         /// </summary>
         private void HandleBuildingOverlay(BuildingDisplay overlay)
         {
+            // A help-panel popup can open over the building overlay (the
+            // balloon's no-connection and first-time-help panels) — it owns
+            // the keys until it is answered or dismissed.
+            if (HelpPanelRouter.RouteInput())
+                return;
+
             if (!_overlayOpen)
             {
                 _overlayOpen = true;

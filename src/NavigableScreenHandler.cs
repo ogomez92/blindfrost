@@ -106,8 +106,10 @@ namespace WildfrostAccessibility
             if (Time.unscaledTime - _enterTime < 0.3f) return;
 
             // Blocking cinematics (card combine, final-boss shade) own the keys
-            // first; then the game's inspect view; then the inventory overlay
+            // first; then a help-panel popup; then the game's inspect view;
+            // then the inventory overlay
             if (!OverlayWatcher.RouteInput()
+                && !HelpPanelRouter.RouteInput()
                 && !RouteInputToInspectView()
                 && !DeckpackNavigator.RouteInput(this))
                 HandleInput();

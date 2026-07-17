@@ -156,6 +156,7 @@ namespace WildfrostAccessibility
 
             VisualNarrator.Shutdown();
             OverlayWatcher.Reset();
+            HelpPanelRouter.Reset();
             ScreenManager.Shutdown();
             DestroyUpdateHook();
             ScreenReader.Shutdown();

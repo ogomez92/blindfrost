@@ -14,6 +14,7 @@ namespace WildfrostAccessibility
         private static bool _promptWasActive;
         private static string _lastPromptText;
         private static int _promptReadDelay;
+        private static bool _buttonHintSpoken;
 
         /// <summary>
         /// Check for popup state changes. Called every frame from the main update loop.
@@ -301,10 +302,26 @@ namespace WildfrostAccessibility
             {
                 // Help panels give mouse instructions too ("drag", "click")
                 string announcement = MakeDragAccessible(string.Join(". ", parts));
+
+                // A popup with answer buttons (Retry/Skip, the give-up
+                // confirm): say how to choose one, the first time only.
+                if (!_buttonHintSpoken && HasChoiceButtons(panel))
+                {
+                    _buttonHintSpoken = true;
+                    announcement += " " + Loc.Get("help_panel_hint");
+                }
+
                 ScreenReader.SayEvent(announcement, interrupt: true);
                 DebugLogger.Log(DebugLogger.LogCategory.Handler, "PopupReader",
                     $"Help panel: {announcement}");
             }
+        }
+
+        /// <summary>Whether the popup spawned answer buttons (beyond the Back arrow).</summary>
+        private static bool HasChoiceButtons(HelpPanelSystem panel)
+        {
+            var group = ReflectionUtil.GetField<Transform>(panel, "buttonGroup");
+            return group != null && group.childCount > 0;
         }
     }
 }

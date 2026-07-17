@@ -1074,6 +1074,9 @@ namespace WildfrostAccessibility
             Add("en", "inspect_opened", "Inspecting {0}. Press Escape to close.");
             Add("en", "inspect_closed", "Inspect closed.");
             Add("en", "nothing_to_inspect", "Nothing to inspect here.");
+            Add("en", "help_panel_hint", "Left and right arrows choose a button, Enter presses it, Escape goes back.");
+            Add("en", "help_panel_no_back", "This prompt needs an answer. Use left and right arrows, then Enter.");
+            Add("en", "help_panel_closed", "Closed.");
             Add("en", "help_event", "Event screen. A story event on your journey; its title and story are read as they appear. Arrow keys move between items, Enter activates. I inspects the focused card the way right-click does for sighted players, Escape closes the inspect view. P opens your inventory.");
 
             // ----- German -------------------------------------------------------
@@ -1336,6 +1339,9 @@ namespace WildfrostAccessibility
             Add("de", "inspect_opened", "Untersuche {0}. Escape schliesst.");
             Add("de", "inspect_closed", "Untersuchung geschlossen.");
             Add("de", "nothing_to_inspect", "Hier gibt es nichts zu untersuchen.");
+            Add("de", "help_panel_hint", "Pfeiltasten links und rechts waehlen eine Schaltflaeche, Enter drueckt sie, Escape geht zurueck.");
+            Add("de", "help_panel_no_back", "Diese Abfrage braucht eine Antwort. Links und rechts waehlen, dann Enter.");
+            Add("de", "help_panel_closed", "Geschlossen.");
             Add("de", "help_event", "Ereignis-Bildschirm. Ein Story-Ereignis auf deiner Reise; Titel und Text werden vorgelesen, sobald sie erscheinen. Pfeiltasten wechseln zwischen Elementen, Enter aktiviert. I untersucht die fokussierte Karte, so wie Rechtsklick fuer sehende Spieler, Escape schliesst die Untersuchung. P oeffnet dein Inventar.");
 
             // ----- Spanish ------------------------------------------------------
@@ -1598,6 +1604,9 @@ namespace WildfrostAccessibility
             Add("es", "inspect_opened", "Inspeccionando {0}. Escape para cerrar.");
             Add("es", "inspect_closed", "Inspeccion cerrada.");
             Add("es", "nothing_to_inspect", "No hay nada que inspeccionar aqui.");
+            Add("es", "help_panel_hint", "Las flechas izquierda y derecha eligen un boton, Enter lo pulsa, Escape vuelve atras.");
+            Add("es", "help_panel_no_back", "Este aviso necesita una respuesta. Usa izquierda y derecha, luego Enter.");
+            Add("es", "help_panel_closed", "Cerrado.");
             Add("es", "help_event", "Pantalla de evento. Un evento de historia en tu viaje; su titulo y texto se leen cuando aparecen. Las flechas mueven entre elementos, Enter activa. I inspecciona la carta enfocada, como el clic derecho para jugadores videntes, Escape cierra la inspeccion. P abre tu inventario.");
 
             // ----- French -------------------------------------------------------
@@ -1860,6 +1869,9 @@ namespace WildfrostAccessibility
             Add("fr", "inspect_opened", "Inspection de {0}. Echap pour fermer.");
             Add("fr", "inspect_closed", "Inspection fermee.");
             Add("fr", "nothing_to_inspect", "Rien a inspecter ici.");
+            Add("fr", "help_panel_hint", "Les fleches gauche et droite choisissent un bouton, Entree l'active, Echap revient en arriere.");
+            Add("fr", "help_panel_no_back", "Cette invite demande une reponse. Utilisez gauche et droite, puis Entree.");
+            Add("fr", "help_panel_closed", "Ferme.");
             Add("fr", "help_event", "Ecran d'evenement. Un evenement d'histoire sur votre voyage; son titre et son texte sont lus quand ils apparaissent. Les fleches naviguent entre les elements, Entree active. I inspecte la carte selectionnee, comme le clic droit pour les joueurs voyants, Echap ferme l'inspection. P ouvre votre inventaire.");
         }
     }
