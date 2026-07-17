@@ -1001,6 +1001,7 @@ namespace WildfrostAccessibility
             Add("en", "battle_move_hint", "Arrow keys choose a destination slot or the recall zone, Enter confirms, Escape cancels.");
             Add("en", "tutorial_drag_hint", "To select and place: press Enter on the card, choose the destination with the arrow keys, then press Enter again.");
             Add("en", "tutorial_drag_hint_infront", "To do this: press Enter on the card, use the arrow keys to choose the unit you want it in front of, then press Enter — your card takes that spot and pushes the unit back.");
+            Add("en", "tutorial_inspect_hint", "You can also hold Control and press the up arrow to step through everything about the focused card, one detail at a time. Control plus left or right switches to other review buffers.");
             Add("en", "battle_unit_moved", "{0} moved.");
             Add("en", "battle_unit_recalled", "{0} recalled.");
             Add("en", "battle_free_action", "Free action, your turn continues.");
@@ -1268,6 +1269,7 @@ namespace WildfrostAccessibility
             Add("de", "battle_unit_picked_up", "{0} vom Feld aufgenommen.");
             Add("de", "battle_move_hint", "Pfeiltasten waehlen einen Zielplatz oder die Rueckrufzone, Enter bestaetigt, Escape bricht ab.");
             Add("de", "tutorial_drag_hint", "Zum Auswaehlen und Ablegen: Enter auf der Karte druecken, das Ziel mit den Pfeiltasten waehlen, dann erneut Enter druecken.");
+            Add("de", "tutorial_inspect_hint", "Du kannst auch Strg gedrueckt halten und Hoch druecken, um alle Details der ausgewaehlten Karte einzeln zu hoeren. Strg plus Links oder Rechts wechselt zu anderen Lesepuffern.");
             Add("de", "battle_unit_moved", "{0} bewegt.");
             Add("de", "battle_unit_recalled", "{0} zurueckgerufen.");
             Add("de", "battle_free_action", "Freie Aktion, dein Zug geht weiter.");
@@ -1533,6 +1535,7 @@ namespace WildfrostAccessibility
             Add("es", "battle_unit_picked_up", "{0} levantada del tablero.");
             Add("es", "battle_move_hint", "Las flechas eligen una casilla de destino o la zona de retirada, Enter confirma, Escape cancela.");
             Add("es", "tutorial_drag_hint", "Para seleccionar y colocar: pulsa Enter sobre la carta, elige el destino con las flechas y pulsa Enter otra vez.");
+            Add("es", "tutorial_inspect_hint", "Tambien puedes mantener Ctrl y pulsar arriba para recorrer todos los detalles de la carta seleccionada, uno por uno. Ctrl mas izquierda o derecha cambia a otros buferes de revision.");
             Add("es", "battle_unit_moved", "{0} movida.");
             Add("es", "battle_unit_recalled", "{0} retirada.");
             Add("es", "battle_free_action", "Accion gratuita, tu turno continua.");
@@ -1798,6 +1801,7 @@ namespace WildfrostAccessibility
             Add("fr", "battle_unit_picked_up", "{0} prise du plateau.");
             Add("fr", "battle_move_hint", "Les fleches choisissent une case de destination ou la zone de rappel, Entree confirme, Echap annule.");
             Add("fr", "tutorial_drag_hint", "Pour selectionner et placer: appuyez sur Entree sur la carte, choisissez la destination avec les fleches, puis appuyez encore sur Entree.");
+            Add("fr", "tutorial_inspect_hint", "Vous pouvez aussi maintenir Ctrl et appuyer sur haut pour parcourir tous les details de la carte selectionnee, un par un. Ctrl plus gauche ou droite passe aux autres tampons de lecture.");
             Add("fr", "battle_unit_moved", "{0} deplacee.");
             Add("fr", "battle_unit_recalled", "{0} rappelee.");
             Add("fr", "battle_free_action", "Action gratuite, votre tour continue.");

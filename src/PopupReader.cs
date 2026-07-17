@@ -15,6 +15,7 @@ namespace WildfrostAccessibility
         private static string _lastPromptText;
         private static int _promptReadDelay;
         private static bool _buttonHintSpoken;
+        private static bool _inspectHintSpoken;
 
         /// <summary>
         /// Check for popup state changes. Called every frame from the main update loop.
@@ -132,6 +133,17 @@ namespace WildfrostAccessibility
         {
             // Replace drag-based instructions with accessible select-and-place language
             text = MakeDragAccessible(text);
+
+            // The tutorial that teaches inspecting ("press the I key" after the
+            // right-click rewrite) is the moment to teach the review buffers
+            // too — Ctrl+Up reads the same information without a view to close.
+            if (!_inspectHintSpoken
+                && text.IndexOf("the I key", System.StringComparison.OrdinalIgnoreCase) >= 0
+                && text.IndexOf("inspect", System.StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                _inspectHintSpoken = true;
+                text += " " + Loc.Get("tutorial_inspect_hint");
+            }
 
             ScreenReader.SayEvent(Loc.Get("tutorial_prompt", text), interrupt: false);
             DebugLogger.Log(DebugLogger.LogCategory.Handler, "PopupReader",
