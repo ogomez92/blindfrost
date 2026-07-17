@@ -55,6 +55,15 @@ namespace WildfrostAccessibility
                     return DescribeWaveBell(waveSystem);
             }
 
+            // The drop zone for playing a card that needs no target. Same problem as
+            // the bells: it is held in a CardControllerBattle field rather than the
+            // hierarchy and carries no component of its own, so it would fall through
+            // to the object-name fallback and read as its variable name,
+            // "Use On Hand Anchor" — which names neither a game term nor an action.
+            var cardController = Battle.instance?.playerCardController as CardControllerBattle;
+            if (cardController != null && item == cardController.useOnHandAnchor)
+                return Loc.Get("battle_use_on_hand");
+
             // Charm/crown displays (shop shelves, journal, charm icons on cards).
             // Charm icons are children of their card, so this must come before the
             // entity lookup: focusing a charm reads the charm, not the whole card.
@@ -415,7 +424,7 @@ namespace WildfrostAccessibility
             var parts = new List<string> { entity.data.title };
 
             if (entity.hp.max > 0)
-                parts.Add(Loc.Get("stat_health", entity.hp.current));
+                parts.Add(DescribeHealth(entity));
             if (entity.damage.max > 0)
                 parts.Add(Loc.Get("stat_attack", GetShownAttack(entity)));
             if (entity.counter.max > 0)
@@ -506,7 +515,7 @@ namespace WildfrostAccessibility
                 parts.Add(Loc.Get("stat_attack", GetShownAttack(entity)));
 
             if (entity.hp.max > 0)
-                parts.Add(Loc.Get("stat_health", entity.hp.current));
+                parts.Add(DescribeHealth(entity));
 
             if (entity.counter.max > 0)
             {
@@ -648,7 +657,7 @@ namespace WildfrostAccessibility
                 parts.Add(Loc.Get("stat_attack", GetShownAttack(entity)));
 
             if (entity.hp.max > 0)
-                parts.Add(Loc.Get("stat_health", entity.hp.current));
+                parts.Add(DescribeHealth(entity));
 
             if (entity.counter.max > 0)
             {
@@ -670,13 +679,14 @@ namespace WildfrostAccessibility
                     : Loc.Get("card_injured", injuryCount));
             }
 
-            // Effect names from the card text ("Snow 2", "Consume"), skipping
-            // ones the active statuses already announced
+            // Effects from the card text with their amounts ("Shroom 3", "Consume 1"),
+            // skipping ones the active statuses above already announced — match on the
+            // name alone, since the same effect can stand at a different amount there
             string rawDesc = null;
             try { rawDesc = Card.GetDescription(entity.data); } catch { }
             foreach (string mention in TextProcessor.ExtractKeywordMentions(rawDesc))
             {
-                if (statuses == null || !statuses.Contains(mention))
+                if (statuses == null || !statuses.Contains(TextProcessor.MentionName(mention)))
                     parts.Add(mention);
             }
 
@@ -925,6 +935,16 @@ namespace WildfrostAccessibility
             int value = entity.damage.current;
             try { value += entity.tempDamage.Value; } catch { }
             return Mathf.Max(0, value);
+        }
+
+        /// <summary>
+        /// Health as the card shows it: "5 of 10 health". Sighted players read the
+        /// damage off the card at a glance, so the current value alone is not enough
+        /// — without the max there is no way to tell a hurt unit from a small one.
+        /// </summary>
+        public static string DescribeHealth(Entity entity)
+        {
+            return Loc.Get("stat_health_of_max", entity.hp.current, entity.hp.max);
         }
 
         /// <summary>

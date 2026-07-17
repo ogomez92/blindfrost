@@ -203,6 +203,9 @@ namespace WildfrostAccessibility
 
         private void OnTurnStart(int turn)
         {
+            // Combo gold is consumed by the combo event that follows it immediately;
+            // drop any that somehow wasn't, so it can't attach to a later turn's combo
+            _pendingComboGold = 0;
             ScreenReader.SayEvent(Loc.Get("battle_turn", turn));
         }
 
@@ -315,11 +318,28 @@ namespace WildfrostAccessibility
             }
         }
 
-        /// <summary>Combo kills grant bonus gold — announce the multiplier.</summary>
+        /// <summary>
+        /// A kill combo's gold, held between the two events that make it up.
+        /// Zero when no combo is mid-announcement.
+        /// </summary>
+        private int _pendingComboGold;
+
+        /// <summary>
+        /// "Combo x2" is the second enemy killed this turn — KillComboSystem counts
+        /// kills per turn and resets each turn, and the whole reward is bonus gold.
+        /// The bare multiplier names neither fact, so spell both out: the number on
+        /// its own reads as a damage or card combo, which Wildfrost has no such thing.
+        /// </summary>
         private void OnKillCombo(int combo)
         {
             if (!InCombat()) return;
-            ScreenReader.SayEvent(Loc.Get("battle_kill_combo", combo));
+
+            int gold = _pendingComboGold;
+            _pendingComboGold = 0;
+
+            ScreenReader.SayEvent(gold > 0
+                ? Loc.Get("battle_kill_combo_gold", combo, gold)
+                : Loc.Get("battle_kill_combo", combo));
         }
 
         /// <summary>Announce gold earned during battle (combo bonuses, bounties).</summary>
@@ -327,8 +347,23 @@ namespace WildfrostAccessibility
         {
             if (!InCombat() || amount <= 0) return;
             if (owner != null && References.Player != null && owner != References.Player) return;
+
+            // A combo's gold is dropped just before the combo event that explains it,
+            // and the two are one event to the player — the game fuses them into a
+            // single "x2 / Combo / +5" popup over the dying enemy. Announcing it here
+            // would be an unattributed "5 gold." followed by a detached "Combo x2!",
+            // so hand it to OnKillCombo instead.
+            if (source == ComboGoldSource)
+            {
+                _pendingComboGold = amount;
+                return;
+            }
+
             ScreenReader.SayEvent(Loc.Get("battle_gold_dropped", amount));
         }
+
+        /// <summary>KillComboSystem's literal source tag on the gold it drops.</summary>
+        private const string ComboGoldSource = "Combo";
 
         // ---- Input ----------------------------------------------------------
 
@@ -792,7 +827,7 @@ namespace WildfrostAccessibility
 
                     string cell = occupant.data.title;
                     if (occupant.hp.max > 0)
-                        cell += " " + Loc.Get("stat_health", occupant.hp.current);
+                        cell += " " + ItemDescriber.DescribeHealth(occupant);
                     if (occupant.damage.max > 0)
                         cell += " " + Loc.Get("stat_attack", ItemDescriber.GetShownAttack(occupant));
                     if (occupant.counter.max > 0)

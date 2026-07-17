@@ -778,6 +778,7 @@ namespace WildfrostAccessibility
 
             // Shared stats and items
             Add("en", "stat_health", "{0} health");
+            Add("en", "stat_health_of_max", "{0} of {1} health");
             Add("en", "stat_attack", "{0} attack");
             Add("en", "stat_counter", "counter {0}");
             Add("en", "pocket_draw", "Draw pile, {0} cards");
@@ -983,6 +984,7 @@ namespace WildfrostAccessibility
             Add("en", "battle_bell_not_ready", "The redraw bell is not available right now.");
             Add("en", "battle_hand_empty", "Your hand is empty.");
             Add("en", "battle_acts_in", "acts in {0}");
+            Add("en", "battle_use_on_hand", "Play without a target");
             Add("en", "battle_no_waves", "No wave information.");
             Add("en", "battle_wave_n", "Wave {0}: {1}");
             Add("en", "battle_boss_wave", "boss wave");
@@ -1018,7 +1020,8 @@ namespace WildfrostAccessibility
             Add("en", "battle_trigger_laststand", "{0} acts with its last stand!");
             Add("en", "battle_trigger_chain", "{0} is set off by {1}.");
             Add("en", "battle_trigger_acts", "{0} acts.");
-            Add("en", "battle_kill_combo", "Combo x{0}!");
+            Add("en", "battle_kill_combo", "Combo x{0}: {0} kills this turn.");
+            Add("en", "battle_kill_combo_gold", "Combo x{0}: {0} kills this turn, {1} bonus gold.");
             Add("en", "battle_gold_dropped", "{0} gold.");
             Add("en", "battle_crown_deploy_one", "One crowned card in your hand deploys before the battle: press Enter on it to place it now.");
             Add("en", "battle_crown_deploy", "{0} crowned cards in your hand deploy before the battle: place them now.");
@@ -1086,6 +1089,7 @@ namespace WildfrostAccessibility
             // ----- German -------------------------------------------------------
 
             Add("de", "stat_health", "{0} Leben");
+            Add("de", "stat_health_of_max", "{0} von {1} Leben");
             Add("de", "stat_attack", "{0} Angriff");
             Add("de", "stat_counter", "Zaehler {0}");
             Add("de", "pocket_draw", "Nachziehstapel, {0} Karten");
@@ -1252,6 +1256,7 @@ namespace WildfrostAccessibility
             Add("de", "battle_bell_not_ready", "Die Nachziehglocke ist gerade nicht verfuegbar.");
             Add("de", "battle_hand_empty", "Deine Hand ist leer.");
             Add("de", "battle_acts_in", "handelt in {0}");
+            Add("de", "battle_use_on_hand", "Ohne Ziel spielen");
             Add("de", "battle_no_waves", "Keine Welleninformationen.");
             Add("de", "battle_wave_n", "Welle {0}: {1}");
             Add("de", "battle_boss_wave", "Bosswelle");
@@ -1286,7 +1291,8 @@ namespace WildfrostAccessibility
             Add("de", "battle_trigger_laststand", "{0} handelt mit letzter Kraft!");
             Add("de", "battle_trigger_chain", "{0} wird von {1} ausgeloest.");
             Add("de", "battle_trigger_acts", "{0} handelt.");
-            Add("de", "battle_kill_combo", "Combo x{0}!");
+            Add("de", "battle_kill_combo", "Combo x{0}: {0} Abschuesse in diesem Zug.");
+            Add("de", "battle_kill_combo_gold", "Combo x{0}: {0} Abschuesse in diesem Zug, {1} Bonusgold.");
             Add("de", "battle_gold_dropped", "{0} Gold.");
             Add("de", "battle_crown_deploy_one", "Eine gekroente Karte in deiner Hand wird vor dem Kampf eingesetzt: Enter darauf, um sie jetzt zu platzieren.");
             Add("de", "battle_crown_deploy", "{0} gekroente Karten in deiner Hand werden vor dem Kampf eingesetzt: platziere sie jetzt.");
@@ -1352,6 +1358,7 @@ namespace WildfrostAccessibility
             // ----- Spanish ------------------------------------------------------
 
             Add("es", "stat_health", "{0} de vida");
+            Add("es", "stat_health_of_max", "{0} de {1} de vida");
             Add("es", "stat_attack", "{0} de ataque");
             Add("es", "stat_counter", "contador {0}");
             Add("es", "pocket_draw", "Mazo de robo, {0} cartas");
@@ -1518,6 +1525,7 @@ namespace WildfrostAccessibility
             Add("es", "battle_bell_not_ready", "La campana de robo no esta disponible ahora.");
             Add("es", "battle_hand_empty", "Tu mano esta vacia.");
             Add("es", "battle_acts_in", "actua en {0}");
+            Add("es", "battle_use_on_hand", "Jugar sin objetivo");
             Add("es", "battle_no_waves", "Sin informacion de oleadas.");
             Add("es", "battle_wave_n", "Oleada {0}: {1}");
             Add("es", "battle_boss_wave", "oleada de jefe");
@@ -1552,7 +1560,8 @@ namespace WildfrostAccessibility
             Add("es", "battle_trigger_laststand", "{0} actua con su ultimo aliento!");
             Add("es", "battle_trigger_chain", "{0} es activada por {1}.");
             Add("es", "battle_trigger_acts", "{0} actua.");
-            Add("es", "battle_kill_combo", "Combo x{0}!");
+            Add("es", "battle_kill_combo", "Combo x{0}: {0} muertes este turno.");
+            Add("es", "battle_kill_combo_gold", "Combo x{0}: {0} muertes este turno, {1} de oro extra.");
             Add("es", "battle_gold_dropped", "{0} de oro.");
             Add("es", "battle_crown_deploy_one", "Una carta coronada en tu mano se despliega antes de la batalla: pulsa Enter sobre ella para colocarla ahora.");
             Add("es", "battle_crown_deploy", "{0} cartas coronadas en tu mano se despliegan antes de la batalla: colocalas ahora.");
@@ -1618,6 +1627,7 @@ namespace WildfrostAccessibility
             // ----- French -------------------------------------------------------
 
             Add("fr", "stat_health", "{0} points de vie");
+            Add("fr", "stat_health_of_max", "{0} sur {1} points de vie");
             Add("fr", "stat_attack", "{0} d'attaque");
             Add("fr", "stat_counter", "compteur {0}");
             Add("fr", "pocket_draw", "Pioche, {0} cartes");
@@ -1784,6 +1794,7 @@ namespace WildfrostAccessibility
             Add("fr", "battle_bell_not_ready", "La cloche de pioche n'est pas disponible maintenant.");
             Add("fr", "battle_hand_empty", "Votre main est vide.");
             Add("fr", "battle_acts_in", "agit dans {0}");
+            Add("fr", "battle_use_on_hand", "Jouer sans cible");
             Add("fr", "battle_no_waves", "Pas d'informations de vagues.");
             Add("fr", "battle_wave_n", "Vague {0}: {1}");
             Add("fr", "battle_boss_wave", "vague de boss");
@@ -1818,7 +1829,8 @@ namespace WildfrostAccessibility
             Add("fr", "battle_trigger_laststand", "{0} agit dans un dernier souffle!");
             Add("fr", "battle_trigger_chain", "{0} est declenchee par {1}.");
             Add("fr", "battle_trigger_acts", "{0} agit.");
-            Add("fr", "battle_kill_combo", "Combo x{0}!");
+            Add("fr", "battle_kill_combo", "Combo x{0} : {0} eliminations ce tour.");
+            Add("fr", "battle_kill_combo_gold", "Combo x{0} : {0} eliminations ce tour, {1} or bonus.");
             Add("fr", "battle_gold_dropped", "{0} d'or.");
             Add("fr", "battle_crown_deploy_one", "Une carte couronnee dans votre main se deploie avant la bataille: appuyez sur Entree dessus pour la placer maintenant.");
             Add("fr", "battle_crown_deploy", "{0} cartes couronnees dans votre main se deploient avant la bataille: placez-les maintenant.");

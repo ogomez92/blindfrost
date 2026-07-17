@@ -116,17 +116,26 @@ namespace WildfrostAccessibility
 
         /// <summary>
         /// Keyword ids that render as inline stat glyphs (the heart, sword, and
-        /// hourglass icons a card's text draws mid-sentence). The short focus
-        /// read already announces those values as the card's stats, so echoing
-        /// them again as bare effect names ("Health" with no amount) is noise.
+        /// hourglass icons a card's text draws mid-sentence). A bare glyph with no
+        /// amount only repeats a stat the short focus read has already given, so it
+        /// is noise — but the same glyph carrying an amount is an effect in its own
+        /// right ("Health 3" heals, "Counter 2" counts an enemy down), and a card
+        /// that applies it may well have no such stat itself.
         /// </summary>
         private static readonly HashSet<string> StatIconKeywords =
             new HashSet<string> { "health", "attack", "counter" };
 
         /// <summary>
-        /// The effect names a card's text mentions, as the text renders them
-        /// ("Snow 2", "Consume") — no explanations. Used by the short focus
-        /// read, where the meaning waits in the Details review buffer.
+        /// The effects a card's text applies, each with its amount ("Shroom 3",
+        /// "Snow 10", "Consume 1") — no explanations. Used by the short focus read,
+        /// where the meaning waits in the Details review buffer.
+        ///
+        /// The game writes an amount two different ways: traits carry it inside the
+        /// tag (<c>&lt;keyword=consume 1&gt;</c>), while attack effects put it in a
+        /// tag of its own just before (<c>Apply &lt;3&gt;&lt;keyword=shroom&gt;</c>) —
+        /// see Card.AddAttackEffectText. Reading only keyword tags loses the second
+        /// kind, so this walks every tag in order, pairing each amount with the
+        /// keyword it precedes.
         /// </summary>
         public static List<string> ExtractKeywordMentions(string rawText)
         {
@@ -134,22 +143,104 @@ namespace WildfrostAccessibility
             if (string.IsNullOrEmpty(rawText))
                 return result;
 
-            foreach (Match match in Regex.Matches(rawText, @"<keyword=([^>]+)>"))
+            // Card.GetDescription puts each effect on its own line
+            foreach (string line in rawText.Split('\n'))
             {
-                string[] parts = match.Groups[1].Value.Trim().Split(' ');
-                if (StatIconKeywords.Contains(parts[0].ToLowerInvariant()))
+                // An effect the game words as prose names no keyword at all
+                // ("Counter Down 2" — Card.AddAttackEffectText's textKey branch),
+                // so read the line's own words instead. Falling back on "produced
+                // no mention" rather than "named no keyword" would undo the stat
+                // glyph rule below, reading a bare heart back as "Health".
+                if (!AddLineMentions(line, result))
+                    AddProseMention(line, result);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Effects named by keyword tags on one line of card text. Returns whether the
+        /// line named a keyword at all, which is not the same as having added one.
+        /// </summary>
+        private static bool AddLineMentions(string line, List<string> result)
+        {
+            // Set by a bare amount tag, claimed by the next keyword tag. Formatting
+            // tags in between (<b>, <color=…>) leave it alone, so "<3><b><keyword=x>"
+            // still pairs up.
+            string pendingAmount = null;
+            bool namedKeyword = false;
+
+            foreach (Match match in Regex.Matches(line, @"<([^>]*)>"))
+            {
+                string tag = match.Groups[1].Value.Trim();
+                if (tag.Length == 0)
                     continue;
 
-                var kwInfo = GetKeywordInfo(parts[0]);
+                char first = tag[0];
+                if (char.IsDigit(first) || first == '+' || first == '-' || first == 'x')
+                {
+                    pendingAmount = FormatAmount(tag);
+                    continue;
+                }
 
-                string text = kwInfo.Title;
-                if (parts.Length > 1 && int.TryParse(parts[1], out int count))
-                    text += $" {count}";
+                int eqIdx = tag.IndexOf('=');
+                if (eqIdx <= 0 || tag.Substring(0, eqIdx).Trim() != "keyword")
+                    continue;
+
+                namedKeyword = true;
+
+                string[] parts = tag.Substring(eqIdx + 1).Trim().Split(' ');
+                string amount = pendingAmount;
+                pendingAmount = null;
+                if (parts.Length > 1 && int.TryParse(parts[1], out int inTag))
+                    amount = inTag.ToString();
+
+                if (amount == null && StatIconKeywords.Contains(parts[0].ToLowerInvariant()))
+                    continue;
+
+                string text = GetKeywordInfo(parts[0]).Title;
+                if (amount != null)
+                    text += $" {amount}";
 
                 if (!result.Contains(text))
                     result.Add(text);
             }
-            return result;
+
+            return namedKeyword;
+        }
+
+        /// <summary>The line's own words, for an effect the game words as prose.</summary>
+        private static void AddProseMention(string line, List<string> result)
+        {
+            string prose;
+            try { prose = StripRichText(ExpandTags(line, new List<KeywordInfo>(), null)); }
+            catch { return; }
+
+            if (!string.IsNullOrEmpty(prose) && !result.Contains(prose))
+                result.Add(prose);
+        }
+
+        /// <summary>"3", "+2", "x2" from a bare amount tag, or null if it holds no number.</summary>
+        private static string FormatAmount(string tag)
+        {
+            if (!int.TryParse(Regex.Replace(tag, "[^0-9]", ""), out int amount))
+                return null;
+
+            char first = tag[0];
+            string prefix = (first == '+' || first == '-' || first == 'x')
+                ? first.ToString()
+                : "";
+            return $"{prefix}{amount}";
+        }
+
+        /// <summary>
+        /// A mention's effect name without its amount ("Shroom 3" -> "Shroom"), for
+        /// matching against text that names the same effect at a different amount.
+        /// </summary>
+        public static string MentionName(string mention)
+        {
+            return string.IsNullOrEmpty(mention)
+                ? mention
+                : Regex.Replace(mention, @"\s[+\-x]?\d+$", "");
         }
 
         /// <summary>

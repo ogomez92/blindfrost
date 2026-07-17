@@ -103,7 +103,7 @@ namespace WildfrostAccessibility
                 {
                     string leaderInfo = leader.data.title;
                     if (leader.hp.max > 0)
-                        leaderInfo += ", " + Loc.Get("stat_health", leader.hp.current);
+                        leaderInfo += ", " + ItemDescriber.DescribeHealth(leader);
                     if (leader.damage.max > 0)
                         leaderInfo += ", " + Loc.Get("stat_attack", leader.damage.current);
                     parts.Add(Loc.Get("continue_leader", leaderInfo));
