@@ -369,6 +369,12 @@ namespace WildfrostAccessibility
             if (HandleBalloonOverlay(overlay))
                 return;
 
+            // Pet House: its slots hold the unlocked pets as real cards, and its
+            // unlock challenge gates the next pet — the generic branch would read
+            // the card innards out of order and call it a tribe unlock.
+            if (HandlePetHutOverlay(overlay))
+                return;
+
             // Challenge shrine: dozens of stones split into completed / incomplete
             // rows — its own up/down + left/right browse, not the generic dump.
             if (RefreshShrine(overlay))
@@ -409,9 +415,11 @@ namespace WildfrostAccessibility
             if (text.Length > 400 && _overlayItems.Count > 0)
                 text = Loc.Get("overlay_browse", _overlayItems.Count);
             // A visible unlock challenge (and no tribe detail open over it) means
-            // this hall gates the next tribe — say so, so "6 of 100" doesn't
-            // dangle without a purpose.
+            // the Tribe Hall gates the next tribe — say so, so "6 of 100" doesn't
+            // dangle without a purpose. Only there: other unlock buildings (the
+            // Pet House, ...) gate different rewards with the same display.
             else if (ActiveDetail(overlay) == null
+                && overlay.GetComponentInChildren<TribeHutSequence>(includeInactive: false) != null
                 && overlay.GetComponentInChildren<ChallengeProgressDisplay>(includeInactive: false) != null)
                 text = Loc.Get("tribe_unlock_intro") + " " + text;
 
@@ -625,6 +633,112 @@ namespace WildfrostAccessibility
             return Mathf.Abs(pa.y - pb.y) > 0.05f
                 ? pb.y.CompareTo(pa.y)
                 : pa.x.CompareTo(pb.x);
+        }
+
+        /// <summary>
+        /// The Pet House. Summarize it once (pets unlocked so far, the challenge
+        /// that unlocks the next one, how many doors stay closed), then browse
+        /// the unlocked pets as cards with the arrows. Pets are only viewed
+        /// here — picking one happens at the start of a journey. Returns false
+        /// when this overlay is not the Pet House.
+        /// </summary>
+        private bool HandlePetHutOverlay(BuildingDisplay overlay)
+        {
+            if (overlay.GetComponentInChildren<PetHutSequence>(includeInactive: false) == null)
+                return false;
+
+            RefreshPetItems(overlay);
+
+            NavDirection dir = NavigationHelper.GetNavigationInput();
+            if (dir != NavDirection.None && _overlayItems.Count > 0)
+            {
+                bool vertical = dir == NavDirection.Up || dir == NavDirection.Down;
+                var next = NavigationHelper.NavigateLinear(_overlayItems, _overlaySelected, dir, vertical)
+                    ?? _overlayItems[0];
+                _overlaySelected = next;
+                // Really focus the card: the pet cards are registered on the
+                // game's active layer (unlike the tribe banners), and the review
+                // buffers read the Details of the game's focused item — without
+                // this, Ctrl+Up never sees the pet being browsed.
+                NavigationHelper.FocusItem(next);
+                int index = _overlayItems.IndexOf(next);
+                var entity = next.GetComponentInParent<Entity>();
+                string desc = entity != null
+                    ? ItemDescriber.DescribeEntityFocus(entity)
+                    : ScreenHandler.CleanName(next.gameObject.name);
+                ScreenReader.Say(desc + " " + Loc.Get("overlay_position", index + 1, _overlayItems.Count),
+                    interrupt: true);
+                return true;
+            }
+
+            // Summarize on entry, and re-read on I.
+            bool reRead = Input.GetKeyDown(KeyCode.I) && !NavigationHelper.IsTextInputFocused();
+            if (_overlayAnnounced && !reRead)
+                return true;
+
+            string hint = _overlayAnnounced ? null : HintOnce("pethut_hint");
+            _overlayAnnounced = true;
+            ScreenReader.SayEvent(
+                BuildPetHutSummary(overlay) + (hint != null ? " " + hint : ""),
+                interrupt: true);
+            return true;
+        }
+
+        /// <summary>Collect the pet cards' navigation items in reading order.
+        /// Unlike the tribe banners they carry no click handler — the cards are
+        /// display-only here.</summary>
+        private void RefreshPetItems(BuildingDisplay overlay)
+        {
+            _overlayItems.Clear();
+            foreach (var item in overlay.GetComponentsInChildren<UINavigationItem>(includeInactive: false))
+            {
+                if (item == null || !item.isSelectable || !item.gameObject.activeInHierarchy)
+                    continue;
+                if (item.GetComponentInParent<Entity>() == null)
+                    continue;
+                _overlayItems.Add(item);
+            }
+            _overlayItems.Sort((a, b) =>
+                Mathf.Abs(a.Position.y - b.Position.y) > 0.05f
+                    ? b.Position.y.CompareTo(a.Position.y)
+                    : a.Position.x.CompareTo(b.Position.x));
+
+            if (_overlaySelected != null && !_overlayItems.Contains(_overlaySelected))
+                _overlaySelected = null;
+        }
+
+        /// <summary>Name, pets unlocked out of all the doors, and the challenge
+        /// that opens the next door.</summary>
+        private static string BuildPetHutSummary(BuildingDisplay overlay)
+        {
+            var parts = new List<string>();
+
+            string name = OverlayBuildingName(overlay);
+            if (!string.IsNullOrEmpty(name))
+                parts.Add(name);
+
+            // Every pet has a door (a card slot); the unlocked ones hold a card.
+            var petNames = new List<string>();
+            foreach (var card in overlay.GetComponentsInChildren<Card>(includeInactive: false))
+            {
+                string title = card?.entity?.data?.title;
+                if (!string.IsNullOrEmpty(title))
+                    petNames.Add(title);
+            }
+            int doors = overlay.GetComponentsInChildren<CardContainer>(includeInactive: false).Length;
+            if (petNames.Count > 0)
+                parts.Add(Loc.Get("pethut_pets",
+                    petNames.Count, Mathf.Max(doors, petNames.Count), string.Join(", ", petNames)));
+
+            var challenge = overlay.GetComponentInChildren<ChallengeProgressDisplay>(includeInactive: false);
+            if (challenge != null)
+            {
+                string progress = ItemDescriber.DescribeChallengeProgress(challenge);
+                if (!string.IsNullOrEmpty(progress))
+                    parts.Add(Loc.Get("pethut_unlock_intro") + " " + progress);
+            }
+
+            return string.Join(". ", parts);
         }
 
         /// <summary>

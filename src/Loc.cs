@@ -839,6 +839,9 @@ namespace WildfrostAccessibility
             Add("en", "overlay_item", "{0}, {1} of {2}");
             Add("en", "tribe_banner", "Tribe banner");
             Add("en", "tribe_unlock_intro", "Complete this challenge to unlock the next tribe:");
+            Add("en", "pethut_pets", "{0} of {1} pets unlocked: {2}");
+            Add("en", "pethut_unlock_intro", "Complete this challenge to unlock the next pet:");
+            Add("en", "pethut_hint", "Arrow keys move between your pets, Escape leaves, I reads again.");
             Add("en", "overlay_browse", "{0} items. Use the arrow keys to browse them.");
             Add("en", "overlay_position", "{0} of {1}");
             Add("en", "challenge_stone", "Challenge");
