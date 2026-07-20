@@ -23,8 +23,15 @@ jobs:
       - name: Create zip
         run: cd release && zip -r ../WildfrostAccessibility-${{ github.ref_name }}.zip .
 
+      - name: Carry installer forward from previous release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release download --repo ${{ github.repository }} --pattern 'WildfrostAccessibilityInstaller.exe' --dir .
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v3
         with:
-          files: WildfrostAccessibility-${{ github.ref_name }}.zip
+          files: |
+            WildfrostAccessibility-${{ github.ref_name }}.zip
+            WildfrostAccessibilityInstaller.exe
           generate_release_notes: true
