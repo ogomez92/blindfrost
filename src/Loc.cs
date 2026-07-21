@@ -442,6 +442,16 @@ namespace WildfrostAccessibility
             Add("en", "narrate_shade_blocked", "{0} blocks the dark wisp! The Frost is sealed away.");
             Add("en", "narrate_frost_eyes", "{0}'s eyes glow with frost. The Frost has taken hold.");
             Add("en", "narrate_combine", "Your cards swirl together and combine into something new!");
+
+            Add("en", "companion_limit_open", "Too many companions! You have {0} but only {1} can be active. Arrows move between companions, Enter moves the focused one between the active and reserve rows; reserve companions sit out. Press Continue when done.");
+            Add("en", "companion_limit_active_list", "Active: {0}.");
+            Add("en", "companion_limit_reserve_list", "In reserve: {0}.");
+            Add("en", "companion_limit_moved_active", "{0} moved to the active row. {1} of {2} active.");
+            Add("en", "companion_limit_moved_reserve", "{0} moved to the reserve row. {1} of {2} active.");
+            Add("en", "companion_limit_over", "Over the limit; move a companion to reserve to continue.");
+            Add("en", "companion_limit_can_continue", "You can continue now.");
+            Add("en", "companion_limit_row_active", "active row");
+            Add("en", "companion_limit_row_reserve", "reserve row");
             Add("en", "charselect_tribes", "Select a tribe. Use the up and down arrow keys to move between the tribes; each tribe's name and playstyle are read as you land on it. Press the right arrow to hear that tribe's leaders and companions, or hold Control and press up to step through them. Press Enter to choose the focused tribe, or Escape to go back.");
 
             // ----- German ------------------------------------------------------
@@ -490,6 +500,16 @@ namespace WildfrostAccessibility
             Add("de", "narrate_shade_blocked", "{0} blockt den dunklen Schemen! Der Frost ist versiegelt.");
             Add("de", "narrate_frost_eyes", "{0}s Augen gluehen frostig. Der Frost hat Besitz ergriffen.");
             Add("de", "narrate_combine", "Deine Karten wirbeln zusammen und verschmelzen zu etwas Neuem!");
+
+            Add("de", "companion_limit_open", "Zu viele Gefaehrten! Du hast {0}, aber nur {1} koennen aktiv sein. Pfeiltasten wechseln zwischen den Gefaehrten, Eingabe verschiebt den fokussierten zwischen aktiver Reihe und Reserve; Reserve-Gefaehrten setzen aus. Druecke Weiter, wenn du fertig bist.");
+            Add("de", "companion_limit_active_list", "Aktiv: {0}.");
+            Add("de", "companion_limit_reserve_list", "In Reserve: {0}.");
+            Add("de", "companion_limit_moved_active", "{0} in die aktive Reihe verschoben. {1} von {2} aktiv.");
+            Add("de", "companion_limit_moved_reserve", "{0} in die Reserve verschoben. {1} von {2} aktiv.");
+            Add("de", "companion_limit_over", "Ueber dem Limit; verschiebe einen Gefaehrten in die Reserve, um fortzufahren.");
+            Add("de", "companion_limit_can_continue", "Du kannst jetzt fortfahren.");
+            Add("de", "companion_limit_row_active", "aktive Reihe");
+            Add("de", "companion_limit_row_reserve", "Reserve-Reihe");
             Add("de", "charselect_tribes", "Waehle einen Stamm. Mit den Pfeiltasten hoch und runter wechselst du zwischen den Staemmen; Name und Spielstil jedes Stammes werden vorgelesen. Die Pfeiltaste rechts liest Anfuehrer und Gefaehrten des Stammes vor, oder halte Strg und druecke hoch, um sie durchzugehen. Eingabe waehlt den fokussierten Stamm, Escape geht zurueck.");
 
             // ----- Spanish -----------------------------------------------------
@@ -538,6 +558,16 @@ namespace WildfrostAccessibility
             Add("es", "narrate_shade_blocked", "{0} bloquea la voluta oscura! La Escarcha queda sellada.");
             Add("es", "narrate_frost_eyes", "Los ojos de {0} brillan con escarcha. La Escarcha ha tomado el control.");
             Add("es", "narrate_combine", "Tus cartas giran juntas y se combinan en algo nuevo!");
+
+            Add("es", "companion_limit_open", "Demasiados companeros! Tienes {0}, pero solo {1} pueden estar activos. Las flechas se mueven entre los companeros, Intro mueve el enfocado entre la fila activa y la reserva; los de reserva no combaten. Pulsa Continuar cuando termines.");
+            Add("es", "companion_limit_active_list", "Activos: {0}.");
+            Add("es", "companion_limit_reserve_list", "En reserva: {0}.");
+            Add("es", "companion_limit_moved_active", "{0} movido a la fila activa. {1} de {2} activos.");
+            Add("es", "companion_limit_moved_reserve", "{0} movido a la reserva. {1} de {2} activos.");
+            Add("es", "companion_limit_over", "Por encima del limite; mueve un companero a la reserva para continuar.");
+            Add("es", "companion_limit_can_continue", "Ya puedes continuar.");
+            Add("es", "companion_limit_row_active", "fila activa");
+            Add("es", "companion_limit_row_reserve", "fila de reserva");
             Add("es", "charselect_tribes", "Elige una tribu. Usa las flechas arriba y abajo para moverte entre las tribus; se lee el nombre y el estilo de cada tribu al enfocarla. Pulsa la flecha derecha para oir los lideres y companeros de esa tribu, o manten Control y pulsa arriba para recorrerlos. Pulsa Intro para elegir la tribu enfocada, o Escape para volver atras.");
 
             // ----- French ------------------------------------------------------

@@ -83,7 +83,7 @@ namespace WildfrostAccessibility
             if (boardEntity == null && item.clickHandler != null)
                 boardEntity = item.clickHandler.GetComponentInParent<Entity>();
             if (boardEntity != null)
-                return DescribeEntityFocus(boardEntity);
+                return WithCompanionRow(boardEntity, DescribeEntityFocus(boardEntity));
 
             // Battlefield card slot (diamond placement slots)
             var slot = item.GetComponent<CardSlot>() ?? item.GetComponentInParent<CardSlot>();
@@ -133,7 +133,7 @@ namespace WildfrostAccessibility
             // Card/entity (units, items, charms in card form)
             var entity = FindComponent<Entity>(item);
             if (entity != null)
-                return DescribeEntityFocus(entity);
+                return WithCompanionRow(entity, DescribeEntityFocus(entity));
 
             // Unlock/challenge banners (tribe hut flags, challenge shrine): the
             // challenge condition and how much progress remains
@@ -163,6 +163,25 @@ namespace WildfrostAccessibility
 
             // Fall back to standard button text
             return owner.GetButtonText(item);
+        }
+
+        /// <summary>
+        /// On the too-many-companions screen, a card's row (active or reserve)
+        /// IS the decision being made — splice it in right after the name, the
+        /// same spot battlefield cards get their slot. No-op everywhere else.
+        /// </summary>
+        private static string WithCompanionRow(Entity entity, string desc)
+        {
+            string row = CompanionLimitNarrator.DescribeRow(entity);
+            if (string.IsNullOrEmpty(row))
+                return desc;
+            if (string.IsNullOrEmpty(desc))
+                return row;
+
+            int afterName = desc.IndexOf(", ");
+            return afterName < 0
+                ? desc + ", " + row
+                : desc.Substring(0, afterName) + ", " + row + desc.Substring(afterName);
         }
 
         /// <summary>Look for a component on the item, its click handler, parents, or children.</summary>
