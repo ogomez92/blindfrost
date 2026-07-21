@@ -145,6 +145,17 @@ namespace WildfrostAccessibility
                     return challengeText;
             }
 
+            // Tribe flag on the character-select screen. The flag object carries
+            // only a sprite, so this reads the tribe it stands for ("Snowdwellers")
+            // instead of the bare object name ("flag image").
+            var tribeFlag = FindComponent<TribeFlagDisplay>(item);
+            if (tribeFlag != null)
+            {
+                string tribe = DescribeTribeFlag(tribeFlag);
+                if (!string.IsNullOrEmpty(tribe))
+                    return tribe;
+            }
+
             // Anything else that pops keyword panels on hover (stat icons, misc UI)
             string keywordPanels = DescribeKeywordPanels(item, owner);
             if (keywordPanels != null)
@@ -383,32 +394,43 @@ namespace WildfrostAccessibility
             return parts.Count > 0 ? string.Join(", ", parts) : Loc.Get("slot_empty");
         }
 
-        /// <summary>"Your side, row 1, slot 2" — side, row and position of a battlefield slot.</summary>
+        /// <summary>
+        /// "Your row 1 2" / "Enemy row 1 2" — a battlefield slot's location with
+        /// the side folded into the row, so browsing slots no longer repeats
+        /// "your side, enemy side". The trailing number is the slot; both row and
+        /// slot are 1-based. Falls back to a bare "Row 1, Slot 2" when the side
+        /// is unknown, and to "Your side" when the row can't be resolved.
+        /// </summary>
         public static string GetSlotPosition(CardSlot slot)
         {
-            var parts = new List<string>();
+            bool hasSide = slot.owner != null && References.Battle != null;
+            bool isPlayer = hasSide && slot.owner == References.Battle.player;
 
-            if (slot.owner != null && References.Battle != null)
-            {
-                parts.Add(slot.owner == References.Battle.player
-                    ? Loc.Get("slot_your_side")
-                    : Loc.Get("slot_enemy_side"));
-            }
-
+            int rowIndex = -1;
+            int slotIndex = -1;
             var lane = slot.GetComponentInParent<CardSlotLane>();
             if (lane != null)
             {
                 if (References.Battle != null)
-                {
-                    int rowIndex = References.Battle.GetRowIndex(lane);
-                    if (rowIndex >= 0)
-                        parts.Add(Loc.Get("slot_row", rowIndex + 1));
-                }
-
-                int slotIndex = lane.slots.IndexOf(slot);
-                if (slotIndex >= 0)
-                    parts.Add(Loc.Get("slot_position", slotIndex + 1));
+                    rowIndex = References.Battle.GetRowIndex(lane);
+                slotIndex = lane.slots.IndexOf(slot);
             }
+
+            // Best case: side and row both known — "Your row 1 2"
+            if (hasSide && rowIndex >= 0)
+            {
+                string row = Loc.Get(isPlayer ? "slot_your_row" : "slot_enemy_row", rowIndex + 1);
+                return slotIndex >= 0 ? row + " " + (slotIndex + 1) : row;
+            }
+
+            // Partial information: fall back to the separate side / row / slot pieces
+            var parts = new List<string>();
+            if (hasSide)
+                parts.Add(Loc.Get(isPlayer ? "slot_your_side" : "slot_enemy_side"));
+            if (rowIndex >= 0)
+                parts.Add(Loc.Get("slot_row", rowIndex + 1));
+            if (slotIndex >= 0)
+                parts.Add(Loc.Get("slot_position", slotIndex + 1));
 
             return string.Join(", ", parts);
         }
@@ -510,6 +532,10 @@ namespace WildfrostAccessibility
             string title = entity.data.title;
             if (!string.IsNullOrEmpty(title))
                 parts.Add(title);
+
+            string cardType = GetCardTypeName(entity.data);
+            if (!string.IsNullOrEmpty(cardType))
+                parts.Add(cardType);
 
             if (entity.damage.max > 0)
                 parts.Add(Loc.Get("stat_attack", GetShownAttack(entity)));
@@ -639,6 +665,296 @@ namespace WildfrostAccessibility
         }
 
         /// <summary>
+        /// Describe the tribe a character-select flag stands for: its name plus a
+        /// short playstyle blurb ("Snowdwellers. The starting tribe..."). The flag
+        /// component holds only a sprite, so the tribe is recovered from
+        /// SelectTribe (below); the game exposes no tribe name or description, so
+        /// both come from the mod's own strings keyed by the tribe's internal id
+        /// ("Basic", "Magic", "Clunk"). Null when the flag can't be matched to a
+        /// tribe (e.g. mid-selection animation).
+        /// </summary>
+        public static string DescribeTribeFlag(TribeFlagDisplay flag)
+        {
+            var tribe = FindTribeForFlag(flag);
+            if (tribe == null)
+                return null;
+
+            string name = GetTribeName(tribe);
+            if (string.IsNullOrEmpty(name))
+                return null;
+
+            string internalName = tribe.name;
+            if (!string.IsNullOrEmpty(internalName)
+                && Loc.TryGet("tribe_desc_" + internalName, out string desc)
+                && !string.IsNullOrEmpty(desc))
+                return name + ". " + desc;
+
+            return name;
+        }
+
+        /// <summary>
+        /// Map a flag to its ClassData. SelectTribe builds its flags and tribes
+        /// as two lists in lock-step (one flag per tribe, same order), so the
+        /// flag's index in the flag list is the tribe's index in the tribe list.
+        /// </summary>
+        private static ClassData FindTribeForFlag(TribeFlagDisplay flag)
+        {
+            if (flag == null)
+                return null;
+
+            var select = Object.FindObjectOfType<SelectTribe>();
+            if (select == null)
+                return null;
+
+            var flags = ReflectionUtil.GetField<List<TribeFlagDisplay>>(select, "flags");
+            var tribes = ReflectionUtil.GetField<List<ClassData>>(select, "tribes");
+            if (flags == null || tribes == null)
+                return null;
+
+            int index = flags.IndexOf(flag);
+            return index >= 0 && index < tribes.Count ? tribes[index] : null;
+        }
+
+        /// <summary>
+        /// A tribe's player-facing name. The ClassData asset name is an internal
+        /// id ("Basic", "Magic", "Clunk"), so it is mapped to the real tribe name
+        /// through a "tribe_name_&lt;id&gt;" string; an unmapped (e.g. modded)
+        /// tribe falls back to its cleaned-up asset name.
+        /// </summary>
+        public static string GetTribeName(ClassData tribe)
+        {
+            if (tribe == null)
+                return null;
+
+            string internalName = tribe.name;
+            if (!string.IsNullOrEmpty(internalName)
+                && Loc.TryGet("tribe_name_" + internalName, out string localized))
+                return localized;
+
+            return ScreenHandler.CleanName(internalName);
+        }
+
+        /// <summary>
+        /// The companions a tribe can recruit over a run, read from its unit
+        /// reward pools. This — not the starting deck — is a tribe's real
+        /// roster: runs begin with no companions besides the leader (the
+        /// Snowdweller and Clunkmaster decks hold a Clunker, not a companion,
+        /// and the Shademancer deck holds only items).
+        /// </summary>
+        private static List<CardData> GetTribeRecruitableCompanions(ClassData tribe)
+        {
+            var result = new List<CardData>();
+            try
+            {
+                var pools = tribe?.rewardPools;
+                if (pools == null) return result;
+                foreach (var pool in pools)
+                {
+                    if (pool == null || pool.list == null) continue;
+                    if (!string.Equals(pool.type, "Units", System.StringComparison.OrdinalIgnoreCase))
+                        continue;
+                    foreach (var entry in pool.list)
+                    {
+                        if (entry is CardData card && card.cardType != null
+                            && card.cardType.unit && !card.cardType.item
+                            && !result.Contains(card))
+                            result.Add(card);
+                    }
+                }
+            }
+            catch { /* pools not loaded */ }
+            return result;
+        }
+
+        /// <summary>
+        /// The cards a tribe's runs start with — the whole starting deck, in
+        /// deck order, duplicates aggregated ("Scrappy Sword, 3 copies").
+        /// </summary>
+        public static string DescribeTribeStartingDeck(ClassData tribe)
+        {
+            try
+            {
+                var deck = tribe?.startingInventory?.deck;
+                if (deck == null) return null;
+
+                var order = new List<string>();
+                var counts = new Dictionary<string, int>();
+                foreach (CardData card in deck)
+                {
+                    string title = SafeTitle(card);
+                    if (string.IsNullOrEmpty(title)) continue;
+                    if (!counts.ContainsKey(title))
+                    {
+                        counts[title] = 0;
+                        order.Add(title);
+                    }
+                    counts[title]++;
+                }
+                if (order.Count == 0) return null;
+
+                var parts = new List<string>();
+                foreach (string title in order)
+                    parts.Add(counts[title] > 1
+                        ? Loc.Get("card_count_multiple", title, counts[title])
+                        : title);
+                return Loc.Get("tribe_starting_deck", string.Join(", ", parts));
+            }
+            catch { return null; }
+        }
+
+        /// <summary>CardData.title, guarded against a localization miss.</summary>
+        private static string SafeTitle(CardData card)
+        {
+            try { return card?.title; }
+            catch { return null; }
+        }
+
+        /// <summary>
+        /// A one-line spoken summary of who a tribe fields: its leaders, the
+        /// companions it can recruit, and its starting deck. What the right
+        /// arrow reads on the tribe-select screen. Null only if a tribe
+        /// somehow lists none of the three.
+        /// </summary>
+        public static string DescribeTribeRoster(ClassData tribe)
+        {
+            if (tribe == null) return null;
+
+            var segments = new List<string>();
+
+            string leaders = DescribeTribeLeaders(tribe);
+            if (!string.IsNullOrEmpty(leaders))
+                segments.Add(leaders);
+
+            var names = new List<string>();
+            foreach (var card in GetTribeRecruitableCompanions(tribe))
+            {
+                string title = SafeTitle(card);
+                if (!string.IsNullOrEmpty(title) && !names.Contains(title))
+                    names.Add(title);
+            }
+            if (names.Count > 0)
+                segments.Add(Loc.Get("tribe_companions", string.Join(", ", names)));
+
+            string deck = DescribeTribeStartingDeck(tribe);
+            if (!string.IsNullOrEmpty(deck))
+                segments.Add(deck);
+
+            return segments.Count > 0 ? string.Join(" ", segments) : null;
+        }
+
+        /// <summary>
+        /// The leaders a tribe can be played with. Base-game leader cards are
+        /// nameless templates — a leader only gets its name and stats when the
+        /// leader stage clones it and runs CardScriptLeader — so when no
+        /// template carries a real name this says they're randomly generated
+        /// instead of parroting the "Leader" placeholder title. Modded tribes
+        /// whose leader cards do have names still get them listed.
+        /// </summary>
+        public static string DescribeTribeLeaders(ClassData tribe)
+        {
+            try
+            {
+                var leaders = tribe?.leaders;
+                if (leaders == null || leaders.Length == 0) return null;
+
+                var names = new List<string>();
+                foreach (var leader in leaders)
+                {
+                    string title = SafeTitle(leader);
+                    if (string.IsNullOrEmpty(title) || IsLeaderPlaceholderTitle(leader, title))
+                        continue;
+                    if (!names.Contains(title))
+                        names.Add(title);
+                }
+                if (names.Count > 0)
+                    return Loc.Get("tribe_leaders", string.Join(", ", names));
+
+                return Loc.Get("tribe_leaders_random");
+            }
+            catch { return null; }
+        }
+
+        /// <summary>A template title that is just the card-type name
+        /// ("Leader") rather than a character name.</summary>
+        private static bool IsLeaderPlaceholderTitle(CardData leader, string title)
+        {
+            if (title == "Leader") return true;
+            try { return title == leader?.cardType?.title; }
+            catch { return false; }
+        }
+
+        /// <summary>Name, plus attack and health if it has them, from card data alone.</summary>
+        private static string DescribeCardDataShort(CardData data)
+        {
+            if (data == null) return null;
+
+            var parts = new List<string>();
+            string title = SafeTitle(data);
+            if (!string.IsNullOrEmpty(title))
+                parts.Add(title);
+            if (data.hasAttack && data.damage > 0)
+                parts.Add(Loc.Get("stat_attack", data.damage));
+            if (data.hasHealth && data.hp > 0)
+                parts.Add(Loc.Get("stat_health", data.hp));
+
+            return parts.Count > 0 ? string.Join(", ", parts) : null;
+        }
+
+        /// <summary>
+        /// Detail-buffer parts for a focused tribe flag (Ctrl+Up steps through
+        /// them): the tribe's name and playstyle, its leaders, then one line
+        /// per recruitable companion (with stats), then the starting deck.
+        /// </summary>
+        public static List<string> BuildTribeDetailParts(TribeFlagDisplay flag)
+        {
+            var tribe = FindTribeForFlag(flag);
+            if (tribe == null) return null;
+
+            var parts = new List<string>();
+
+            string head = DescribeTribeFlag(flag);
+            if (!string.IsNullOrEmpty(head))
+                parts.Add(head);
+
+            string leaders = DescribeTribeLeaders(tribe);
+            if (!string.IsNullOrEmpty(leaders))
+                parts.Add(leaders);
+
+            foreach (var card in GetTribeRecruitableCompanions(tribe))
+            {
+                string line = DescribeCardDataShort(card);
+                if (!string.IsNullOrEmpty(line))
+                    parts.Add(line);
+            }
+
+            string deckLine = DescribeTribeStartingDeck(tribe);
+            if (!string.IsNullOrEmpty(deckLine))
+                parts.Add(deckLine);
+
+            return parts.Count > 0 ? parts : null;
+        }
+
+        /// <summary>
+        /// The game's own localized name for a card's type — "Companion", "Item",
+        /// "Leader", "Clunker", "Miniboss", and so on — read straight from
+        /// CardType.title, the text the game prints on the card's name tag. Null
+        /// when the card has no type or its title isn't set. (Wildfrost has no
+        /// card rarity, so there is nothing of that kind to report.)
+        /// </summary>
+        public static string GetCardTypeName(CardData data)
+        {
+            try
+            {
+                string title = data?.cardType?.title;
+                return string.IsNullOrEmpty(title) ? null : title;
+            }
+            catch
+            {
+                return null; // localization may not be ready
+            }
+        }
+
+        /// <summary>
         /// Short focus read: name, stats, and effect NAMES with stack counts —
         /// no card text, no keyword explanations. Those wait in the Details
         /// review buffer (Ctrl+Up) and in the game's inspect view (I).
@@ -652,6 +968,10 @@ namespace WildfrostAccessibility
             string title = entity.data.title;
             if (!string.IsNullOrEmpty(title))
                 parts.Add(title);
+
+            string cardType = GetCardTypeName(entity.data);
+            if (!string.IsNullOrEmpty(cardType))
+                parts.Add(cardType);
 
             if (entity.damage.max > 0)
                 parts.Add(Loc.Get("stat_attack", GetShownAttack(entity)));

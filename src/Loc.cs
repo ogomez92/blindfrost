@@ -187,6 +187,8 @@ namespace WildfrostAccessibility
             Add("en", "slot_your_side", "Your side");
             Add("en", "slot_enemy_side", "Enemy side");
             Add("en", "slot_row", "Row {0}");
+            Add("en", "slot_your_row", "Your row {0}");
+            Add("en", "slot_enemy_row", "Enemy row {0}");
             Add("en", "slot_position", "Slot {0}");
             Add("en", "slot_empty", "Empty");
             Add("en", "slot_occupied", "Occupied");
@@ -202,6 +204,8 @@ namespace WildfrostAccessibility
             Add("de", "slot_your_side", "Deine Seite");
             Add("de", "slot_enemy_side", "Gegnerseite");
             Add("de", "slot_row", "Reihe {0}");
+            Add("de", "slot_your_row", "Deine Reihe {0}");
+            Add("de", "slot_enemy_row", "Gegnerische Reihe {0}");
             Add("de", "slot_position", "Platz {0}");
             Add("de", "slot_empty", "Leer");
             Add("de", "slot_occupied", "Belegt");
@@ -217,6 +221,8 @@ namespace WildfrostAccessibility
             Add("fr", "slot_your_side", "Votre cote");
             Add("fr", "slot_enemy_side", "Cote ennemi");
             Add("fr", "slot_row", "Rangee {0}");
+            Add("fr", "slot_your_row", "Votre rangee {0}");
+            Add("fr", "slot_enemy_row", "Rangee ennemie {0}");
             Add("fr", "slot_position", "Emplacement {0}");
             Add("fr", "slot_empty", "Vide");
             Add("fr", "slot_occupied", "Occupe");
@@ -232,6 +238,8 @@ namespace WildfrostAccessibility
             Add("es", "slot_your_side", "Tu lado");
             Add("es", "slot_enemy_side", "Lado enemigo");
             Add("es", "slot_row", "Fila {0}");
+            Add("es", "slot_your_row", "Tu fila {0}");
+            Add("es", "slot_enemy_row", "Fila enemiga {0}");
             Add("es", "slot_position", "Casilla {0}");
             Add("es", "slot_empty", "Vacio");
             Add("es", "slot_occupied", "Ocupado");
@@ -247,6 +255,8 @@ namespace WildfrostAccessibility
             Add("ja", "slot_your_side", "味方側");
             Add("ja", "slot_enemy_side", "敵側");
             Add("ja", "slot_row", "{0}列目");
+            Add("ja", "slot_your_row", "味方{0}列目");
+            Add("ja", "slot_enemy_row", "敵{0}列目");
             Add("ja", "slot_position", "{0}番");
             Add("ja", "slot_empty", "空き");
             Add("ja", "slot_occupied", "使用中");
@@ -260,6 +270,8 @@ namespace WildfrostAccessibility
             Add("ko", "slot_your_side", "아군 측");
             Add("ko", "slot_enemy_side", "적 측");
             Add("ko", "slot_row", "{0}행");
+            Add("ko", "slot_your_row", "아군 {0}행");
+            Add("ko", "slot_enemy_row", "적 {0}행");
             Add("ko", "slot_position", "{0}번 칸");
             Add("ko", "slot_empty", "비어있음");
             Add("ko", "slot_occupied", "점유됨");
@@ -273,6 +285,8 @@ namespace WildfrostAccessibility
             Add("zh-Hans", "slot_your_side", "己方");
             Add("zh-Hans", "slot_enemy_side", "敌方");
             Add("zh-Hans", "slot_row", "第{0}排");
+            Add("zh-Hans", "slot_your_row", "己方第{0}排");
+            Add("zh-Hans", "slot_enemy_row", "敌方第{0}排");
             Add("zh-Hans", "slot_position", "第{0}格");
             Add("zh-Hans", "slot_empty", "空");
             Add("zh-Hans", "slot_occupied", "已占用");
@@ -286,6 +300,8 @@ namespace WildfrostAccessibility
             Add("zh-Hant", "slot_your_side", "己方");
             Add("zh-Hant", "slot_enemy_side", "敵方");
             Add("zh-Hant", "slot_row", "第{0}排");
+            Add("zh-Hant", "slot_your_row", "己方第{0}排");
+            Add("zh-Hant", "slot_enemy_row", "敵方第{0}排");
             Add("zh-Hant", "slot_position", "第{0}格");
             Add("zh-Hant", "slot_empty", "空");
             Add("zh-Hant", "slot_occupied", "已佔用");
@@ -299,6 +315,8 @@ namespace WildfrostAccessibility
             Add("it", "slot_your_side", "Il tuo lato");
             Add("it", "slot_enemy_side", "Lato nemico");
             Add("it", "slot_row", "Riga {0}");
+            Add("it", "slot_your_row", "La tua riga {0}");
+            Add("it", "slot_enemy_row", "Riga nemica {0}");
             Add("it", "slot_position", "Posizione {0}");
             Add("it", "slot_empty", "Vuoto");
             Add("it", "slot_occupied", "Occupato");
@@ -312,6 +330,8 @@ namespace WildfrostAccessibility
             Add("pt", "slot_your_side", "Seu lado");
             Add("pt", "slot_enemy_side", "Lado inimigo");
             Add("pt", "slot_row", "Fileira {0}");
+            Add("pt", "slot_your_row", "Sua fileira {0}");
+            Add("pt", "slot_enemy_row", "Fileira inimiga {0}");
             Add("pt", "slot_position", "Posicao {0}");
             Add("pt", "slot_empty", "Vazio");
             Add("pt", "slot_occupied", "Ocupado");
@@ -325,6 +345,8 @@ namespace WildfrostAccessibility
             Add("ru", "slot_your_side", "Ваша сторона");
             Add("ru", "slot_enemy_side", "Сторона противника");
             Add("ru", "slot_row", "Ряд {0}");
+            Add("ru", "slot_your_row", "Ваш ряд {0}");
+            Add("ru", "slot_enemy_row", "Ряд противника {0}");
             Add("ru", "slot_position", "Позиция {0}");
             Add("ru", "slot_empty", "Пусто");
             Add("ru", "slot_occupied", "Занято");
@@ -338,6 +360,8 @@ namespace WildfrostAccessibility
             Add("pl", "slot_your_side", "Twoja strona");
             Add("pl", "slot_enemy_side", "Strona wroga");
             Add("pl", "slot_row", "Rzad {0}");
+            Add("pl", "slot_your_row", "Twoj rzad {0}");
+            Add("pl", "slot_enemy_row", "Rzad wroga {0}");
             Add("pl", "slot_position", "Pozycja {0}");
             Add("pl", "slot_empty", "Puste");
             Add("pl", "slot_occupied", "Zajete");
@@ -351,6 +375,8 @@ namespace WildfrostAccessibility
             Add("tr", "slot_your_side", "Sizin taraf");
             Add("tr", "slot_enemy_side", "Dusman tarafi");
             Add("tr", "slot_row", "Sira {0}");
+            Add("tr", "slot_your_row", "Sizin sira {0}");
+            Add("tr", "slot_enemy_row", "Dusman sirasi {0}");
             Add("tr", "slot_position", "Konum {0}");
             Add("tr", "slot_empty", "Bos");
             Add("tr", "slot_occupied", "Dolu");
@@ -416,7 +442,7 @@ namespace WildfrostAccessibility
             Add("en", "narrate_shade_blocked", "{0} blocks the dark wisp! The Frost is sealed away.");
             Add("en", "narrate_frost_eyes", "{0}'s eyes glow with frost. The Frost has taken hold.");
             Add("en", "narrate_combine", "Your cards swirl together and combine into something new!");
-            Add("en", "charselect_tribes", "Choose your tribe. Use the arrow keys to browse the tribe flags, Enter picks one.");
+            Add("en", "charselect_tribes", "Select a tribe. Use the up and down arrow keys to move between the tribes; each tribe's name and playstyle are read as you land on it. Press the right arrow to hear that tribe's leaders and companions, or hold Control and press up to step through them. Press Enter to choose the focused tribe, or Escape to go back.");
 
             // ----- German ------------------------------------------------------
             Add("de", "scene_CardFramesUnlocked", "Kartenrahmen freigeschaltet!");
@@ -464,7 +490,7 @@ namespace WildfrostAccessibility
             Add("de", "narrate_shade_blocked", "{0} blockt den dunklen Schemen! Der Frost ist versiegelt.");
             Add("de", "narrate_frost_eyes", "{0}s Augen gluehen frostig. Der Frost hat Besitz ergriffen.");
             Add("de", "narrate_combine", "Deine Karten wirbeln zusammen und verschmelzen zu etwas Neuem!");
-            Add("de", "charselect_tribes", "Waehle deinen Stamm. Pfeiltasten durchstoebern die Stammesflaggen, Eingabe waehlt eine.");
+            Add("de", "charselect_tribes", "Waehle einen Stamm. Mit den Pfeiltasten hoch und runter wechselst du zwischen den Staemmen; Name und Spielstil jedes Stammes werden vorgelesen. Die Pfeiltaste rechts liest Anfuehrer und Gefaehrten des Stammes vor, oder halte Strg und druecke hoch, um sie durchzugehen. Eingabe waehlt den fokussierten Stamm, Escape geht zurueck.");
 
             // ----- Spanish -----------------------------------------------------
             Add("es", "scene_CardFramesUnlocked", "Marcos de carta desbloqueados!");
@@ -512,7 +538,7 @@ namespace WildfrostAccessibility
             Add("es", "narrate_shade_blocked", "{0} bloquea la voluta oscura! La Escarcha queda sellada.");
             Add("es", "narrate_frost_eyes", "Los ojos de {0} brillan con escarcha. La Escarcha ha tomado el control.");
             Add("es", "narrate_combine", "Tus cartas giran juntas y se combinan en algo nuevo!");
-            Add("es", "charselect_tribes", "Elige tu tribu. Las flechas recorren las banderas de tribu, Intro elige una.");
+            Add("es", "charselect_tribes", "Elige una tribu. Usa las flechas arriba y abajo para moverte entre las tribus; se lee el nombre y el estilo de cada tribu al enfocarla. Pulsa la flecha derecha para oir los lideres y companeros de esa tribu, o manten Control y pulsa arriba para recorrerlos. Pulsa Intro para elegir la tribu enfocada, o Escape para volver atras.");
 
             // ----- French ------------------------------------------------------
             Add("fr", "scene_CardFramesUnlocked", "Cadres de carte debloques!");
@@ -560,7 +586,7 @@ namespace WildfrostAccessibility
             Add("fr", "narrate_shade_blocked", "{0} bloque la volute sombre! Le Givre est scelle.");
             Add("fr", "narrate_frost_eyes", "Les yeux de {0} brillent de givre. Le Givre s'est empare de lui.");
             Add("fr", "narrate_combine", "Vos cartes tourbillonnent et fusionnent en quelque chose de nouveau!");
-            Add("fr", "charselect_tribes", "Choisissez votre tribu. Les fleches parcourent les drapeaux de tribu, Entree en choisit un.");
+            Add("fr", "charselect_tribes", "Choisissez une tribu. Utilisez les fleches haut et bas pour passer d'une tribu a l'autre; le nom et le style de chaque tribu sont lus. La fleche droite lit les chefs et compagnons de la tribu, ou maintenez Controle et appuyez sur haut pour les parcourir. Entree choisit la tribu selectionnee, ou Echap pour revenir en arriere.");
         }
 
         /// <summary>
@@ -820,13 +846,31 @@ namespace WildfrostAccessibility
 
             // Character select
             Add("en", "charselect_leaders", "Choose your leader. Arrow keys browse the leaders, Enter selects one.");
+            Add("en", "charselect_leader_pos", "Leader {0} of {1}: {2}");
+            Add("en", "charselect_pet_pos", "Pet {0} of {1}: {2}");
             Add("en", "charselect_chosen", "{0} chosen. Press Enter to confirm, or Escape to put the card back.");
             Add("en", "charselect_chosen_generic", "Card chosen. Press Enter to confirm, or Escape to put it back.");
             Add("en", "charselect_cancelled", "Choice cancelled, back to browsing.");
             Add("en", "charselect_pets", "Choose your starting pet. Arrow keys browse, Enter selects.");
             Add("en", "charselect_starting", "Let's go! Starting the journey.");
             Add("en", "inspect_no_confirm", "This panel cannot be confirmed here. Escape puts the card back.");
-            Add("en", "help_charselect", "Character selection. Arrow keys browse the choices and Enter selects one. After selecting, Enter confirms and continues, Escape puts the card back.");
+            Add("en", "help_charselect", "Character selection, in three stages. First a tribe: up and down arrows move between the tribes and read each tribe's name and playstyle, the right arrow reads that tribe's recruitable companions and starting deck, and Control plus up steps through them in the review buffer. Enter chooses the focused tribe. Then a leader and a starting pet, browsed with the arrow keys, Enter to pick. After choosing a card, Enter confirms and continues, Escape puts it back. I inspects the focused card.");
+
+            // Tribe names and playstyle blurbs, keyed by the ClassData internal id.
+            // The game has no readable tribe name or description, so the mod supplies
+            // them; unmapped/modded tribes fall back to their cleaned asset name.
+            Add("en", "tribe_name_Basic", "Snowdwellers");
+            Add("en", "tribe_desc_Basic", "The starting tribe and the most beginner friendly. They freeze enemies with Frost and Snow so they skip turns, and grow their attack with Bonus.");
+            Add("en", "tribe_name_Magic", "Shademancers");
+            Add("en", "tribe_desc_Magic", "An aggressive, high risk tribe built around Shade and Spice. They stack up temporary attack to hit fast and hard, but their units are fragile.");
+            Add("en", "tribe_name_Clunk", "Clunkmasters");
+            Add("en", "tribe_desc_Clunk", "Tinkerers who fight with Clunkers, heavy scrap units, and Junk. They overwhelm the enemy with sheer mass and machinery.");
+            Add("en", "tribe_companions", "Companions you can recruit: {0}.");
+            Add("en", "tribe_leaders", "Leaders: {0}.");
+            Add("en", "tribe_leaders_random", "Leaders are randomly generated: you choose from three after picking this tribe.");
+            Add("en", "tribe_starting_deck", "Starting deck: {0}.");
+            Add("en", "tribe_no_companions", "No companions or leaders listed for this tribe.");
+            Add("en", "charselect_back", "Go back");
 
             // Main menu
             Add("en", "help_main_menu", "Main menu. Up and down arrows move between buttons, Enter selects. F1 repeats this help, F10 toggles debug mode.");
@@ -1001,6 +1045,8 @@ namespace WildfrostAccessibility
             Add("en", "battle_dodged", "{0} dodged.");
             Add("en", "battle_destroyed", "{0} destroyed.");
             Add("en", "battle_status_applied", "{0} {1} applied to {2}.");
+            Add("en", "battle_your_unit", "your {0}");
+            Add("en", "battle_enemy_unit", "enemy {0}");
             Add("en", "help_battle", "Battle. Up and down arrows switch groups: hand, your board, enemy board, bell and piles. Left and right arrows move within a group. Enter on a hand card picks it up, arrows choose a target, Enter places it. Enter on one of your units on the board picks it up to move it: a free slot moves it, an occupied slot swaps or shoves, the recall zone takes it off the board. Moving and recalling are free actions that do not end your turn. Escape puts a picked-up card back. I inspects the focused card, Escape closes the inspect view. Playing a card or ringing the bell ends your turn. Readout keys: H hand, B board, W waves, R bell, T turn, G gold, M modifier bells. P opens your inventory. Press O for the game menu with settings.");
             Add("en", "battle_unit_picked_up", "{0} picked up from the board.");
             Add("en", "battle_move_hint", "Arrow keys choose a destination slot or the recall zone, Enter confirms, Escape cancels.");
@@ -1129,7 +1175,7 @@ namespace WildfrostAccessibility
             Add("de", "charselect_pets", "Waehle dein Start-Haustier. Pfeiltasten wechseln, Enter waehlt aus.");
             Add("de", "charselect_starting", "Los geht's! Die Reise beginnt.");
             Add("de", "inspect_no_confirm", "Dieses Fenster kann hier nicht bestaetigt werden. Escape legt die Karte zurueck.");
-            Add("de", "help_charselect", "Charakterauswahl. Pfeiltasten wechseln zwischen den Optionen, Enter waehlt aus. Nach der Auswahl bestaetigt Enter und setzt fort, Escape legt die Karte zurueck.");
+            Add("de", "help_charselect", "Charakterauswahl in drei Schritten. Zuerst ein Stamm: Pfeiltasten hoch und runter wechseln zwischen den Staemmen und lesen Name und Spielstil vor, die Pfeiltaste rechts liest die Gefaehrten des Stammes, und Strg plus hoch geht Gefaehrten und Anfuehrer im Lesepuffer durch. Enter waehlt den fokussierten Stamm. Danach ein Anfuehrer und ein Start-Haustier, mit den Pfeiltasten durchgesehen, Enter waehlt aus. Nach dem Auswaehlen einer Karte bestaetigt Enter und setzt fort, Escape legt sie zurueck. I untersucht die fokussierte Karte.");
             Add("de", "help_main_menu", "Hauptmenue. Pfeiltasten hoch und runter wechseln die Knoepfe, Enter waehlt aus. F1 wiederholt diese Hilfe, F10 schaltet den Debug-Modus um.");
             Add("de", "screen_town", "Stadt, dein Lager.");
             Add("de", "town_hint", "Pfeiltasten wechseln zwischen Gebaeuden, Enter waehlt aus, I beschreibt das fokussierte Gebaeude. F1 fuer Hilfe.");
@@ -1273,6 +1319,8 @@ namespace WildfrostAccessibility
             Add("de", "battle_dodged", "{0} ist ausgewichen.");
             Add("de", "battle_destroyed", "{0} zerstoert.");
             Add("de", "battle_status_applied", "{0} {1} auf {2} angewendet.");
+            Add("de", "battle_your_unit", "dein {0}");
+            Add("de", "battle_enemy_unit", "gegnerisches {0}");
             Add("de", "help_battle", "Kampf. Hoch und runter wechseln die Gruppen: Hand, dein Feld, Gegnerfeld, Glocke und Stapel. Links und rechts bewegen sich innerhalb einer Gruppe. Enter auf einer Handkarte nimmt sie auf, Pfeiltasten waehlen ein Ziel, Enter legt ab. Enter auf einer deiner Einheiten auf dem Feld nimmt sie zum Bewegen auf: ein freier Platz bewegt sie, ein besetzter Platz tauscht oder schiebt, die Rueckrufzone nimmt sie vom Feld. Bewegen und Zurueckrufen sind freie Aktionen und beenden deinen Zug nicht. Escape legt eine aufgenommene Karte zurueck. I untersucht die fokussierte Karte, Escape schliesst die Untersuchung. Eine Karte spielen oder die Glocke laeuten beendet deinen Zug. Vorlesetasten: H Hand, B Feld, W Wellen, R Glocke, T Runde, G Gold, M Modifikator-Glocken. P oeffnet dein Inventar. O oeffnet das Spielmenue mit Einstellungen.");
             Add("de", "battle_unit_picked_up", "{0} vom Feld aufgenommen.");
             Add("de", "battle_move_hint", "Pfeiltasten waehlen einen Zielplatz oder die Rueckrufzone, Enter bestaetigt, Escape bricht ab.");
@@ -1398,7 +1446,7 @@ namespace WildfrostAccessibility
             Add("es", "charselect_pets", "Elige tu mascota inicial. Las flechas cambian, Enter selecciona.");
             Add("es", "charselect_starting", "Vamos! Comienza el viaje.");
             Add("es", "inspect_no_confirm", "Este panel no se puede confirmar aqui. Escape devuelve la carta.");
-            Add("es", "help_charselect", "Seleccion de personaje. Las flechas cambian entre las opciones y Enter selecciona. Tras seleccionar, Enter confirma y continua, Escape devuelve la carta.");
+            Add("es", "help_charselect", "Seleccion de personaje, en tres etapas. Primero una tribu: las flechas arriba y abajo cambian entre las tribus y leen el nombre y el estilo de cada una, la flecha derecha lee los companeros de la tribu, y Control mas arriba recorre companeros y lideres en el bufer de revision. Enter elige la tribu enfocada. Luego un lider y una mascota inicial, explorados con las flechas, Enter para elegir. Tras elegir una carta, Enter confirma y continua, Escape la devuelve. I inspecciona la carta enfocada.");
             Add("es", "help_main_menu", "Menu principal. Flechas arriba y abajo cambian de boton, Enter selecciona. F1 repite esta ayuda, F10 alterna el modo de depuracion.");
             Add("es", "screen_town", "Pueblo, tu campamento base.");
             Add("es", "town_hint", "Las flechas cambian de edificio, Enter selecciona, I describe el edificio seleccionado. F1 para ayuda.");
@@ -1542,6 +1590,8 @@ namespace WildfrostAccessibility
             Add("es", "battle_dodged", "{0} esquivo el golpe.");
             Add("es", "battle_destroyed", "{0} destruido.");
             Add("es", "battle_status_applied", "{0} de {1} aplicado a {2}.");
+            Add("es", "battle_your_unit", "tu {0}");
+            Add("es", "battle_enemy_unit", "{0} enemigo");
             Add("es", "help_battle", "Batalla. Arriba y abajo cambian de grupo: mano, tu tablero, tablero enemigo, campana y pilas. Izquierda y derecha se mueven dentro del grupo. Enter en una carta de la mano la coge, las flechas eligen objetivo, Enter la coloca. Enter en una de tus unidades del tablero la coge para moverla: una casilla libre la mueve, una ocupada intercambia o empuja, la zona de retirada la saca del tablero. Mover y retirar son acciones gratuitas que no terminan tu turno. Escape devuelve la carta cogida. I inspecciona la carta enfocada, Escape cierra la inspeccion. Jugar una carta o tocar la campana termina tu turno. Teclas de lectura: H mano, B tablero, W oleadas, R campana, T turno, G oro, M campanas de modificador. P abre tu inventario. Pulsa O para el menu del juego con los ajustes.");
             Add("es", "battle_unit_picked_up", "{0} levantada del tablero.");
             Add("es", "battle_move_hint", "Las flechas eligen una casilla de destino o la zona de retirada, Enter confirma, Escape cancela.");
@@ -1667,7 +1717,7 @@ namespace WildfrostAccessibility
             Add("fr", "charselect_pets", "Choisissez votre familier de depart. Les fleches changent, Entree selectionne.");
             Add("fr", "charselect_starting", "C'est parti! Le voyage commence.");
             Add("fr", "inspect_no_confirm", "Ce panneau ne peut pas etre confirme ici. Echap remet la carte.");
-            Add("fr", "help_charselect", "Selection du personnage. Les fleches changent d'option et Entree selectionne. Apres la selection, Entree confirme et continue, Echap remet la carte.");
+            Add("fr", "help_charselect", "Selection du personnage, en trois etapes. D'abord une tribu: les fleches haut et bas passent d'une tribu a l'autre et lisent le nom et le style de chacune, la fleche droite lit les compagnons de la tribu, et Controle plus haut parcourt compagnons et chefs dans le tampon de lecture. Entree choisit la tribu selectionnee. Ensuite un chef et un familier de depart, parcourus avec les fleches, Entree pour choisir. Apres avoir choisi une carte, Entree confirme et continue, Echap la remet. I inspecte la carte selectionnee.");
             Add("fr", "help_main_menu", "Menu principal. Fleches haut et bas pour changer de bouton, Entree pour selectionner. F1 repete cette aide, F10 bascule le mode debogage.");
             Add("fr", "screen_town", "Village, votre camp de base.");
             Add("fr", "town_hint", "Les fleches changent de batiment, Entree selectionne, I decrit le batiment selectionne. F1 pour l'aide.");
@@ -1811,6 +1861,8 @@ namespace WildfrostAccessibility
             Add("fr", "battle_dodged", "{0} a esquive.");
             Add("fr", "battle_destroyed", "{0} detruit.");
             Add("fr", "battle_status_applied", "{0} {1} applique a {2}.");
+            Add("fr", "battle_your_unit", "votre {0}");
+            Add("fr", "battle_enemy_unit", "{0} ennemi");
             Add("fr", "help_battle", "Bataille. Haut et bas changent de groupe: main, votre plateau, plateau ennemi, cloche et piles. Gauche et droite se deplacent dans le groupe. Entree sur une carte de la main la prend, les fleches choisissent une cible, Entree la pose. Entree sur une de vos unites du plateau la prend pour la deplacer: une case libre la deplace, une case occupee echange ou pousse, la zone de rappel la retire du plateau. Deplacer et rappeler sont des actions gratuites qui ne terminent pas votre tour. Echap repose une carte prise. I inspecte la carte selectionnee, Echap ferme l'inspection. Jouer une carte ou sonner la cloche termine votre tour. Touches de lecture: H main, B plateau, W vagues, R cloche, T tour, G or, M cloches de modificateur. P ouvre votre inventaire. Appuyez sur O pour le menu du jeu avec les reglages.");
             Add("fr", "battle_unit_picked_up", "{0} prise du plateau.");
             Add("fr", "battle_move_hint", "Les fleches choisissent une case de destination ou la zone de rappel, Entree confirme, Echap annule.");

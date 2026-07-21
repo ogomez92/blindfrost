@@ -226,11 +226,33 @@ namespace WildfrostAccessibility
                 && (battle.phase == Battle.Phase.Play || battle.phase == Battle.Phase.Battle);
         }
 
+        /// <summary>
+        /// A unit's name qualified by whose side it is on — "your Snowball" /
+        /// "enemy Snowball" — so combat narration tells apart two units that
+        /// share a name. Falls back to the bare title when the side is unknown.
+        /// </summary>
+        private static string QualifyOwner(Entity entity)
+        {
+            string title = entity?.data?.title;
+            if (string.IsNullOrEmpty(title))
+                return title;
+
+            var battle = Battle.instance;
+            if (battle != null && entity.owner != null)
+            {
+                if (entity.owner == battle.player)
+                    return Loc.Get("battle_your_unit", title);
+                if (entity.owner == battle.enemy)
+                    return Loc.Get("battle_enemy_unit", title);
+            }
+            return title;
+        }
+
         private void OnEntityPostHit(Hit hit)
         {
             if (!InCombat() || hit?.target?.data == null) return;
 
-            string target = hit.target.data.title;
+            string target = QualifyOwner(hit.target);
 
             if (hit.dodged)
             {
@@ -255,7 +277,7 @@ namespace WildfrostAccessibility
         private void OnEntityKilled(Entity entity, DeathType deathType)
         {
             if (!InCombat() || entity?.data == null) return;
-            ScreenReader.SayEvent(Loc.Get("battle_destroyed", entity.data.title));
+            ScreenReader.SayEvent(Loc.Get("battle_destroyed", QualifyOwner(entity)));
         }
 
         private void OnStatusApplied(StatusEffectApply apply)
@@ -265,7 +287,7 @@ namespace WildfrostAccessibility
             if (!apply.effectData.visible || apply.count <= 0) return;
 
             ScreenReader.SayEvent(Loc.Get("battle_status_applied",
-                apply.count, ItemDescriber.GetStatusName(apply.effectData), apply.target.data.title));
+                apply.count, ItemDescriber.GetStatusName(apply.effectData), QualifyOwner(apply.target)));
         }
 
         /// <summary>
