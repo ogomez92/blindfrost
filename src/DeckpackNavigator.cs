@@ -41,6 +41,13 @@ namespace WildfrostAccessibility
 
         private static bool _menuWasOpen;
 
+        // A charm just gained from the charm-gain popup (CharmGainNarrator):
+        // when the pack opens out of that popup's Assign button, pick the new
+        // charm up automatically so arrows go straight to the eligible cards.
+        // The holder displays build over several frames, hence the retry window.
+        private static CardUpgradeData _autoPickup;
+        private static float _autoPickupDeadline;
+
         /// <summary>True while the inventory overlay is open.</summary>
         public static bool IsOpen
         {
@@ -66,6 +73,7 @@ namespace WildfrostAccessibility
             _dragHandler = null;
             _menu = null;
             _menuWasOpen = false;
+            _autoPickup = null;
             ResetDragState();
         }
 
@@ -99,6 +107,9 @@ namespace WildfrostAccessibility
             if (!open)
                 return false;
 
+            if (_autoPickup != null)
+                TryAutoPickup(owner);
+
             // Overview after the game has placed its own initial focus,
             // so the focus announcement doesn't talk over it
             if (!_openAnnounced && Time.unscaledTime - _openTime >= 0.6f)
@@ -126,11 +137,14 @@ namespace WildfrostAccessibility
             _menu = null;
             _menuWasOpen = false;
             ResetDragState();
+            _autoPickup = CharmGainNarrator.TakePendingCharm();
+            _autoPickupDeadline = Time.unscaledTime + 5f;
         }
 
         private static void OnClosed(NavigableScreenHandler owner)
         {
             DebugLogger.LogState("Deckpack", "open", "closed");
+            _autoPickup = null;
             ResetDragState();
             ScreenReader.Say(Loc.Get("deckpack_closed"), interrupt: true);
             // The game often leaves focus in limbo here — put it back on a real
@@ -407,6 +421,62 @@ namespace WildfrostAccessibility
         }
 
         // ---- Charm/crown assignment -------------------------------------------
+
+        /// <summary>
+        /// Pack opened out of the charm-gain popup's Assign button: pick the
+        /// new charm up as soon as its display exists so the player lands
+        /// directly in "arrows choose a card, Enter equips". Retries every
+        /// frame while the holder is still populating, then gives up quietly —
+        /// the pack works normally either way.
+        /// </summary>
+        private static void TryAutoPickup(NavigableScreenHandler owner)
+        {
+            if (Time.unscaledTime > _autoPickupDeadline)
+            {
+                _autoPickup = null;
+                return;
+            }
+
+            var dragHandler = GetDragHandler();
+            if (dragHandler == null)
+                return;
+            if (dragHandler.IsDragging)
+            {
+                // Something else (the mouse) already started a drag
+                _autoPickup = null;
+                return;
+            }
+
+            var holder = ReflectionUtil.GetField<UpgradeHolder>(GetSequence(), "charmHolder");
+            var list = ReflectionUtil.GetField<List<UpgradeDisplay>>(holder, "list");
+            if (list == null)
+                return;
+
+            UpgradeDisplay display = null;
+            foreach (var candidate in list)
+            {
+                if (candidate == null || candidate.data == null) continue;
+                if (candidate.data == _autoPickup)
+                {
+                    display = candidate;
+                    break;
+                }
+                // The clone added to the inventory is normally the displayed
+                // instance too; the name match is a safety net
+                if (display == null && candidate.data.name == _autoPickup.name)
+                    display = candidate;
+            }
+            if (display == null)
+                return;
+
+            DebugLogger.Log(DebugLogger.LogCategory.Handler, "Deckpack",
+                $"Auto pickup gained charm: {_autoPickup.name}");
+            _autoPickup = null;
+            // The pickup instructions replace the overview announcement
+            _openAnnounced = true;
+            _group = Group.Charms;
+            PickUp(display, owner);
+        }
 
         private static void PickUp(UpgradeDisplay upgrade, NavigableScreenHandler owner)
         {

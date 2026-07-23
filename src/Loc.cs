@@ -1004,6 +1004,10 @@ namespace WildfrostAccessibility
             Add("en", "deckpack_applied", "{0} attached.");
             Add("en", "deckpack_not_eligible", "This card can't take {0}.");
             Add("en", "deckpack_target_slots", "{0} of {1} charm slots used");
+            Add("en", "charm_gained", "Charm gained! {0}");
+            Add("en", "charm_gained_hint", "Press Enter to equip it on a card now, or Escape to keep it in your inventory for later.");
+            Add("en", "charm_reserved", "{0} kept in your inventory. Equip it any time by pressing P.");
+            Add("en", "charm_assign_button", "Assign button. Enter equips {0} now, Escape keeps it for later.");
             Add("en", "deckpack_menu_open", "Options for {0}: {1}. Left and right arrows choose, Enter activates, Escape closes.");
             Add("en", "deckpack_menu_closed", "Options closed.");
             Add("en", "deckpack_option_rename", "Rename");
@@ -1282,6 +1286,10 @@ namespace WildfrostAccessibility
             Add("de", "deckpack_applied", "{0} angebracht.");
             Add("de", "deckpack_not_eligible", "Diese Karte kann {0} nicht tragen.");
             Add("de", "deckpack_target_slots", "{0} von {1} Talisman-Plaetzen belegt");
+            Add("de", "charm_gained", "Talisman erhalten! {0}");
+            Add("de", "charm_gained_hint", "Enter bringt ihn jetzt an einer Karte an, Escape bewahrt ihn fuer spaeter im Inventar auf.");
+            Add("de", "charm_reserved", "{0} im Inventar aufbewahrt. Mit P jederzeit anbringbar.");
+            Add("de", "charm_assign_button", "Zuweisen-Knopf. Enter bringt {0} jetzt an, Escape bewahrt ihn fuer spaeter auf.");
             Add("de", "deckpack_menu_open", "Optionen fuer {0}: {1}. Links und rechts waehlen, Enter aktiviert, Escape schliesst.");
             Add("de", "deckpack_menu_closed", "Optionen geschlossen.");
             Add("de", "deckpack_option_rename", "Umbenennen");
@@ -1553,6 +1561,10 @@ namespace WildfrostAccessibility
             Add("es", "deckpack_applied", "{0} fijado.");
             Add("es", "deckpack_not_eligible", "Esta carta no puede llevar {0}.");
             Add("es", "deckpack_target_slots", "{0} de {1} huecos de amuleto usados");
+            Add("es", "charm_gained", "Amuleto conseguido! {0}");
+            Add("es", "charm_gained_hint", "Enter lo fija ahora a una carta, Escape lo guarda en tu inventario para mas tarde.");
+            Add("es", "charm_reserved", "{0} guardado en tu inventario. Fijalo cuando quieras pulsando P.");
+            Add("es", "charm_assign_button", "Boton asignar. Enter fija {0} ahora, Escape lo guarda para mas tarde.");
             Add("es", "deckpack_menu_open", "Opciones de {0}: {1}. Izquierda y derecha eligen, Enter activa, Escape cierra.");
             Add("es", "deckpack_menu_closed", "Opciones cerradas.");
             Add("es", "deckpack_option_rename", "Renombrar");
@@ -1824,6 +1836,10 @@ namespace WildfrostAccessibility
             Add("fr", "deckpack_applied", "{0} fixe.");
             Add("fr", "deckpack_not_eligible", "Cette carte ne peut pas porter {0}.");
             Add("fr", "deckpack_target_slots", "{0} emplacements de talisman sur {1} utilises");
+            Add("fr", "charm_gained", "Talisman obtenu! {0}");
+            Add("fr", "charm_gained_hint", "Entree le fixe maintenant sur une carte, Echap le garde dans l'inventaire pour plus tard.");
+            Add("fr", "charm_reserved", "{0} garde dans l'inventaire. Fixez-le a tout moment avec P.");
+            Add("fr", "charm_assign_button", "Bouton assigner. Entree fixe {0} maintenant, Echap le garde pour plus tard.");
             Add("fr", "deckpack_menu_open", "Options de {0}: {1}. Gauche et droite choisissent, Entree active, Echap ferme.");
             Add("fr", "deckpack_menu_closed", "Options fermees.");
             Add("fr", "deckpack_option_rename", "Renommer");

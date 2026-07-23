@@ -34,6 +34,7 @@ namespace WildfrostAccessibility
             _nextCrackPoll = 0f;
             _lastCrackDamage = -1;
             _dragController = null;
+            CharmGainNarrator.Reset();
         }
 
         public override string GetHelpText() => Loc.Get("help_event");
@@ -58,6 +59,10 @@ namespace WildfrostAccessibility
 
         protected override void HandleInput()
         {
+            // The charm-gain popup (charm block, charm/clunk shop) owns the keys
+            if (CharmGainNarrator.RouteInput(this))
+                return;
+
             // Escape puts a held card back
             if (IsDraggingCard && NavigationHelper.IsBackPressed())
             {
@@ -150,6 +155,11 @@ namespace WildfrostAccessibility
         /// </summary>
         protected override string GetItemDescription(UINavigationItem item)
         {
+            // The charm-gain popup's Assign button: name the charm and the options
+            string charmDesc = CharmGainNarrator.DescribeFocused();
+            if (charmDesc != null)
+                return charmDesc;
+
             string desc = base.GetItemDescription(item);
 
             Entity entity = item.GetComponentInParent<Entity>();
