@@ -63,6 +63,19 @@ namespace WildfrostAccessibility
             if (CharmGainNarrator.RouteInput(this))
                 return;
 
+            // G: current gold (Bling). Shops price everything in it and read
+            // affordability on focus, so let the player check their total here
+            // the same way they can in battle and on the map.
+            if (Input.GetKeyDown(KeyCode.G) && !NavigationHelper.IsTextInputFocused())
+            {
+                DebugLogger.LogInput(Name, "Gold");
+                if (ItemDescriber.TryGetPlayerGold(out int gold))
+                    ScreenReader.Say(Loc.Get("gold_amount", gold), interrupt: true);
+                else
+                    ScreenReader.Say(Loc.Get("no_info_available"), interrupt: true);
+                return;
+            }
+
             // Escape puts a held card back
             if (IsDraggingCard && NavigationHelper.IsBackPressed())
             {

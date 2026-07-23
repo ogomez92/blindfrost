@@ -845,6 +845,9 @@ namespace WildfrostAccessibility
             Add("en", "no_item_focused", "Nothing is focused.");
             Add("en", "no_info_available", "No information available.");
             Add("en", "gold_amount", "Gold: {0}.");
+            Add("en", "shop_price", "Costs {0} gold.");
+            Add("en", "shop_price_afford", "Costs {0} gold. You have {1}.");
+            Add("en", "shop_price_cant_afford", "Costs {0} gold. You can't afford it; you have {1}.");
 
             // Scene names for the generic fallback handler
             Add("en", "scene_CharacterSelect", "Character select screen.");
@@ -1164,7 +1167,7 @@ namespace WildfrostAccessibility
             Add("en", "help_panel_hint", "Left and right arrows choose a button, Enter presses it, Escape goes back.");
             Add("en", "help_panel_no_back", "This prompt needs an answer. Use left and right arrows, then Enter.");
             Add("en", "help_panel_closed", "Closed.");
-            Add("en", "help_event", "Event screen. A story event on your journey; its title and story are read as they appear. Arrow keys move between items, Enter activates. I inspects the focused card the way right-click does for sighted players, Escape closes the inspect view. P opens your inventory.");
+            Add("en", "help_event", "Event screen. A story event on your journey; its title and story are read as they appear. Arrow keys move between items, Enter activates. In a shop, each ware reads its price and whether you can afford it; press Enter on it to buy, and G to hear your current gold. I inspects the focused card the way right-click does for sighted players, Escape closes the inspect view. P opens your inventory.");
 
             // ----- German -------------------------------------------------------
 
@@ -1180,6 +1183,9 @@ namespace WildfrostAccessibility
             Add("de", "no_item_focused", "Nichts fokussiert.");
             Add("de", "no_info_available", "Keine Informationen verfuegbar.");
             Add("de", "gold_amount", "Gold: {0}.");
+            Add("de", "shop_price", "Kostet {0} Gold.");
+            Add("de", "shop_price_afford", "Kostet {0} Gold. Du hast {1}.");
+            Add("de", "shop_price_cant_afford", "Kostet {0} Gold. Du kannst es dir nicht leisten; du hast {1}.");
             Add("de", "scene_CharacterSelect", "Charakterauswahl.");
             Add("de", "scene_Cards", "Kartensammlung.");
             Add("de", "scene_Mods", "Mods.");
@@ -1439,7 +1445,7 @@ namespace WildfrostAccessibility
             Add("de", "help_panel_hint", "Pfeiltasten links und rechts waehlen eine Schaltflaeche, Enter drueckt sie, Escape geht zurueck.");
             Add("de", "help_panel_no_back", "Diese Abfrage braucht eine Antwort. Links und rechts waehlen, dann Enter.");
             Add("de", "help_panel_closed", "Geschlossen.");
-            Add("de", "help_event", "Ereignis-Bildschirm. Ein Story-Ereignis auf deiner Reise; Titel und Text werden vorgelesen, sobald sie erscheinen. Pfeiltasten wechseln zwischen Elementen, Enter aktiviert. I untersucht die fokussierte Karte, so wie Rechtsklick fuer sehende Spieler, Escape schliesst die Untersuchung. P oeffnet dein Inventar.");
+            Add("de", "help_event", "Ereignis-Bildschirm. Ein Story-Ereignis auf deiner Reise; Titel und Text werden vorgelesen, sobald sie erscheinen. Pfeiltasten wechseln zwischen Elementen, Enter aktiviert. In einem Laden nennt jede Ware ihren Preis und ob du sie dir leisten kannst; druecke Enter darauf zum Kaufen und G, um deinen aktuellen Goldstand zu hoeren. I untersucht die fokussierte Karte, so wie Rechtsklick fuer sehende Spieler, Escape schliesst die Untersuchung. P oeffnet dein Inventar.");
 
             // ----- Spanish ------------------------------------------------------
 
@@ -1455,6 +1461,9 @@ namespace WildfrostAccessibility
             Add("es", "no_item_focused", "Nada seleccionado.");
             Add("es", "no_info_available", "No hay informacion disponible.");
             Add("es", "gold_amount", "Oro: {0}.");
+            Add("es", "shop_price", "Cuesta {0} de oro.");
+            Add("es", "shop_price_afford", "Cuesta {0} de oro. Tienes {1}.");
+            Add("es", "shop_price_cant_afford", "Cuesta {0} de oro. No puedes pagarlo; tienes {1}.");
             Add("es", "scene_CharacterSelect", "Seleccion de personaje.");
             Add("es", "scene_Cards", "Coleccion de cartas.");
             Add("es", "scene_Mods", "Mods.");
@@ -1714,7 +1723,7 @@ namespace WildfrostAccessibility
             Add("es", "help_panel_hint", "Las flechas izquierda y derecha eligen un boton, Enter lo pulsa, Escape vuelve atras.");
             Add("es", "help_panel_no_back", "Este aviso necesita una respuesta. Usa izquierda y derecha, luego Enter.");
             Add("es", "help_panel_closed", "Cerrado.");
-            Add("es", "help_event", "Pantalla de evento. Un evento de historia en tu viaje; su titulo y texto se leen cuando aparecen. Las flechas mueven entre elementos, Enter activa. I inspecciona la carta enfocada, como el clic derecho para jugadores videntes, Escape cierra la inspeccion. P abre tu inventario.");
+            Add("es", "help_event", "Pantalla de evento. Un evento de historia en tu viaje; su titulo y texto se leen cuando aparecen. Las flechas mueven entre elementos, Enter activa. En una tienda, cada articulo dice su precio y si puedes pagarlo; pulsa Enter sobre el para comprarlo, y G para oir tu oro actual. I inspecciona la carta enfocada, como el clic derecho para jugadores videntes, Escape cierra la inspeccion. P abre tu inventario.");
 
             // ----- French -------------------------------------------------------
 
@@ -1730,6 +1739,9 @@ namespace WildfrostAccessibility
             Add("fr", "no_item_focused", "Rien de selectionne.");
             Add("fr", "no_info_available", "Aucune information disponible.");
             Add("fr", "gold_amount", "Or: {0}.");
+            Add("fr", "shop_price", "Coute {0} d'or.");
+            Add("fr", "shop_price_afford", "Coute {0} d'or. Tu as {1}.");
+            Add("fr", "shop_price_cant_afford", "Coute {0} d'or. Tu ne peux pas te le permettre; tu as {1}.");
             Add("fr", "scene_CharacterSelect", "Selection du personnage.");
             Add("fr", "scene_Cards", "Collection de cartes.");
             Add("fr", "scene_Mods", "Mods.");
@@ -1989,7 +2001,7 @@ namespace WildfrostAccessibility
             Add("fr", "help_panel_hint", "Les fleches gauche et droite choisissent un bouton, Entree l'active, Echap revient en arriere.");
             Add("fr", "help_panel_no_back", "Cette invite demande une reponse. Utilisez gauche et droite, puis Entree.");
             Add("fr", "help_panel_closed", "Ferme.");
-            Add("fr", "help_event", "Ecran d'evenement. Un evenement d'histoire sur votre voyage; son titre et son texte sont lus quand ils apparaissent. Les fleches naviguent entre les elements, Entree active. I inspecte la carte selectionnee, comme le clic droit pour les joueurs voyants, Echap ferme l'inspection. P ouvre votre inventaire.");
+            Add("fr", "help_event", "Ecran d'evenement. Un evenement d'histoire sur votre voyage; son titre et son texte sont lus quand ils apparaissent. Les fleches naviguent entre les elements, Entree active. Dans une boutique, chaque article annonce son prix et si vous pouvez vous le permettre; appuyez sur Entree dessus pour l'acheter, et sur G pour entendre votre or actuel. I inspecte la carte selectionnee, comme le clic droit pour les joueurs voyants, Echap ferme l'inspection. P ouvre votre inventaire.");
         }
     }
 }
