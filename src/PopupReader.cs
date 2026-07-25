@@ -16,6 +16,8 @@ namespace WildfrostAccessibility
         private static int _promptReadDelay;
         private static bool _buttonHintSpoken;
         private static bool _inspectHintSpoken;
+        private static bool _counterKeysHintSpoken;
+        private static bool _healthKeysHintSpoken;
 
         /// <summary>
         /// Check for popup state changes. Called every frame from the main update loop.
@@ -134,20 +136,75 @@ namespace WildfrostAccessibility
             // Replace drag-based instructions with accessible select-and-place language
             text = MakeDragAccessible(text);
 
-            // The tutorial that teaches inspecting ("press the I key" after the
-            // right-click rewrite) is the moment to teach the review buffers
-            // too — Ctrl+Up reads the same information without a view to close.
-            if (!_inspectHintSpoken
-                && text.IndexOf("the I key", System.StringComparison.OrdinalIgnoreCase) >= 0
-                && text.IndexOf("inspect", System.StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                _inspectHintSpoken = true;
-                text += " " + Loc.Get("tutorial_inspect_hint");
-            }
+            text += TutorialKeyHint(text);
 
             ScreenReader.SayEvent(Loc.Get("tutorial_prompt", text), interrupt: false);
             DebugLogger.Log(DebugLogger.LogCategory.Handler, "PopupReader",
                 $"Tutorial prompt: {text}");
+        }
+
+        /// <summary>
+        /// The mod's readout keys have no tutorial of their own, so each one
+        /// rides along with the game's lesson that makes it useful — the
+        /// counter keys when counters are explained, the health keys when the
+        /// game teaches pulling a wounded companion back to heal. Each fires
+        /// once per session; returns "" when this prompt teaches none of them.
+        /// </summary>
+        private static string TutorialKeyHint(string text)
+        {
+            string phase = ActiveTutorialPhase();
+
+            // "Counters tick down each turn; at zero the unit acts" — the
+            // moment the player first needs to read the whole board's clocks
+            if (!_counterKeysHintSpoken && phase == "PhaseCounters")
+            {
+                _counterKeysHintSpoken = true;
+                return " " + Loc.Get("tutorial_counter_keys_hint");
+            }
+
+            // "Recall a hurt companion to heal it" — useless without a way to
+            // find out who is hurt in the first place
+            if (!_healthKeysHintSpoken && phase == "PhaseRecallToHeal")
+            {
+                _healthKeysHintSpoken = true;
+                return " " + Loc.Get("tutorial_health_keys_hint");
+            }
+
+            // Inspecting is taught by PhaseInspectEnemy, but the same lesson
+            // reaches players outside the scripted tutorial too, so the
+            // rewritten "press the I key" text still counts as a trigger
+            if (!_inspectHintSpoken
+                && (phase == "PhaseInspectEnemy"
+                    || (text.IndexOf("the I key", System.StringComparison.OrdinalIgnoreCase) >= 0
+                        && text.IndexOf("inspect", System.StringComparison.OrdinalIgnoreCase) >= 0)))
+            {
+                _inspectHintSpoken = true;
+                return " " + Loc.Get("tutorial_inspect_hint");
+            }
+
+            return "";
+        }
+
+        /// <summary>
+        /// The type name of the tutorial phase currently driving prompts, or
+        /// null outside the scripted tutorial. Phase class names are baked into
+        /// the game assembly, so this identifies the lesson in every language —
+        /// matching the prompt's words would only ever work in English.
+        /// </summary>
+        private static string ActiveTutorialPhase()
+        {
+            try
+            {
+                var system = Object.FindObjectOfType<TutorialParentSystem>();
+                if (system == null)
+                    return null;
+                var phase = ReflectionUtil.GetField<object>(system, "currentPhase");
+                return phase?.GetType().Name;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         /// <summary>

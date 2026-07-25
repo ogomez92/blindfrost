@@ -617,6 +617,11 @@ namespace WildfrostAccessibility
                     ? (SummarizeEntity(occupant) ?? Loc.Get("slot_occupied"))
                     : Loc.Get("slot_empty"));
 
+                // Placing a unit is a decision about who it will face
+                string opposite = DescribeOpposite(slot);
+                if (!string.IsNullOrEmpty(opposite))
+                    parts.Add(opposite);
+
                 return string.Join(", ", parts);
             }
 
@@ -648,7 +653,7 @@ namespace WildfrostAccessibility
 
             if (entity.counter.max > 0)
             {
-                parts.Add(Loc.Get("stat_counter", entity.counter.current));
+                parts.Add(Loc.Get("battle_acts_in", entity.counter.current));
                 if (entity.IsSnowed)
                     parts.Add(Loc.Get("counter_frozen"));
             }
@@ -722,6 +727,10 @@ namespace WildfrostAccessibility
             if (!string.IsNullOrEmpty(processed))
                 parts.Add(processed);
 
+            // What opaque "apply X when Y" statuses (Wild...) actually do
+            foreach (string note in BuildStatusMechanicNotes(entity))
+                parts.Add(note);
+
             return parts.Count > 0 ? string.Join(", ", parts) : null;
         }
 
@@ -736,13 +745,22 @@ namespace WildfrostAccessibility
             string slot = GetEntitySlotShort(entity);
             if (string.IsNullOrEmpty(slot))
                 return desc;
-            if (string.IsNullOrEmpty(desc))
-                return slot;
 
-            int afterName = desc.IndexOf(", ");
-            return afterName < 0
-                ? desc + ", " + slot
-                : desc.Substring(0, afterName) + ", " + slot + desc.Substring(afterName);
+            if (string.IsNullOrEmpty(desc))
+            {
+                desc = slot;
+            }
+            else
+            {
+                int afterName = desc.IndexOf(", ");
+                desc = afterName < 0
+                    ? desc + ", " + slot
+                    : desc.Substring(0, afterName) + ", " + slot + desc.Substring(afterName);
+            }
+
+            // Trailing, so the card itself still reads first
+            string opposite = DescribeOpposite(entity.GetComponentInParent<CardSlot>());
+            return string.IsNullOrEmpty(opposite) ? desc : desc + ", " + opposite;
         }
 
         /// <summary>
@@ -765,6 +783,48 @@ namespace WildfrostAccessibility
                 return null;
 
             return Loc.Get("slot_row", rowIndex + 1) + " " + (slotIndex + 1);
+        }
+
+        /// <summary>
+        /// Who stands across the line from a slot: the same row and column on
+        /// the other side. Both sides number columns up from their own front
+        /// line and the board is rendered mirrored, so your column N squares off
+        /// against the enemy's column N — and the two column 1s are the pair that
+        /// actually trade blows, since a basic attack strikes the first enemy in
+        /// its row. Lets the battle line be mapped by ear without leaving the
+        /// slot to go hunting through the opposing row.
+        /// Null when the slot is not on the battlefield or has no counterpart.
+        /// </summary>
+        public static string DescribeOpposite(CardSlot slot)
+        {
+            var battle = References.Battle;
+            var lane = slot != null ? slot.GetComponentInParent<CardSlotLane>() : null;
+            if (battle == null || lane?.slots == null)
+                return null;
+
+            int column = lane.slots.IndexOf(slot);
+            if (column < 0)
+                return null;
+
+            CardSlotLane opposite;
+            try
+            {
+                opposite = battle.GetOppositeRow(lane);
+            }
+            catch
+            {
+                return null;
+            }
+            if (opposite?.slots == null || column >= opposite.slots.Count)
+                return null;
+
+            Entity occupant = opposite.slots[column]?.GetTop();
+            if (occupant?.data == null)
+                return Loc.Get("slot_opposite_empty");
+
+            bool isPlayer = occupant.owner != null && occupant.owner == battle.player;
+            return Loc.Get("slot_opposite",
+                Loc.Get(isPlayer ? "battle_your_unit" : "battle_enemy_unit", occupant.data.title));
         }
 
         /// <summary>
@@ -1084,7 +1144,7 @@ namespace WildfrostAccessibility
 
             if (entity.counter.max > 0)
             {
-                parts.Add(Loc.Get("stat_counter", entity.counter.current));
+                parts.Add(Loc.Get("battle_acts_in", entity.counter.current));
                 if (entity.IsSnowed)
                     parts.Add(Loc.Get("counter_frozen"));
             }
@@ -1274,6 +1334,14 @@ namespace WildfrostAccessibility
                 items.Add(upgrades);
 
             items.AddRange(explanations);
+
+            // What opaque "apply X when Y" statuses (Wild...) actually do —
+            // right after the keyword explanations they complete
+            foreach (string note in BuildStatusMechanicNotes(entity))
+            {
+                if (!items.Contains(note))
+                    items.Add(note);
+            }
             return items;
         }
 
@@ -1451,6 +1519,122 @@ namespace WildfrostAccessibility
             }
 
             return parts.Count > 0 ? string.Join(", ", parts) : null;
+        }
+
+        /// <summary>
+        /// Plain-language notes for statuses whose keyword panel does not say
+        /// what they actually do. The data-driven "apply X when Y" statuses
+        /// (Wild: "Gain when other cards are killed" — gain what?) carry the
+        /// answer in their asset fields: which effect they apply, how much,
+        /// and to whom. One note per such status, e.g.
+        /// "Wild: when any other card is destroyed, applies 1 Wild to itself."
+        /// </summary>
+        public static List<string> BuildStatusMechanicNotes(Entity entity)
+        {
+            var notes = new List<string>();
+            if (entity?.statusEffects == null)
+                return notes;
+
+            foreach (var effect in entity.statusEffects)
+            {
+                if (effect == null || !effect.visible)
+                    continue;
+                string note = DescribeApplyXMechanics(effect);
+                if (!string.IsNullOrEmpty(note) && !notes.Contains(note))
+                    notes.Add(note);
+            }
+            return notes;
+        }
+
+        /// <summary>
+        /// "{Status}: {when it triggers}, {what it does} {to whom}." for an
+        /// ApplyX-family status, or null when the effect is not of that family
+        /// or its trigger class is not recognized.
+        /// </summary>
+        private static string DescribeApplyXMechanics(StatusEffectData effect)
+        {
+            var applyX = effect as StatusEffectApplyX;
+            if (applyX == null)
+                return null;
+
+            string trigger = GetApplyXTriggerPhrase(effect.GetType().Name);
+            if (trigger == null)
+                return null;
+
+            int amount;
+            try { amount = effect.GetAmount(); }
+            catch { amount = effect.count; }
+            if (amount <= 0)
+                amount = effect.count;
+
+            string core;
+            if (applyX.dealDamage)
+            {
+                core = Loc.Get("status_mech_damage", amount);
+            }
+            else
+            {
+                if (applyX.effectToApply == null)
+                    return null;
+                core = Loc.Get("status_mech_applies", amount, GetStatusName(applyX.effectToApply));
+            }
+
+            string text = $"{GetStatusName(effect)}: {trigger}, {core}";
+            string target = GetApplyXTargetPhrase(applyX.applyToFlags);
+            if (!string.IsNullOrEmpty(target))
+                text += " " + target;
+            return text + ".";
+        }
+
+        /// <summary>The trigger condition encoded in an ApplyX subclass's name.</summary>
+        private static string GetApplyXTriggerPhrase(string typeName)
+        {
+            switch (typeName)
+            {
+                case "StatusEffectApplyXWhenCardDestroyed": return Loc.Get("mech_when_card_destroyed");
+                case "StatusEffectApplyXWhenAllyIsKilled": return Loc.Get("mech_when_ally_killed");
+                case "StatusEffectApplyXWhenUnitIsKilled": return Loc.Get("mech_when_unit_killed");
+                case "StatusEffectApplyXWhenClunkerDestroyed": return Loc.Get("mech_when_clunker_destroyed");
+                case "StatusEffectApplyXWhenHit": return Loc.Get("mech_when_hit");
+                case "StatusEffectApplyXWhenUnitIsHit": return Loc.Get("mech_when_unit_hit");
+                case "StatusEffectApplyXWhenDamageTaken": return Loc.Get("mech_when_damage_taken");
+                case "StatusEffectApplyXWhenHealed": return Loc.Get("mech_when_healed");
+                case "StatusEffectApplyXWhenAllyHealed": return Loc.Get("mech_when_ally_healed");
+                case "StatusEffectApplyXWhenDeployed": return Loc.Get("mech_when_deployed");
+                case "StatusEffectApplyXWhenDestroyed": return Loc.Get("mech_when_destroyed");
+                case "StatusEffectApplyXWhenDrawn": return Loc.Get("mech_when_drawn");
+                case "StatusEffectApplyXOnKill": return Loc.Get("mech_on_kill");
+                case "StatusEffectApplyXOnTurn": return Loc.Get("mech_on_turn");
+                case "StatusEffectApplyXEveryTurn": return Loc.Get("mech_every_turn");
+                case "StatusEffectApplyXPostAttack": return Loc.Get("mech_after_attack");
+                case "StatusEffectApplyXOnHit": return Loc.Get("mech_on_hit");
+                default: return null;
+            }
+        }
+
+        /// <summary>Who an ApplyX status hands its effect to, as a spoken phrase.</summary>
+        private static string GetApplyXTargetPhrase(StatusEffectApplyX.ApplyToFlags flags)
+        {
+            var parts = new List<string>();
+            void AddFlag(StatusEffectApplyX.ApplyToFlags flag, string key)
+            {
+                if ((flags & flag) != 0)
+                    parts.Add(Loc.Get(key));
+            }
+
+            AddFlag(StatusEffectApplyX.ApplyToFlags.Self, "mech_to_self");
+            AddFlag(StatusEffectApplyX.ApplyToFlags.Allies, "mech_to_allies");
+            AddFlag(StatusEffectApplyX.ApplyToFlags.AlliesInRow, "mech_to_allies_row");
+            AddFlag(StatusEffectApplyX.ApplyToFlags.FrontAlly, "mech_to_front_ally");
+            AddFlag(StatusEffectApplyX.ApplyToFlags.Enemies, "mech_to_enemies");
+            AddFlag(StatusEffectApplyX.ApplyToFlags.FrontEnemy, "mech_to_front_enemy");
+            AddFlag(StatusEffectApplyX.ApplyToFlags.Attacker, "mech_to_attacker");
+            AddFlag(StatusEffectApplyX.ApplyToFlags.Target, "mech_to_target");
+            AddFlag(StatusEffectApplyX.ApplyToFlags.RandomAlly, "mech_to_random_ally");
+            AddFlag(StatusEffectApplyX.ApplyToFlags.RandomEnemy, "mech_to_random_enemy");
+            AddFlag(StatusEffectApplyX.ApplyToFlags.Hand, "mech_to_hand");
+
+            return string.Join(", ", parts);
         }
 
         /// <summary>
@@ -1777,6 +1961,40 @@ namespace WildfrostAccessibility
             }
 
             return parts.Count > 0 ? string.Join(". ", parts) : null;
+        }
+
+        /// <summary>
+        /// The player-facing name of a non-basic damage type ("shroom" →
+        /// "Shroom", "spikes" → "Teeth"). Prefers the matching status carried
+        /// by either combatant — its keyword holds the localized title — then
+        /// a direct keyword lookup, then the raw type word capitalized.
+        /// </summary>
+        public static string GetDamageTypeName(Hit hit)
+        {
+            string type = hit?.damageType;
+            if (string.IsNullOrEmpty(type))
+                return null;
+
+            foreach (var entity in new[] { hit.target, hit.attacker })
+            {
+                if (entity == null || entity.statusEffects == null)
+                    continue;
+                foreach (var effect in entity.statusEffects)
+                {
+                    if (effect != null && effect.type == type)
+                        return GetStatusName(effect);
+                }
+            }
+
+            try
+            {
+                var keyword = AddressableLoader.Get<KeywordData>("KeywordData", type);
+                if (keyword != null && !string.IsNullOrEmpty(keyword.title))
+                    return keyword.title;
+            }
+            catch { /* keyword lookup can fail during load */ }
+
+            return char.ToUpperInvariant(type[0]) + type.Substring(1);
         }
 
         /// <summary>Human-readable name of a status effect via its keyword.</summary>

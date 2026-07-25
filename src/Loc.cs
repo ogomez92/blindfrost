@@ -192,6 +192,8 @@ namespace WildfrostAccessibility
             Add("en", "slot_position", "Slot {0}");
             Add("en", "slot_empty", "Empty");
             Add("en", "slot_occupied", "Occupied");
+            Add("en", "slot_opposite", "facing {0}");
+            Add("en", "slot_opposite_empty", "facing an empty slot");
             Add("en", "building_under_construction", "Under construction");
             Add("en", "building_new_unlock", "New unlock available");
 
@@ -209,6 +211,8 @@ namespace WildfrostAccessibility
             Add("de", "slot_position", "Platz {0}");
             Add("de", "slot_empty", "Leer");
             Add("de", "slot_occupied", "Belegt");
+            Add("de", "slot_opposite", "gegenueber {0}");
+            Add("de", "slot_opposite_empty", "gegenueber einem leeren Platz");
             Add("de", "building_under_construction", "Im Bau");
             Add("de", "building_new_unlock", "Neue Freischaltung verfuegbar");
 
@@ -226,6 +230,8 @@ namespace WildfrostAccessibility
             Add("fr", "slot_position", "Emplacement {0}");
             Add("fr", "slot_empty", "Vide");
             Add("fr", "slot_occupied", "Occupe");
+            Add("fr", "slot_opposite", "face a {0}");
+            Add("fr", "slot_opposite_empty", "face a un emplacement vide");
             Add("fr", "building_under_construction", "En construction");
             Add("fr", "building_new_unlock", "Nouveau deblocage disponible");
 
@@ -243,6 +249,8 @@ namespace WildfrostAccessibility
             Add("es", "slot_position", "Casilla {0}");
             Add("es", "slot_empty", "Vacio");
             Add("es", "slot_occupied", "Ocupado");
+            Add("es", "slot_opposite", "frente a {0}");
+            Add("es", "slot_opposite_empty", "frente a una casilla vacia");
             Add("es", "building_under_construction", "En construccion");
             Add("es", "building_new_unlock", "Nuevo desbloqueo disponible");
 
@@ -260,6 +268,8 @@ namespace WildfrostAccessibility
             Add("ja", "slot_position", "{0}番");
             Add("ja", "slot_empty", "空き");
             Add("ja", "slot_occupied", "使用中");
+            Add("ja", "slot_opposite", "正面は{0}");
+            Add("ja", "slot_opposite_empty", "正面は空き");
 
             // Korean
             Add("ko", "mod_loaded", "Wildfrost 접근성 모드 로드됨. F1 도움말.");
@@ -275,6 +285,8 @@ namespace WildfrostAccessibility
             Add("ko", "slot_position", "{0}번 칸");
             Add("ko", "slot_empty", "비어있음");
             Add("ko", "slot_occupied", "점유됨");
+            Add("ko", "slot_opposite", "맞은편 {0}");
+            Add("ko", "slot_opposite_empty", "맞은편 비어있음");
 
             // Simplified Chinese
             Add("zh-Hans", "mod_loaded", "Wildfrost 无障碍已加载。按F1获取帮助。");
@@ -290,6 +302,8 @@ namespace WildfrostAccessibility
             Add("zh-Hans", "slot_position", "第{0}格");
             Add("zh-Hans", "slot_empty", "空");
             Add("zh-Hans", "slot_occupied", "已占用");
+            Add("zh-Hans", "slot_opposite", "对面是{0}");
+            Add("zh-Hans", "slot_opposite_empty", "对面为空");
 
             // Traditional Chinese
             Add("zh-Hant", "mod_loaded", "Wildfrost 無障礙已載入。按F1取得說明。");
@@ -305,6 +319,8 @@ namespace WildfrostAccessibility
             Add("zh-Hant", "slot_position", "第{0}格");
             Add("zh-Hant", "slot_empty", "空");
             Add("zh-Hant", "slot_occupied", "已佔用");
+            Add("zh-Hant", "slot_opposite", "對面是{0}");
+            Add("zh-Hant", "slot_opposite_empty", "對面為空");
 
             // Italian
             Add("it", "mod_loaded", "Accessibilita Wildfrost caricata. F1 per aiuto.");
@@ -320,6 +336,8 @@ namespace WildfrostAccessibility
             Add("it", "slot_position", "Posizione {0}");
             Add("it", "slot_empty", "Vuoto");
             Add("it", "slot_occupied", "Occupato");
+            Add("it", "slot_opposite", "di fronte a {0}");
+            Add("it", "slot_opposite_empty", "di fronte a una posizione vuota");
 
             // Portuguese
             Add("pt", "mod_loaded", "Acessibilidade Wildfrost carregada. F1 para ajuda.");
@@ -335,6 +353,8 @@ namespace WildfrostAccessibility
             Add("pt", "slot_position", "Posicao {0}");
             Add("pt", "slot_empty", "Vazio");
             Add("pt", "slot_occupied", "Ocupado");
+            Add("pt", "slot_opposite", "de frente para {0}");
+            Add("pt", "slot_opposite_empty", "de frente para uma posicao vazia");
 
             // Russian
             Add("ru", "mod_loaded", "Доступность Wildfrost загружена. F1 для справки.");
@@ -350,6 +370,8 @@ namespace WildfrostAccessibility
             Add("ru", "slot_position", "Позиция {0}");
             Add("ru", "slot_empty", "Пусто");
             Add("ru", "slot_occupied", "Занято");
+            Add("ru", "slot_opposite", "напротив {0}");
+            Add("ru", "slot_opposite_empty", "напротив пусто");
 
             // Polish
             Add("pl", "mod_loaded", "Dostepnosc Wildfrost zaladowana. F1 aby uzyskac pomoc.");
@@ -365,6 +387,8 @@ namespace WildfrostAccessibility
             Add("pl", "slot_position", "Pozycja {0}");
             Add("pl", "slot_empty", "Puste");
             Add("pl", "slot_occupied", "Zajete");
+            Add("pl", "slot_opposite", "naprzeciw {0}");
+            Add("pl", "slot_opposite_empty", "naprzeciw puste pole");
 
             // Turkish
             Add("tr", "mod_loaded", "Wildfrost Erisilebilirlik yuklendi. Yardim icin F1.");
@@ -380,6 +404,8 @@ namespace WildfrostAccessibility
             Add("tr", "slot_position", "Konum {0}");
             Add("tr", "slot_empty", "Bos");
             Add("tr", "slot_occupied", "Dolu");
+            Add("tr", "slot_opposite", "karsisinda {0}");
+            Add("tr", "slot_opposite_empty", "karsisinda bos bir yer");
 
             // More languages can be added as needed.
             // The game supports many more locales; they will fall back to English until translated.
@@ -1010,7 +1036,7 @@ namespace WildfrostAccessibility
             Add("en", "charm_gained", "Charm gained! {0}");
             Add("en", "charm_gained_hint", "Press Enter to equip it on a card now, or Escape to keep it in your inventory for later.");
             Add("en", "charm_reserved", "{0} kept in your inventory. Equip it any time by pressing P.");
-            Add("en", "charm_assign_button", "Assign button. Enter equips {0} now, Escape keeps it for later.");
+            Add("en", "charm_assign_button", "{0} Enter equips this charm on a card now, Escape keeps it in your inventory for later.");
             Add("en", "deckpack_menu_open", "Options for {0}: {1}. Left and right arrows choose, Enter activates, Escape closes.");
             Add("en", "deckpack_menu_closed", "Options closed.");
             Add("en", "deckpack_option_rename", "Rename");
@@ -1084,12 +1110,14 @@ namespace WildfrostAccessibility
             Add("en", "battle_status_applied", "{0} {1} applied to {2}.");
             Add("en", "battle_your_unit", "your {0}");
             Add("en", "battle_enemy_unit", "enemy {0}");
-            Add("en", "help_battle", "Battle. Up and down arrows switch groups: hand, your board, enemy board, bell and piles. Left and right arrows move within a group. Enter on a hand card picks it up, arrows choose a target, Enter places it. Enter on one of your units on the board picks it up to move it: a free slot moves it, an occupied slot swaps or shoves, the recall zone takes it off the board. Moving and recalling are free actions that do not end your turn. Escape puts a picked-up card back. I inspects the focused card, Escape closes the inspect view. Playing a card or ringing the bell ends your turn. Readout keys: H hand, B board, W waves, R bell, T turn, G gold, M modifier bells. P opens your inventory. Press O for the game menu with settings.");
+            Add("en", "help_battle", "Battle. Up and down arrows switch groups: hand, your board, enemy board, bell and piles. Left and right arrows move within a group. Enter on a hand card picks it up; while holding it, up and down move between rows, left and right move along the row, nothing wraps around; Enter places it. Enter on one of your units on the board picks it up to move it: a free slot moves it, an occupied slot swaps or shoves, the recall zone takes it off the board. Moving and recalling are free actions that do not end your turn. Escape puts a picked-up card back. I inspects the focused card, Escape closes the inspect view. Playing a card or ringing the bell ends your turn. Readout keys: H hand, B board, W waves, R bell, T turn, G gold, M modifier bells, Control C ally counters, Control E enemy counters, Control H ally health, Control Shift H enemy health. P opens your inventory. Press O for the game menu with settings.");
             Add("en", "battle_unit_picked_up", "{0} picked up from the board.");
             Add("en", "battle_move_hint", "Arrow keys choose a destination slot or the recall zone, Enter confirms, Escape cancels.");
             Add("en", "tutorial_drag_hint", "To select and place: press Enter on the card, choose the destination with the arrow keys, then press Enter again.");
             Add("en", "tutorial_drag_hint_infront", "To do this: press Enter on the card, use the arrow keys to choose the unit you want it in front of, then press Enter — your card takes that spot and pushes the unit back.");
             Add("en", "tutorial_inspect_hint", "You can also hold Control and press the up arrow to step through everything about the focused card, one detail at a time. Control plus left or right switches to other review buffers.");
+            Add("en", "tutorial_counter_keys_hint", "You do not have to track the counters one card at a time: press Control C to hear each of your units and how many turns until it acts, and Control E for the same on the enemy side.");
+            Add("en", "tutorial_health_keys_hint", "To find out who needs pulling back, press Control H for your companions' health, or Control Shift H for the enemies'.");
             Add("en", "battle_unit_moved", "{0} moved.");
             Add("en", "battle_unit_recalled", "{0} recalled.");
             Add("en", "battle_free_action", "Free action, your turn continues.");
@@ -1114,6 +1142,54 @@ namespace WildfrostAccessibility
             Add("en", "card_token_one", "Token: {0}.");
             Add("en", "card_tokens", "{0} tokens: {1}.");
             Add("en", "counter_frozen", "counter frozen by Snow");
+            Add("en", "battle_status_damage", "{0} takes {1} {2} damage.");
+            Add("en", "battle_shell_blocked", "{0}: Shell blocks {1} damage.");
+            Add("en", "battle_shell_blocked_all", "{2} hits {0}. Shell blocks all {1} damage.");
+            Add("en", "battle_counter_reduced", "{0}: counter down {1}, acts in {2}.");
+            Add("en", "battle_attack_gain", "{0} gains {1} attack, now {2}.");
+            Add("en", "battle_attack_lose", "{0} loses {1} attack, now {2}.");
+            Add("en", "battle_counter_gain", "{0}: counter up {1}, acts in {2}.");
+            Add("en", "battle_counters_allies", "Ally counters");
+            Add("en", "battle_counters_enemies", "Enemy counters");
+            Add("en", "battle_counters_none_ally", "No allies with counters.");
+            Add("en", "battle_counters_none_enemy", "No enemies with counters.");
+            Add("en", "battle_health_allies", "Ally health");
+            Add("en", "battle_health_enemies", "Enemy health");
+            Add("en", "battle_health_none_ally", "No allies on the board.");
+            Add("en", "battle_health_none_enemy", "No enemies on the board.");
+            Add("en", "nav_edge", "Edge.");
+            Add("en", "battle_not_a_target", "Not a valid target for this card.");
+            Add("en", "event_item_taken", "Took {0}.");
+            Add("en", "status_mech_applies", "applies {0} {1}");
+            Add("en", "status_mech_damage", "deals {0} damage");
+            Add("en", "mech_when_card_destroyed", "when any other card is destroyed");
+            Add("en", "mech_when_ally_killed", "when an ally is killed");
+            Add("en", "mech_when_unit_killed", "when a unit is killed");
+            Add("en", "mech_when_clunker_destroyed", "when a Clunker is destroyed");
+            Add("en", "mech_when_hit", "when hit");
+            Add("en", "mech_when_unit_hit", "when another unit is hit");
+            Add("en", "mech_when_damage_taken", "when it takes damage");
+            Add("en", "mech_when_healed", "when healed");
+            Add("en", "mech_when_ally_healed", "when an ally is healed");
+            Add("en", "mech_when_deployed", "when deployed");
+            Add("en", "mech_when_destroyed", "when destroyed");
+            Add("en", "mech_when_drawn", "when drawn");
+            Add("en", "mech_on_kill", "on kill");
+            Add("en", "mech_on_turn", "on its turn");
+            Add("en", "mech_every_turn", "every turn");
+            Add("en", "mech_after_attack", "after attacking");
+            Add("en", "mech_on_hit", "when it hits");
+            Add("en", "mech_to_self", "to itself");
+            Add("en", "mech_to_allies", "to all allies");
+            Add("en", "mech_to_allies_row", "to allies in its row");
+            Add("en", "mech_to_front_ally", "to the front ally");
+            Add("en", "mech_to_enemies", "to all enemies");
+            Add("en", "mech_to_front_enemy", "to the front enemy");
+            Add("en", "mech_to_attacker", "to the attacker");
+            Add("en", "mech_to_target", "to its target");
+            Add("en", "mech_to_random_ally", "to a random ally");
+            Add("en", "mech_to_random_enemy", "to a random enemy");
+            Add("en", "mech_to_hand", "to cards in hand");
             Add("en", "card_injured_one", "Injured.");
             Add("en", "card_injured", "Injured x{0}.");
             Add("en", "card_mentions", "Mentions {0}");
@@ -1295,7 +1371,7 @@ namespace WildfrostAccessibility
             Add("de", "charm_gained", "Talisman erhalten! {0}");
             Add("de", "charm_gained_hint", "Enter bringt ihn jetzt an einer Karte an, Escape bewahrt ihn fuer spaeter im Inventar auf.");
             Add("de", "charm_reserved", "{0} im Inventar aufbewahrt. Mit P jederzeit anbringbar.");
-            Add("de", "charm_assign_button", "Zuweisen-Knopf. Enter bringt {0} jetzt an, Escape bewahrt ihn fuer spaeter auf.");
+            Add("de", "charm_assign_button", "{0} Enter bringt diesen Talisman jetzt an einer Karte an, Escape bewahrt ihn fuer spaeter im Inventar auf.");
             Add("de", "deckpack_menu_open", "Optionen fuer {0}: {1}. Links und rechts waehlen, Enter aktiviert, Escape schliesst.");
             Add("de", "deckpack_menu_closed", "Optionen geschlossen.");
             Add("de", "deckpack_option_rename", "Umbenennen");
@@ -1365,11 +1441,13 @@ namespace WildfrostAccessibility
             Add("de", "battle_status_applied", "{0} {1} auf {2} angewendet.");
             Add("de", "battle_your_unit", "dein {0}");
             Add("de", "battle_enemy_unit", "gegnerisches {0}");
-            Add("de", "help_battle", "Kampf. Hoch und runter wechseln die Gruppen: Hand, dein Feld, Gegnerfeld, Glocke und Stapel. Links und rechts bewegen sich innerhalb einer Gruppe. Enter auf einer Handkarte nimmt sie auf, Pfeiltasten waehlen ein Ziel, Enter legt ab. Enter auf einer deiner Einheiten auf dem Feld nimmt sie zum Bewegen auf: ein freier Platz bewegt sie, ein besetzter Platz tauscht oder schiebt, die Rueckrufzone nimmt sie vom Feld. Bewegen und Zurueckrufen sind freie Aktionen und beenden deinen Zug nicht. Escape legt eine aufgenommene Karte zurueck. I untersucht die fokussierte Karte, Escape schliesst die Untersuchung. Eine Karte spielen oder die Glocke laeuten beendet deinen Zug. Vorlesetasten: H Hand, B Feld, W Wellen, R Glocke, T Runde, G Gold, M Modifikator-Glocken. P oeffnet dein Inventar. O oeffnet das Spielmenue mit Einstellungen.");
+            Add("de", "help_battle", "Kampf. Hoch und runter wechseln die Gruppen: Hand, dein Feld, Gegnerfeld, Glocke und Stapel. Links und rechts bewegen sich innerhalb einer Gruppe. Enter auf einer Handkarte nimmt sie auf; beim Halten wechseln hoch und runter die Reihe, links und rechts bewegen sich in der Reihe, nichts springt an den Anfang zurueck; Enter legt ab. Enter auf einer deiner Einheiten auf dem Feld nimmt sie zum Bewegen auf: ein freier Platz bewegt sie, ein besetzter Platz tauscht oder schiebt, die Rueckrufzone nimmt sie vom Feld. Bewegen und Zurueckrufen sind freie Aktionen und beenden deinen Zug nicht. Escape legt eine aufgenommene Karte zurueck. I untersucht die fokussierte Karte, Escape schliesst die Untersuchung. Eine Karte spielen oder die Glocke laeuten beendet deinen Zug. Vorlesetasten: H Hand, B Feld, W Wellen, R Glocke, T Runde, G Gold, M Modifikator-Glocken, Strg C Verbuendeten-Zaehler, Strg E Gegner-Zaehler, Strg H Verbuendeten-Leben, Strg Umschalt H Gegner-Leben. P oeffnet dein Inventar. O oeffnet das Spielmenue mit Einstellungen.");
             Add("de", "battle_unit_picked_up", "{0} vom Feld aufgenommen.");
             Add("de", "battle_move_hint", "Pfeiltasten waehlen einen Zielplatz oder die Rueckrufzone, Enter bestaetigt, Escape bricht ab.");
             Add("de", "tutorial_drag_hint", "Zum Auswaehlen und Ablegen: Enter auf der Karte druecken, das Ziel mit den Pfeiltasten waehlen, dann erneut Enter druecken.");
             Add("de", "tutorial_inspect_hint", "Du kannst auch Strg gedrueckt halten und Hoch druecken, um alle Details der ausgewaehlten Karte einzeln zu hoeren. Strg plus Links oder Rechts wechselt zu anderen Lesepuffern.");
+            Add("de", "tutorial_counter_keys_hint", "Du musst die Zaehler nicht Karte fuer Karte verfolgen: Strg C nennt jede deiner Einheiten und in wie vielen Runden sie handelt, Strg E dasselbe fuer die Gegner.");
+            Add("de", "tutorial_health_keys_hint", "Um zu erfahren, wen du zurueckholen solltest: Strg H nennt das Leben deiner Gefaehrten, Strg Umschalt H das der Gegner.");
             Add("de", "battle_unit_moved", "{0} bewegt.");
             Add("de", "battle_unit_recalled", "{0} zurueckgerufen.");
             Add("de", "battle_free_action", "Freie Aktion, dein Zug geht weiter.");
@@ -1394,6 +1472,54 @@ namespace WildfrostAccessibility
             Add("de", "card_token_one", "Marke: {0}.");
             Add("de", "card_tokens", "{0} Marken: {1}.");
             Add("de", "counter_frozen", "Zaehler durch Schnee eingefroren");
+            Add("de", "battle_status_damage", "{0} erleidet {1} {2}-Schaden.");
+            Add("de", "battle_shell_blocked", "{0}: Shell blockt {1} Schaden.");
+            Add("de", "battle_shell_blocked_all", "{2} trifft {0}. Shell blockt alle {1} Schaden.");
+            Add("de", "battle_counter_reduced", "{0}: Zaehler um {1} gesenkt, handelt in {2}.");
+            Add("de", "battle_attack_gain", "{0} erhaelt {1} Angriff, jetzt {2}.");
+            Add("de", "battle_attack_lose", "{0} verliert {1} Angriff, jetzt {2}.");
+            Add("de", "battle_counter_gain", "{0}: Zaehler um {1} erhoeht, handelt in {2}.");
+            Add("de", "battle_counters_allies", "Verbuendeten-Zaehler");
+            Add("de", "battle_counters_enemies", "Gegner-Zaehler");
+            Add("de", "battle_counters_none_ally", "Keine Verbuendeten mit Zaehler.");
+            Add("de", "battle_counters_none_enemy", "Keine Gegner mit Zaehler.");
+            Add("de", "battle_health_allies", "Verbuendeten-Leben");
+            Add("de", "battle_health_enemies", "Gegner-Leben");
+            Add("de", "battle_health_none_ally", "Keine Verbuendeten auf dem Feld.");
+            Add("de", "battle_health_none_enemy", "Keine Gegner auf dem Feld.");
+            Add("de", "nav_edge", "Rand.");
+            Add("de", "battle_not_a_target", "Kein gueltiges Ziel fuer diese Karte.");
+            Add("de", "event_item_taken", "{0} genommen.");
+            Add("de", "status_mech_applies", "gibt {0} {1}");
+            Add("de", "status_mech_damage", "verursacht {0} Schaden");
+            Add("de", "mech_when_card_destroyed", "wenn eine andere Karte zerstoert wird");
+            Add("de", "mech_when_ally_killed", "wenn ein Verbuendeter getoetet wird");
+            Add("de", "mech_when_unit_killed", "wenn eine Einheit getoetet wird");
+            Add("de", "mech_when_clunker_destroyed", "wenn ein Clunker zerstoert wird");
+            Add("de", "mech_when_hit", "wenn getroffen");
+            Add("de", "mech_when_unit_hit", "wenn eine andere Einheit getroffen wird");
+            Add("de", "mech_when_damage_taken", "wenn Schaden erlitten wird");
+            Add("de", "mech_when_healed", "bei Heilung");
+            Add("de", "mech_when_ally_healed", "wenn ein Verbuendeter geheilt wird");
+            Add("de", "mech_when_deployed", "beim Einsetzen");
+            Add("de", "mech_when_destroyed", "bei Zerstoerung");
+            Add("de", "mech_when_drawn", "beim Ziehen");
+            Add("de", "mech_on_kill", "nach einem Kill");
+            Add("de", "mech_on_turn", "in seinem Zug");
+            Add("de", "mech_every_turn", "jede Runde");
+            Add("de", "mech_after_attack", "nach dem Angriff");
+            Add("de", "mech_on_hit", "wenn es trifft");
+            Add("de", "mech_to_self", "an sich selbst");
+            Add("de", "mech_to_allies", "an alle Verbuendeten");
+            Add("de", "mech_to_allies_row", "an Verbuendete in seiner Reihe");
+            Add("de", "mech_to_front_ally", "an den vordersten Verbuendeten");
+            Add("de", "mech_to_enemies", "an alle Gegner");
+            Add("de", "mech_to_front_enemy", "an den vordersten Gegner");
+            Add("de", "mech_to_attacker", "an den Angreifer");
+            Add("de", "mech_to_target", "an sein Ziel");
+            Add("de", "mech_to_random_ally", "an einen zufaelligen Verbuendeten");
+            Add("de", "mech_to_random_enemy", "an einen zufaelligen Gegner");
+            Add("de", "mech_to_hand", "an Karten auf der Hand");
             Add("de", "card_injured_one", "Verletzt.");
             Add("de", "card_injured", "Verletzt x{0}.");
             Add("de", "card_mentions", "Erwaehnt {0}");
@@ -1573,7 +1699,7 @@ namespace WildfrostAccessibility
             Add("es", "charm_gained", "Amuleto conseguido! {0}");
             Add("es", "charm_gained_hint", "Enter lo fija ahora a una carta, Escape lo guarda en tu inventario para mas tarde.");
             Add("es", "charm_reserved", "{0} guardado en tu inventario. Fijalo cuando quieras pulsando P.");
-            Add("es", "charm_assign_button", "Boton asignar. Enter fija {0} ahora, Escape lo guarda para mas tarde.");
+            Add("es", "charm_assign_button", "{0} Enter fija este amuleto ahora a una carta, Escape lo guarda en tu inventario para mas tarde.");
             Add("es", "deckpack_menu_open", "Opciones de {0}: {1}. Izquierda y derecha eligen, Enter activa, Escape cierra.");
             Add("es", "deckpack_menu_closed", "Opciones cerradas.");
             Add("es", "deckpack_option_rename", "Renombrar");
@@ -1643,11 +1769,13 @@ namespace WildfrostAccessibility
             Add("es", "battle_status_applied", "{0} de {1} aplicado a {2}.");
             Add("es", "battle_your_unit", "tu {0}");
             Add("es", "battle_enemy_unit", "{0} enemigo");
-            Add("es", "help_battle", "Batalla. Arriba y abajo cambian de grupo: mano, tu tablero, tablero enemigo, campana y pilas. Izquierda y derecha se mueven dentro del grupo. Enter en una carta de la mano la coge, las flechas eligen objetivo, Enter la coloca. Enter en una de tus unidades del tablero la coge para moverla: una casilla libre la mueve, una ocupada intercambia o empuja, la zona de retirada la saca del tablero. Mover y retirar son acciones gratuitas que no terminan tu turno. Escape devuelve la carta cogida. I inspecciona la carta enfocada, Escape cierra la inspeccion. Jugar una carta o tocar la campana termina tu turno. Teclas de lectura: H mano, B tablero, W oleadas, R campana, T turno, G oro, M campanas de modificador. P abre tu inventario. Pulsa O para el menu del juego con los ajustes.");
+            Add("es", "help_battle", "Batalla. Arriba y abajo cambian de grupo: mano, tu tablero, tablero enemigo, campana y pilas. Izquierda y derecha se mueven dentro del grupo. Enter en una carta de la mano la coge; mientras la sostienes, arriba y abajo cambian de fila, izquierda y derecha se mueven por la fila, nada da la vuelta; Enter la coloca. Enter en una de tus unidades del tablero la coge para moverla: una casilla libre la mueve, una ocupada intercambia o empuja, la zona de retirada la saca del tablero. Mover y retirar son acciones gratuitas que no terminan tu turno. Escape devuelve la carta cogida. I inspecciona la carta enfocada, Escape cierra la inspeccion. Jugar una carta o tocar la campana termina tu turno. Teclas de lectura: H mano, B tablero, W oleadas, R campana, T turno, G oro, M campanas de modificador, Control C contadores aliados, Control E contadores enemigos, Control H vida de los aliados, Control Mayus H vida de los enemigos. P abre tu inventario. Pulsa O para el menu del juego con los ajustes.");
             Add("es", "battle_unit_picked_up", "{0} levantada del tablero.");
             Add("es", "battle_move_hint", "Las flechas eligen una casilla de destino o la zona de retirada, Enter confirma, Escape cancela.");
             Add("es", "tutorial_drag_hint", "Para seleccionar y colocar: pulsa Enter sobre la carta, elige el destino con las flechas y pulsa Enter otra vez.");
             Add("es", "tutorial_inspect_hint", "Tambien puedes mantener Ctrl y pulsar arriba para recorrer todos los detalles de la carta seleccionada, uno por uno. Ctrl mas izquierda o derecha cambia a otros buferes de revision.");
+            Add("es", "tutorial_counter_keys_hint", "No hace falta seguir los contadores carta por carta: pulsa Ctrl C para oir cada una de tus unidades y en cuantos turnos actua, y Ctrl E para lo mismo en el lado enemigo.");
+            Add("es", "tutorial_health_keys_hint", "Para saber a quien conviene retirar, pulsa Ctrl H para la vida de tus companeros, o Ctrl Mayus H para la de los enemigos.");
             Add("es", "battle_unit_moved", "{0} movida.");
             Add("es", "battle_unit_recalled", "{0} retirada.");
             Add("es", "battle_free_action", "Accion gratuita, tu turno continua.");
@@ -1672,6 +1800,54 @@ namespace WildfrostAccessibility
             Add("es", "card_token_one", "Ficha: {0}.");
             Add("es", "card_tokens", "{0} fichas: {1}.");
             Add("es", "counter_frozen", "contador congelado por la nieve");
+            Add("es", "battle_status_damage", "{0} recibe {1} de dano de {2}.");
+            Add("es", "battle_shell_blocked", "{0}: Shell bloquea {1} de dano.");
+            Add("es", "battle_shell_blocked_all", "{2} golpea a {0}. Shell bloquea los {1} de dano.");
+            Add("es", "battle_counter_reduced", "{0}: contador reducido en {1}, actua en {2}.");
+            Add("es", "battle_attack_gain", "{0} gana {1} de ataque, ahora {2}.");
+            Add("es", "battle_attack_lose", "{0} pierde {1} de ataque, ahora {2}.");
+            Add("es", "battle_counter_gain", "{0}: contador aumentado en {1}, actua en {2}.");
+            Add("es", "battle_counters_allies", "Contadores aliados");
+            Add("es", "battle_counters_enemies", "Contadores enemigos");
+            Add("es", "battle_counters_none_ally", "Ningun aliado con contador.");
+            Add("es", "battle_counters_none_enemy", "Ningun enemigo con contador.");
+            Add("es", "battle_health_allies", "Vida de los aliados");
+            Add("es", "battle_health_enemies", "Vida de los enemigos");
+            Add("es", "battle_health_none_ally", "Ningun aliado en el tablero.");
+            Add("es", "battle_health_none_enemy", "Ningun enemigo en el tablero.");
+            Add("es", "nav_edge", "Borde.");
+            Add("es", "battle_not_a_target", "No es un objetivo valido para esta carta.");
+            Add("es", "event_item_taken", "Tomaste {0}.");
+            Add("es", "status_mech_applies", "aplica {0} {1}");
+            Add("es", "status_mech_damage", "causa {0} de dano");
+            Add("es", "mech_when_card_destroyed", "cuando otra carta es destruida");
+            Add("es", "mech_when_ally_killed", "cuando un aliado muere");
+            Add("es", "mech_when_unit_killed", "cuando una unidad muere");
+            Add("es", "mech_when_clunker_destroyed", "cuando un Clunker es destruido");
+            Add("es", "mech_when_hit", "al ser golpeado");
+            Add("es", "mech_when_unit_hit", "cuando otra unidad es golpeada");
+            Add("es", "mech_when_damage_taken", "al recibir dano");
+            Add("es", "mech_when_healed", "al ser curado");
+            Add("es", "mech_when_ally_healed", "cuando un aliado es curado");
+            Add("es", "mech_when_deployed", "al desplegarse");
+            Add("es", "mech_when_destroyed", "al ser destruido");
+            Add("es", "mech_when_drawn", "al robarse");
+            Add("es", "mech_on_kill", "al matar");
+            Add("es", "mech_on_turn", "en su turno");
+            Add("es", "mech_every_turn", "cada turno");
+            Add("es", "mech_after_attack", "despues de atacar");
+            Add("es", "mech_on_hit", "al golpear");
+            Add("es", "mech_to_self", "a si mismo");
+            Add("es", "mech_to_allies", "a todos los aliados");
+            Add("es", "mech_to_allies_row", "a los aliados de su fila");
+            Add("es", "mech_to_front_ally", "al aliado delantero");
+            Add("es", "mech_to_enemies", "a todos los enemigos");
+            Add("es", "mech_to_front_enemy", "al enemigo delantero");
+            Add("es", "mech_to_attacker", "al atacante");
+            Add("es", "mech_to_target", "a su objetivo");
+            Add("es", "mech_to_random_ally", "a un aliado al azar");
+            Add("es", "mech_to_random_enemy", "a un enemigo al azar");
+            Add("es", "mech_to_hand", "a las cartas de la mano");
             Add("es", "card_injured_one", "Herido.");
             Add("es", "card_injured", "Herido x{0}.");
             Add("es", "card_mentions", "Menciona a {0}");
@@ -1851,7 +2027,7 @@ namespace WildfrostAccessibility
             Add("fr", "charm_gained", "Talisman obtenu! {0}");
             Add("fr", "charm_gained_hint", "Entree le fixe maintenant sur une carte, Echap le garde dans l'inventaire pour plus tard.");
             Add("fr", "charm_reserved", "{0} garde dans l'inventaire. Fixez-le a tout moment avec P.");
-            Add("fr", "charm_assign_button", "Bouton assigner. Entree fixe {0} maintenant, Echap le garde pour plus tard.");
+            Add("fr", "charm_assign_button", "{0} Entree fixe ce talisman maintenant sur une carte, Echap le garde dans l'inventaire pour plus tard.");
             Add("fr", "deckpack_menu_open", "Options de {0}: {1}. Gauche et droite choisissent, Entree active, Echap ferme.");
             Add("fr", "deckpack_menu_closed", "Options fermees.");
             Add("fr", "deckpack_option_rename", "Renommer");
@@ -1921,11 +2097,13 @@ namespace WildfrostAccessibility
             Add("fr", "battle_status_applied", "{0} {1} applique a {2}.");
             Add("fr", "battle_your_unit", "votre {0}");
             Add("fr", "battle_enemy_unit", "{0} ennemi");
-            Add("fr", "help_battle", "Bataille. Haut et bas changent de groupe: main, votre plateau, plateau ennemi, cloche et piles. Gauche et droite se deplacent dans le groupe. Entree sur une carte de la main la prend, les fleches choisissent une cible, Entree la pose. Entree sur une de vos unites du plateau la prend pour la deplacer: une case libre la deplace, une case occupee echange ou pousse, la zone de rappel la retire du plateau. Deplacer et rappeler sont des actions gratuites qui ne terminent pas votre tour. Echap repose une carte prise. I inspecte la carte selectionnee, Echap ferme l'inspection. Jouer une carte ou sonner la cloche termine votre tour. Touches de lecture: H main, B plateau, W vagues, R cloche, T tour, G or, M cloches de modificateur. P ouvre votre inventaire. Appuyez sur O pour le menu du jeu avec les reglages.");
+            Add("fr", "help_battle", "Bataille. Haut et bas changent de groupe: main, votre plateau, plateau ennemi, cloche et piles. Gauche et droite se deplacent dans le groupe. Entree sur une carte de la main la prend; en la tenant, haut et bas changent de rangee, gauche et droite se deplacent dans la rangee, rien ne revient au debut; Entree la pose. Entree sur une de vos unites du plateau la prend pour la deplacer: une case libre la deplace, une case occupee echange ou pousse, la zone de rappel la retire du plateau. Deplacer et rappeler sont des actions gratuites qui ne terminent pas votre tour. Echap repose une carte prise. I inspecte la carte selectionnee, Echap ferme l'inspection. Jouer une carte ou sonner la cloche termine votre tour. Touches de lecture: H main, B plateau, W vagues, R cloche, T tour, G or, M cloches de modificateur, Ctrl C compteurs allies, Ctrl E compteurs ennemis, Ctrl H sante des allies, Ctrl Maj H sante des ennemis. P ouvre votre inventaire. Appuyez sur O pour le menu du jeu avec les reglages.");
             Add("fr", "battle_unit_picked_up", "{0} prise du plateau.");
             Add("fr", "battle_move_hint", "Les fleches choisissent une case de destination ou la zone de rappel, Entree confirme, Echap annule.");
             Add("fr", "tutorial_drag_hint", "Pour selectionner et placer: appuyez sur Entree sur la carte, choisissez la destination avec les fleches, puis appuyez encore sur Entree.");
             Add("fr", "tutorial_inspect_hint", "Vous pouvez aussi maintenir Ctrl et appuyer sur haut pour parcourir tous les details de la carte selectionnee, un par un. Ctrl plus gauche ou droite passe aux autres tampons de lecture.");
+            Add("fr", "tutorial_counter_keys_hint", "Inutile de suivre les compteurs carte par carte: appuyez sur Ctrl C pour entendre chacune de vos unites et dans combien de tours elle agit, et Ctrl E pour la meme chose du cote ennemi.");
+            Add("fr", "tutorial_health_keys_hint", "Pour savoir qui rappeler, appuyez sur Ctrl H pour la sante de vos compagnons, ou Ctrl Maj H pour celle des ennemis.");
             Add("fr", "battle_unit_moved", "{0} deplacee.");
             Add("fr", "battle_unit_recalled", "{0} rappelee.");
             Add("fr", "battle_free_action", "Action gratuite, votre tour continue.");
@@ -1950,6 +2128,54 @@ namespace WildfrostAccessibility
             Add("fr", "card_token_one", "Jeton: {0}.");
             Add("fr", "card_tokens", "{0} jetons: {1}.");
             Add("fr", "counter_frozen", "compteur gele par la neige");
+            Add("fr", "battle_status_damage", "{0} subit {1} degats de {2}.");
+            Add("fr", "battle_shell_blocked", "{0} : Shell bloque {1} degats.");
+            Add("fr", "battle_shell_blocked_all", "{2} frappe {0}. Shell bloque les {1} degats.");
+            Add("fr", "battle_counter_reduced", "{0} : compteur reduit de {1}, agit dans {2}.");
+            Add("fr", "battle_attack_gain", "{0} gagne {1} d'attaque, maintenant {2}.");
+            Add("fr", "battle_attack_lose", "{0} perd {1} d'attaque, maintenant {2}.");
+            Add("fr", "battle_counter_gain", "{0} : compteur augmente de {1}, agit dans {2}.");
+            Add("fr", "battle_counters_allies", "Compteurs allies");
+            Add("fr", "battle_counters_enemies", "Compteurs ennemis");
+            Add("fr", "battle_counters_none_ally", "Aucun allie avec compteur.");
+            Add("fr", "battle_counters_none_enemy", "Aucun ennemi avec compteur.");
+            Add("fr", "battle_health_allies", "Sante des allies");
+            Add("fr", "battle_health_enemies", "Sante des ennemis");
+            Add("fr", "battle_health_none_ally", "Aucun allie sur le plateau.");
+            Add("fr", "battle_health_none_enemy", "Aucun ennemi sur le plateau.");
+            Add("fr", "nav_edge", "Bord.");
+            Add("fr", "battle_not_a_target", "Cible invalide pour cette carte.");
+            Add("fr", "event_item_taken", "{0} pris.");
+            Add("fr", "status_mech_applies", "applique {0} {1}");
+            Add("fr", "status_mech_damage", "inflige {0} degats");
+            Add("fr", "mech_when_card_destroyed", "quand une autre carte est detruite");
+            Add("fr", "mech_when_ally_killed", "quand un allie est tue");
+            Add("fr", "mech_when_unit_killed", "quand une unite est tuee");
+            Add("fr", "mech_when_clunker_destroyed", "quand un Clunker est detruit");
+            Add("fr", "mech_when_hit", "quand il est touche");
+            Add("fr", "mech_when_unit_hit", "quand une autre unite est touchee");
+            Add("fr", "mech_when_damage_taken", "quand il subit des degats");
+            Add("fr", "mech_when_healed", "quand il est soigne");
+            Add("fr", "mech_when_ally_healed", "quand un allie est soigne");
+            Add("fr", "mech_when_deployed", "au deploiement");
+            Add("fr", "mech_when_destroyed", "quand il est detruit");
+            Add("fr", "mech_when_drawn", "quand il est pioche");
+            Add("fr", "mech_on_kill", "apres une elimination");
+            Add("fr", "mech_on_turn", "a son tour");
+            Add("fr", "mech_every_turn", "chaque tour");
+            Add("fr", "mech_after_attack", "apres avoir attaque");
+            Add("fr", "mech_on_hit", "quand il touche");
+            Add("fr", "mech_to_self", "a lui-meme");
+            Add("fr", "mech_to_allies", "a tous les allies");
+            Add("fr", "mech_to_allies_row", "aux allies de sa rangee");
+            Add("fr", "mech_to_front_ally", "a l'allie de devant");
+            Add("fr", "mech_to_enemies", "a tous les ennemis");
+            Add("fr", "mech_to_front_enemy", "a l'ennemi de devant");
+            Add("fr", "mech_to_attacker", "a l'attaquant");
+            Add("fr", "mech_to_target", "a sa cible");
+            Add("fr", "mech_to_random_ally", "a un allie au hasard");
+            Add("fr", "mech_to_random_enemy", "a un ennemi au hasard");
+            Add("fr", "mech_to_hand", "aux cartes en main");
             Add("fr", "card_injured_one", "Blesse.");
             Add("fr", "card_injured", "Blesse x{0}.");
             Add("fr", "card_mentions", "Mentionne {0}");

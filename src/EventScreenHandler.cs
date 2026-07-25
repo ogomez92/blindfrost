@@ -24,6 +24,8 @@ namespace WildfrostAccessibility
         private float _nextCrackPoll;
         private int _lastCrackDamage = -1;
 
+        private bool _subscribedChosen;
+
         public override void OnEnter()
         {
             base.OnEnter();
@@ -35,6 +37,36 @@ namespace WildfrostAccessibility
             _lastCrackDamage = -1;
             _dragController = null;
             CharmGainNarrator.Reset();
+            if (!_subscribedChosen)
+            {
+                _subscribedChosen = true;
+                Events.OnEntityChosen += OnEntityChosen;
+            }
+        }
+
+        public override void OnExit()
+        {
+            base.OnExit();
+            if (_subscribedChosen)
+            {
+                _subscribedChosen = false;
+                Events.OnEntityChosen -= OnEntityChosen;
+            }
+        }
+
+        /// <summary>
+        /// A card was actually taken (chest item, ice-block companion, curse
+        /// event...). The game then moves focus to the next remaining card,
+        /// whose announcement sounded like the WRONG card had been taken —
+        /// so confirm the take out loud and hold the focus chatter briefly.
+        /// </summary>
+        private void OnEntityChosen(Entity entity)
+        {
+            string title = entity?.data?.title;
+            if (string.IsNullOrEmpty(title))
+                return;
+            SuppressFocusFor(2.5f);
+            ScreenReader.SayEvent(Loc.Get("event_item_taken", title), interrupt: true);
         }
 
         public override string GetHelpText() => Loc.Get("help_event");

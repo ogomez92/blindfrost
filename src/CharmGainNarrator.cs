@@ -74,12 +74,18 @@ namespace WildfrostAccessibility
             }
         }
 
-        /// <summary>Focus read for the popup's Assign button: name the charm and both options.</summary>
+        /// <summary>
+        /// Focus read for the popup's Assign button. Leads with the charm
+        /// itself — name, kind, full effect — so the player always hears WHICH
+        /// charm this is even if the initial gain announcement was talked over;
+        /// the equip-now / keep-for-later options follow.
+        /// </summary>
         public static string DescribeFocused()
         {
             if (!PopupActive)
                 return null;
-            return Loc.Get("charm_assign_button", CharmTitle());
+            string charm = ItemDescriber.DescribeUpgradeData(_charm) ?? CharmTitle();
+            return Loc.Get("charm_assign_button", charm);
         }
 
         /// <summary>

@@ -48,6 +48,7 @@ namespace WildfrostAccessibility
             Events.OnKillCombo += OnKillCombo;
             Events.OnDropGold += OnDropGold;
             Events.OnCardInjured += OnCardInjured;
+            Events.OnStatusIconChanged += OnStatusIconChanged;
         }
 
         private void Unsubscribe()
@@ -64,6 +65,7 @@ namespace WildfrostAccessibility
             Events.OnKillCombo -= OnKillCombo;
             Events.OnDropGold -= OnDropGold;
             Events.OnCardInjured -= OnCardInjured;
+            Events.OnStatusIconChanged -= OnStatusIconChanged;
         }
 
         protected override bool TryAnnounceScreen()
@@ -172,6 +174,23 @@ namespace WildfrostAccessibility
         }
 
         /// <summary>
+        /// The anchor is a drop zone, not a place to browse. All through battle
+        /// setup the game re-parks default focus on it while the hand is still
+        /// being drawn, so the redirect above has nowhere to send focus yet and
+        /// it read as a spurious "Play without a target" before the first turn.
+        /// It only means anything while a card is held — and then the targeting
+        /// description names it properly — so stay silent otherwise.
+        /// </summary>
+        protected override bool ShouldAnnounceFocus(UINavigationItem item)
+        {
+            if (IsTargeting())
+                return true;
+
+            var controller = Battle.instance?.playerCardController as CardControllerBattle;
+            return controller == null || item != controller.useOnHandAnchor;
+        }
+
+        /// <summary>
         /// The last stand dice roll resolves inside a coroutine with no event
         /// hook — watch the system's private result field for the outcome.
         /// </summary>
@@ -206,6 +225,14 @@ namespace WildfrostAccessibility
             // Combo gold is consumed by the combo event that follows it immediately;
             // drop any that somehow wasn't, so it can't attach to a later turn's combo
             _pendingComboGold = 0;
+
+            // The battle loop still fires a turn-start event after the last
+            // enemy dies — announcing "Turn 13" over the victory reads as if
+            // the fight went on
+            var battle = Battle.instance;
+            if (battle == null || battle.ended)
+                return;
+
             ScreenReader.SayEvent(Loc.Get("battle_turn", turn));
         }
 
@@ -260,9 +287,32 @@ namespace WildfrostAccessibility
                 return;
             }
 
+            // Shell soaks damage before it lands, silently shrinking (or
+            // erasing) the number that gets narrated — say what it blocked.
+            // On a full absorb no hit line follows, so name the attacker here.
+            if (hit.damageBlocked > 0)
+            {
+                if (hit.damageDealt <= 0 && hit.attacker?.data != null && hit.BasicHit)
+                    ScreenReader.SayEvent(Loc.Get("battle_shell_blocked_all",
+                        target, hit.damageBlocked, hit.attacker.data.title));
+                else
+                    ScreenReader.SayEvent(Loc.Get("battle_shell_blocked", target, hit.damageBlocked));
+            }
+
             if (hit.damageDealt > 0)
             {
-                if (hit.attacker?.data != null)
+                if (!hit.BasicHit)
+                {
+                    // Status damage (Shroom, Teeth, Overload...): the "attacker"
+                    // is only whoever applied the status, possibly long gone —
+                    // "Hongo's Hammer hits Snowbo" for a shroom tick reads as a
+                    // phantom attack, so name the status instead. Summon decay
+                    // is skipped: its kill announcement is the whole story.
+                    if (hit.damageType != "summoned")
+                        ScreenReader.SayEvent(Loc.Get("battle_status_damage",
+                            target, hit.damageDealt, ItemDescriber.GetDamageTypeName(hit)));
+                }
+                else if (hit.attacker?.data != null)
                     ScreenReader.SayEvent(Loc.Get("battle_hit", hit.attacker.data.title, target, hit.damageDealt));
                 else
                     ScreenReader.SayEvent(Loc.Get("battle_takes_damage", target, hit.damageDealt));
@@ -272,6 +322,55 @@ namespace WildfrostAccessibility
                 ScreenReader.SayEvent(Loc.Get("battle_healed", target, -hit.damageDealt));
             }
             // Zero-damage hits (pure status applications) are narrated by OnStatusApplied
+
+            // Counter-down effects tick an enemy toward acting sooner — the
+            // number only ever changed silently on the counter icon. The
+            // routine end-of-turn tick is a counter-reducing hit too
+            // (Battle.CardCountDown, attacker null), and narrating that for
+            // every unit every turn drowns the battle in chatter — so only
+            // speak reductions somebody actually caused.
+            if (hit.counterReduction > 0 && hit.attacker != null && hit.target.counter.max > 0)
+                ScreenReader.SayEvent(Loc.Get("battle_counter_reduced",
+                    target, hit.counterReduction, hit.target.counter.current));
+        }
+
+        /// <summary>
+        /// Narrate stat changes on the cards themselves: attack gains/losses
+        /// (Spice, Frost, "gain attack when hit" units...) and counter
+        /// increases. Health changes are already narrated per hit, and normal
+        /// counter ticking each turn would be noise, so both are skipped.
+        /// </summary>
+        private void OnStatusIconChanged(StatusIcon icon, Stat previous, Stat current)
+        {
+            if (!InCombat() || icon == null || icon.target?.data == null) return;
+            if (previous.current == current.current) return;
+            // A fresh icon jumping from zero is the card being dealt in, not a buff
+            if (previous.current == 0 && previous.max == 0) return;
+
+            string name = QualifyOwner(icon.target);
+            int delta = current.current - previous.current;
+
+            switch (icon.type)
+            {
+                case "damage":
+                    ScreenReader.SayEvent(delta > 0
+                        ? Loc.Get("battle_attack_gain", name, delta, current.current)
+                        : Loc.Get("battle_attack_lose", name, -delta, current.current));
+                    break;
+
+                case "counter":
+                    // Increases only: something pushed the action further away
+                    // (or a counter-down was blocked); decreases are either the
+                    // per-turn tick or hit.counterReduction, both handled elsewhere.
+                    // A unit that just acted has its counter snapped back to max
+                    // (Battle.CheckUnitsTakeTurns) — that is the rhythm of the
+                    // game, not news, and saying it for every unit every turn
+                    // buries the lines that matter.
+                    if (delta > 0 && !(previous.current == 0 && current.current == current.max))
+                        ScreenReader.SayEvent(Loc.Get("battle_counter_gain",
+                            name, delta, current.current));
+                    break;
+            }
         }
 
         private void OnEntityKilled(Entity entity, DeathType deathType)
@@ -404,6 +503,24 @@ namespace WildfrostAccessibility
                 return;
             }
 
+            bool ctrl = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
+            bool shift = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+
+            // Ctrl+C / Ctrl+E: quick counter status for one side — who acts
+            // in how many turns, without wading through the full board read
+            if (ctrl && Input.GetKeyDown(KeyCode.C)) { DebugLogger.LogInput(Name, "Ally counters"); AnnounceCounters(allies: true); return; }
+            if (ctrl && Input.GetKeyDown(KeyCode.E)) { DebugLogger.LogInput(Name, "Enemy counters"); AnnounceCounters(allies: false); return; }
+            // Ctrl+H / Ctrl+Shift+H: who is hurt. Damage is narrated as it
+            // lands, but after a few exchanges only a roll call answers
+            // "who do I need to pull out?" — Shift flips it to the enemies
+            if (ctrl && Input.GetKeyDown(KeyCode.H))
+            {
+                DebugLogger.LogInput(Name, shift ? "Enemy health" : "Ally health");
+                AnnounceHealth(allies: !shift);
+                return;
+            }
+            if (ctrl) return; // don't let Ctrl+combos fall through to the plain letter keys
+
             if (Input.GetKeyDown(KeyCode.H)) { DebugLogger.LogInput(Name, "Hand"); AnnounceHand(); }
             if (Input.GetKeyDown(KeyCode.B)) { DebugLogger.LogInput(Name, "Board"); AnnounceBoard(); }
             if (Input.GetKeyDown(KeyCode.W)) { DebugLogger.LogInput(Name, "Waves"); AnnounceWaves(); }
@@ -411,6 +528,95 @@ namespace WildfrostAccessibility
             if (Input.GetKeyDown(KeyCode.G)) { DebugLogger.LogInput(Name, "Gold"); AnnounceGold(); }
             if (Input.GetKeyDown(KeyCode.T)) { DebugLogger.LogInput(Name, "Turn"); AnnounceTurn(); }
             if (Input.GetKeyDown(KeyCode.M)) { DebugLogger.LogInput(Name, "Modifiers"); AnnounceModifiers(); }
+        }
+
+        /// <summary>
+        /// One side's counters at a glance: each unit with a counter, its
+        /// position, how many turns until it acts, and whether Snow froze it.
+        /// </summary>
+        private void AnnounceCounters(bool allies)
+        {
+            var battle = Battle.instance;
+            if (battle == null) return;
+
+            var character = allies ? battle.player : battle.enemy;
+            var parts = new List<string>();
+            for (int row = 0; row < 2; row++)
+            {
+                CardSlotLane lane = GetLane(character, row);
+                if (lane?.slots == null) continue;
+                foreach (CardSlot slot in lane.slots)
+                {
+                    Entity occupant = slot != null ? slot.GetTop() : null;
+                    if (occupant?.data == null || occupant.counter.max <= 0) continue;
+
+                    string cell = occupant.data.title;
+                    string position = ItemDescriber.GetEntitySlotShort(occupant);
+                    if (!string.IsNullOrEmpty(position))
+                        cell += " " + position;
+                    cell += ", " + Loc.Get("battle_acts_in", occupant.counter.current);
+                    if (occupant.IsSnowed)
+                        cell += ", " + Loc.Get("counter_frozen");
+                    parts.Add(cell);
+                }
+            }
+
+            if (parts.Count == 0)
+            {
+                ScreenReader.Say(Loc.Get(allies
+                    ? "battle_counters_none_ally"
+                    : "battle_counters_none_enemy"), interrupt: true);
+                return;
+            }
+
+            parts.Insert(0, Loc.Get(allies ? "battle_counters_allies" : "battle_counters_enemies"));
+            ScreenReader.Say(string.Join(". ", parts), interrupt: true);
+        }
+
+        /// <summary>
+        /// One side's health at a glance: every unit on the board with its
+        /// position and current health out of max. Hits are narrated as they
+        /// land, but a running tally is impossible to hold across a long
+        /// fight — this is the roll call that says who to recall and heal.
+        /// </summary>
+        private void AnnounceHealth(bool allies)
+        {
+            var battle = Battle.instance;
+            if (battle == null) return;
+
+            var character = allies ? battle.player : battle.enemy;
+            var parts = new List<string>();
+            for (int row = 0; row < 2; row++)
+            {
+                CardSlotLane lane = GetLane(character, row);
+                if (lane?.slots == null) continue;
+                foreach (CardSlot slot in lane.slots)
+                {
+                    Entity occupant = slot != null ? slot.GetTop() : null;
+                    if (occupant?.data == null || !occupant.alive) continue;
+                    // Boardable cards without health (scenery, some summons)
+                    // have nothing to report
+                    if (occupant.hp.max <= 0) continue;
+
+                    string cell = occupant.data.title;
+                    string position = ItemDescriber.GetEntitySlotShort(occupant);
+                    if (!string.IsNullOrEmpty(position))
+                        cell += " " + position;
+                    cell += ", " + ItemDescriber.DescribeHealth(occupant);
+                    parts.Add(cell);
+                }
+            }
+
+            if (parts.Count == 0)
+            {
+                ScreenReader.Say(Loc.Get(allies
+                    ? "battle_health_none_ally"
+                    : "battle_health_none_enemy"), interrupt: true);
+                return;
+            }
+
+            parts.Insert(0, Loc.Get(allies ? "battle_health_allies" : "battle_health_enemies"));
+            ScreenReader.Say(string.Join(". ", parts), interrupt: true);
         }
 
         /// <summary>
@@ -428,15 +634,17 @@ namespace WildfrostAccessibility
         }
 
         /// <summary>
-        /// While holding a card: all arrows move between valid targets (the game
-        /// disables everything else). Otherwise: Up/Down switch groups, Left/Right
-        /// move within the current group.
+        /// While holding a card: the valid targets form a grid — Up/Down move
+        /// between rows (staying in the same column), Left/Right move along the
+        /// row, and nothing wraps: the edge announces itself instead of jumping
+        /// to the far side. Otherwise: Up/Down switch groups, Left/Right move
+        /// within the current group.
         /// </summary>
         protected override void Navigate(NavDirection dir)
         {
             if (IsTargeting())
             {
-                base.Navigate(dir);
+                NavigateTargeting(dir);
                 return;
             }
 
@@ -458,6 +666,223 @@ namespace WildfrostAccessibility
                 items, navSystem?.currentNavigationItem, dir, vertical: false);
             if (next != null)
                 NavigationHelper.FocusItem(next);
+        }
+
+        /// <summary>
+        /// Grid navigation over the valid targets while holding a card.
+        /// Battlefield slots group into their lanes (a lane spans both sides,
+        /// so Left/Right can cross from your slots to the enemy's); anything
+        /// else (the recall zone, the play-without-target anchor, hand cards
+        /// offered as targets) groups by vertical position. Up/Down change row
+        /// landing on the horizontally closest target; Left/Right stay in the
+        /// row; edges say so instead of wrapping around.
+        /// </summary>
+        private void NavigateTargeting(NavDirection dir)
+        {
+            var items = NavigationHelper.GetNavigableItems();
+            if (items.Count == 0)
+                return;
+
+            var rows = BuildTargetRows(items);
+            if (rows.Count == 0)
+                return;
+
+            var navSystem = MonoBehaviourSingleton<UINavigationSystem>.instance;
+            var current = navSystem?.currentNavigationItem;
+
+            int rowIdx = -1, colIdx = -1;
+            for (int r = 0; r < rows.Count && rowIdx < 0; r++)
+            {
+                int c = rows[r].IndexOf(current);
+                if (c >= 0) { rowIdx = r; colIdx = c; }
+            }
+            if (rowIdx < 0)
+            {
+                NavigationHelper.FocusItem(rows[0][0]);
+                return;
+            }
+
+            if (dir == NavDirection.Left || dir == NavDirection.Right)
+            {
+                int nextCol = colIdx + (dir == NavDirection.Right ? 1 : -1);
+                if (nextCol < 0 || nextCol >= rows[rowIdx].Count)
+                {
+                    ScreenReader.Say(Loc.Get("nav_edge"), interrupt: true);
+                    return;
+                }
+                NavigationHelper.FocusItem(rows[rowIdx][nextCol]);
+                return;
+            }
+
+            int nextRow = rowIdx + (dir == NavDirection.Down ? 1 : -1);
+            if (nextRow < 0 || nextRow >= rows.Count)
+            {
+                ScreenReader.Say(Loc.Get("nav_edge"), interrupt: true);
+                return;
+            }
+
+            // Hold your place in the line: land on the same column when both
+            // rows are battlefield lanes, and on the closest target otherwise
+            var from = rows[rowIdx][colIdx];
+            UINavigationItem best = null;
+            int columnKey = GetTargetColumnKey(from);
+            if (columnKey != int.MaxValue)
+            {
+                foreach (var item in rows[nextRow])
+                {
+                    if (GetTargetColumnKey(item) == columnKey)
+                    {
+                        best = item;
+                        break;
+                    }
+                }
+            }
+
+            if (best == null)
+            {
+                float x = from.Position.x;
+                float bestDistance = float.MaxValue;
+                foreach (var item in rows[nextRow])
+                {
+                    float distance = Mathf.Abs(item.Position.x - x);
+                    if (distance < bestDistance)
+                    {
+                        bestDistance = distance;
+                        best = item;
+                    }
+                }
+            }
+            NavigationHelper.FocusItem(best);
+        }
+
+        /// <summary>
+        /// Arrange targeting items into visual rows, top to bottom, each row
+        /// left to right. Slot-bound targets key on their lane index; loose
+        /// items (recall zone, hand anchor) cluster by Y position.
+        /// </summary>
+        private static List<List<UINavigationItem>> BuildTargetRows(List<UINavigationItem> items)
+        {
+            var laneRows = new Dictionary<int, List<UINavigationItem>>();
+            var loose = new List<UINavigationItem>();
+
+            foreach (var item in items)
+            {
+                int lane = GetTargetLaneIndex(item);
+                if (lane >= 0)
+                {
+                    if (!laneRows.TryGetValue(lane, out var row))
+                        laneRows[lane] = row = new List<UINavigationItem>();
+                    row.Add(item);
+                }
+                else
+                {
+                    loose.Add(item);
+                }
+            }
+
+            var rows = new List<List<UINavigationItem>>();
+            foreach (var row in laneRows.Values)
+            {
+                // Lanes walk in spoken-column order, so Right always moves to
+                // the next column number
+                row.Sort((a, b) => GetTargetColumnKey(a).CompareTo(GetTargetColumnKey(b)));
+                rows.Add(row);
+            }
+
+            // Loose items whose Y positions are close enough share a row
+            var looseRows = new List<List<UINavigationItem>>();
+            const float rowTolerance = 1.25f;
+            loose.Sort((a, b) => b.Position.y.CompareTo(a.Position.y));
+            List<UINavigationItem> currentRow = null;
+            float currentY = 0f;
+            foreach (var item in loose)
+            {
+                if (currentRow == null || Mathf.Abs(item.Position.y - currentY) > rowTolerance)
+                {
+                    currentRow = new List<UINavigationItem>();
+                    currentY = item.Position.y;
+                    rows.Add(currentRow);
+                    looseRows.Add(currentRow);
+                }
+                currentRow.Add(item);
+            }
+
+            // The recall zone, the play anchor and hand cards offered as targets
+            // have no column, so screen order is all they have
+            foreach (var row in looseRows)
+                row.Sort((a, b) => a.Position.x.CompareTo(b.Position.x));
+            rows.Sort((a, b) => AverageY(b).CompareTo(AverageY(a)));
+            return rows;
+        }
+
+        private static float AverageY(List<UINavigationItem> row)
+        {
+            float sum = 0f;
+            foreach (var item in row)
+                sum += item.Position.y;
+            return row.Count > 0 ? sum / row.Count : 0f;
+        }
+
+        /// <summary>
+        /// The battlefield lane a targeting item belongs to (same index for
+        /// both sides — they are halves of the same visual row), or -1 for
+        /// anything not sitting in a lane.
+        /// </summary>
+        private static int GetTargetLaneIndex(UINavigationItem item)
+        {
+            var slot = GetTargetSlot(item);
+            var lane = slot != null ? slot.GetComponentInParent<CardSlotLane>() : null;
+            if (lane == null)
+                return -1;
+            try
+            {
+                return References.Battle != null ? References.Battle.GetRowIndex(lane) : -1;
+            }
+            catch
+            {
+                return -1;
+            }
+        }
+
+        /// <summary>The battlefield slot a targeting item stands for, or null.</summary>
+        private static CardSlot GetTargetSlot(UINavigationItem item)
+        {
+            var slot = item.GetComponent<CardSlot>() ?? item.GetComponentInParent<CardSlot>();
+            if (slot != null)
+                return slot;
+
+            var entity = item.GetComponentInParent<Entity>();
+            if (entity == null && item.clickHandler != null)
+                entity = item.clickHandler.GetComponentInParent<Entity>();
+            return entity != null ? entity.GetComponentInParent<CardSlot>() : null;
+        }
+
+        /// <summary>Sorts the enemy's columns after all of yours.</summary>
+        private const int EnemyColumnOffset = 1000;
+
+        /// <summary>
+        /// A lane item's place in the spoken order: your columns counting up
+        /// from your front line, then the enemy's counting up from theirs.
+        /// Both sides number columns from the front, and the game renders your
+        /// half mirrored, so your column 1 sits at the right edge of your side —
+        /// ordering by screen position would count columns DOWN as you move
+        /// right. Items with no column sort last.
+        /// </summary>
+        private static int GetTargetColumnKey(UINavigationItem item)
+        {
+            var slot = GetTargetSlot(item);
+            var lane = slot != null ? slot.GetComponentInParent<CardSlotLane>() : null;
+            if (lane?.slots == null)
+                return int.MaxValue;
+
+            int column = lane.slots.IndexOf(slot);
+            if (column < 0)
+                return int.MaxValue;
+
+            bool isEnemy = References.Battle != null
+                && slot.owner != null
+                && slot.owner != References.Battle.player;
+            return (isEnemy ? EnemyColumnOffset : 0) + column;
         }
 
         /// <summary>
@@ -631,10 +1056,45 @@ namespace WildfrostAccessibility
             if (IsTargeting())
             {
                 string target = ItemDescriber.DescribeTarget(item);
-                if (!string.IsNullOrEmpty(target))
-                    return target;
+                if (string.IsNullOrEmpty(target))
+                    target = base.GetItemDescription(item);
+                // Naming a cell the held card cannot be played on, with no hint
+                // that Enter will not take it, is how a card ends up somewhere
+                // the player never chose
+                if (!string.IsNullOrEmpty(target) && !HoverFollowedFocus(item))
+                    target += " " + Loc.Get("battle_not_a_target");
+                return target;
             }
             return base.GetItemDescription(item);
+        }
+
+        /// <summary>
+        /// Whether the game's own drop target followed our focus onto this item.
+        /// CardControllerBattle.Release plays onto its hoverEntity / hoverSlot /
+        /// hoverContainer, and the game silently refuses to move those onto
+        /// anything the held card cannot take — so focus can sit on a cell that
+        /// is no target at all. Browsing there is useful (it still reads out
+        /// what is in the slot), but the readout has to say so.
+        /// </summary>
+        private bool HoverFollowedFocus(UINavigationItem item)
+        {
+            var controller = Battle.instance?.playerCardController;
+            if (controller == null || item == null) return true;
+
+            GameObject handler = item.clickHandler != null ? item.clickHandler : item.gameObject;
+            if (handler == null) return true;
+
+            var entity = handler.GetComponentInParent<Entity>();
+            if (entity != null && controller.hoverEntity == entity) return true;
+
+            CardSlot slot = GetTargetSlot(item);
+            if (slot != null && controller.hoverSlot == slot) return true;
+
+            // The recall zone and the play-without-target anchor are containers
+            var container = handler.GetComponentInParent<CardContainer>();
+            if (container != null && controller.hoverContainer == container) return true;
+
+            return false;
         }
 
         /// <summary>

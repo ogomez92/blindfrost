@@ -126,16 +126,17 @@ namespace WildfrostAccessibility
             new HashSet<string> { "health", "attack", "counter" };
 
         /// <summary>
-        /// The effects a card's text applies, each with its amount ("Shroom 3",
-        /// "Snow 10", "Consume 1") — no explanations. Used by the short focus read,
-        /// where the meaning waits in the Details review buffer.
+        /// The effect lines of a card's text, one mention per line, in the
+        /// game's own words ("Apply 2 Snow", "Deal 8 additional damage to
+        /// Snow'd targets", "When hit, gain +1 Attack") — no explanations.
+        /// Used by the short focus read, where the meaning waits in the
+        /// Details review buffer.
         ///
-        /// The game writes an amount two different ways: traits carry it inside the
-        /// tag (<c>&lt;keyword=consume 1&gt;</c>), while attack effects put it in a
-        /// tag of its own just before (<c>Apply &lt;3&gt;&lt;keyword=shroom&gt;</c>) —
-        /// see Card.AddAttackEffectText. Reading only keyword tags loses the second
-        /// kind, so this walks every tag in order, pairing each amount with the
-        /// keyword it precedes.
+        /// Earlier versions compressed each line down to "keyword amount"
+        /// ("Snow 2"), but that made an enemy that APPLIES 2 Snow on hit
+        /// read exactly like a unit that IS snowed for 2 turns, and turned
+        /// "Deal 8 additional damage to Snow'd targets" into a baffling
+        /// "Snow 8" — so the line's full wording is kept instead.
         /// </summary>
         public static List<string> ExtractKeywordMentions(string rawText)
         {
@@ -146,66 +147,40 @@ namespace WildfrostAccessibility
             // Card.GetDescription puts each effect on its own line
             foreach (string line in rawText.Split('\n'))
             {
-                // An effect the game words as prose names no keyword at all
-                // ("Counter Down 2" — Card.AddAttackEffectText's textKey branch),
-                // so read the line's own words instead. Falling back on "produced
-                // no mention" rather than "named no keyword" would undo the stat
-                // glyph rule below, reading a bare heart back as "Health".
-                if (!AddLineMentions(line, result))
-                    AddProseMention(line, result);
+                if (IsBareStatGlyphLine(line))
+                    continue;
+                AddProseMention(line, result);
             }
             return result;
         }
 
         /// <summary>
-        /// Effects named by keyword tags on one line of card text. Returns whether the
-        /// line named a keyword at all, which is not the same as having added one.
+        /// A line that is nothing but stat icons without amounts (a bare heart
+        /// or sword the card draws for layout). Reading it back would only
+        /// repeat a stat the focus read already gave. The same glyph carrying
+        /// an amount, or embedded in a sentence, is a real effect and is kept.
         /// </summary>
-        private static bool AddLineMentions(string line, List<string> result)
+        private static bool IsBareStatGlyphLine(string line)
         {
-            // Set by a bare amount tag, claimed by the next keyword tag. Formatting
-            // tags in between (<b>, <color=…>) leave it alone, so "<3><b><keyword=x>"
-            // still pairs up.
-            string pendingAmount = null;
-            bool namedKeyword = false;
-
+            bool sawStatGlyph = false;
             foreach (Match match in Regex.Matches(line, @"<([^>]*)>"))
             {
                 string tag = match.Groups[1].Value.Trim();
-                if (tag.Length == 0)
-                    continue;
-
-                char first = tag[0];
-                if (char.IsDigit(first) || first == '+' || first == '-' || first == 'x')
-                {
-                    pendingAmount = FormatAmount(tag);
-                    continue;
-                }
-
                 int eqIdx = tag.IndexOf('=');
                 if (eqIdx <= 0 || tag.Substring(0, eqIdx).Trim() != "keyword")
                     continue;
 
-                namedKeyword = true;
-
                 string[] parts = tag.Substring(eqIdx + 1).Trim().Split(' ');
-                string amount = pendingAmount;
-                pendingAmount = null;
-                if (parts.Length > 1 && int.TryParse(parts[1], out int inTag))
-                    amount = inTag.ToString();
-
-                if (amount == null && StatIconKeywords.Contains(parts[0].ToLowerInvariant()))
-                    continue;
-
-                string text = GetKeywordInfo(parts[0]).Title;
-                if (amount != null)
-                    text += $" {amount}";
-
-                if (!result.Contains(text))
-                    result.Add(text);
+                if (parts.Length > 1 || !StatIconKeywords.Contains(parts[0].ToLowerInvariant()))
+                    return false;
+                sawStatGlyph = true;
             }
+            if (!sawStatGlyph)
+                return false;
 
-            return namedKeyword;
+            // Only a glyph line with no other words qualifies
+            string withoutTags = Regex.Replace(line, @"<[^>]*>", "").Trim();
+            return withoutTags.Length == 0;
         }
 
         /// <summary>The line's own words, for an effect the game words as prose.</summary>
@@ -217,19 +192,6 @@ namespace WildfrostAccessibility
 
             if (!string.IsNullOrEmpty(prose) && !result.Contains(prose))
                 result.Add(prose);
-        }
-
-        /// <summary>"3", "+2", "x2" from a bare amount tag, or null if it holds no number.</summary>
-        private static string FormatAmount(string tag)
-        {
-            if (!int.TryParse(Regex.Replace(tag, "[^0-9]", ""), out int amount))
-                return null;
-
-            char first = tag[0];
-            string prefix = (first == '+' || first == '-' || first == 'x')
-                ? first.ToString()
-                : "";
-            return $"{prefix}{amount}";
         }
 
         /// <summary>
@@ -260,7 +222,7 @@ namespace WildfrostAccessibility
                 if (data.hasHealth)
                     parts.Add(Loc.Get("stat_health", data.hp));
                 if (data.counter > 0)
-                    parts.Add(Loc.Get("stat_counter", data.counter));
+                    parts.Add(Loc.Get("battle_acts_in", data.counter));
 
                 if (data.startWithEffects != null)
                 {

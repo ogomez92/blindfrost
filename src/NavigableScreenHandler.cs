@@ -470,6 +470,13 @@ namespace WildfrostAccessibility
         /// </summary>
         protected virtual bool SuppressFocusAnnouncements => false;
 
+        /// <summary>
+        /// Whether this particular item is worth speaking when focus lands on it.
+        /// Return false for items that are only destinations, never places to
+        /// browse — the focus is still tracked, it just isn't announced.
+        /// </summary>
+        protected virtual bool ShouldAnnounceFocus(UINavigationItem item) => true;
+
         /// <summary>Announce the focused item when it changes.</summary>
         private void CheckAndAnnounceFocus()
         {
@@ -483,6 +490,7 @@ namespace WildfrostAccessibility
             if (current == null) return;
 
             if (SuppressFocusAnnouncements || InspectPanelSuppression) return;
+            if (!ShouldAnnounceFocus(current)) return;
 
             string text = GetItemDescription(current);
             if (string.IsNullOrEmpty(text))

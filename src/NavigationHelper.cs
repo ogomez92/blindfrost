@@ -203,7 +203,22 @@ namespace WildfrostAccessibility
             if (item.clickHandler != null)
             {
                 if (hovered != item.clickHandler)
+                {
+                    // Unhover the old object FIRST. CustomEventSystem.Hover only
+                    // fires pointerEnter on the new object — it never fires
+                    // pointerExit on the one being left, so the old object's
+                    // Hover state lives on. That matters while holding a card:
+                    // the game plays onto CardController.hoverEntity/hoverSlot,
+                    // and it silently refuses to move those onto anything the
+                    // held card cannot take. Focus would walk on and be
+                    // announced while the PREVIOUS unit stayed armed, so Enter
+                    // played the card at a target the player never heard.
+                    // Clearing first makes a refused hover fail closed: the
+                    // card returns to hand instead of hitting the wrong unit.
+                    if (hovered != null)
+                        eventSystem.Unhover(hovered);
                     eventSystem.Hover(item.clickHandler);
+                }
             }
             else if (hovered != null)
             {

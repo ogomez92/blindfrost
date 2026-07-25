@@ -68,7 +68,7 @@ Every screen announces itself when it opens, and every focused element is descri
 - **Town (base camp)** - arrow keys move between buildings. Each building is announced with its name and state. The Gate says what Enter will do: start a new journey, continue the one in progress, or begin the tutorial.
 - **Continue journey screen** - announces your run in progress: start date, leader with health and attack, and the full deck list with duplicate counts. The Let's Go and Back buttons explain what they do.
 - **Campaign map** - announces the zone, where you are, and which destinations you can travel to. Locations are announced with their name, category (battle, shop, boss...), and state (you are here, cleared, available, further ahead, not reachable). Battle locations include their wave count; details include the exact enemies per wave.
-- **Battle** - announces turns, phases, and the redraw bell. Cards are read with their stats and the names of their status effects (Snow, Frost...); the full keyword descriptions wait in the Details buffer (Ctrl+Up), or press V for full descriptions on focus. Cards are played with Enter: pick up, choose a target with the arrows (only valid targets are reachable), Enter again to place.
+- **Battle** - announces turns, phases, and the redraw bell. Cards are read with their stats, their status effects (Snow, Frost...), and their effect lines in the game's own words ("Apply 2 Snow", "Deal 8 additional damage to Snow'd targets"), so a unit that HAS Snow on it never sounds like one that APPLIES Snow; the full keyword descriptions wait in the Details buffer (Ctrl+Up), or press V for full descriptions on focus. Combat is narrated as it resolves: hits, status damage (Shroom, Teeth...), Shell blocking damage, attack gains and losses, and counter changes. Cards are played with Enter: pick up, then the valid targets form a grid - up/down move between rows, left/right along the row, nothing wraps around - and Enter places.
 - **Story events** - event titles, prompts, and story text ("Break the ice!", "Choose a new companion!"...) are read as they appear and whenever they change. The frozen-companion ice block announces each crack; offered cards are read in full. If the game refuses a choice (the tutorial requires inspecting a card first), the reason is spoken.
 - **Deck piles** - draw and discard piles announce their card counts everywhere they appear.
 - **Inventory (backpack)** - P opens it wherever the backpack exists (map, events, battle). It announces your deck, reserve, charm and crown counts. Up/down switch groups, left/right move within one. Enter on a charm picks it up, the arrows move between the cards that can take it, and Enter attaches it - permanently, as in the game. Enter on a card opens the game's own options: rename, take crown, move between deck and reserve.
@@ -133,12 +133,17 @@ Available buffers (only those with content are offered when cycling):
 - Up/Down: switch group - hand, your board, enemy board, bell and piles
 - Left/Right: move within the group
 - Enter: pick up a hand card / place it on the focused target
+- While holding a card: Up/Down move between rows, Left/Right move along the row, no wrap-around ("Edge" is announced instead)
 - H: read your hand
 - B: read the full board with stats and status effects
 - W: read incoming enemy waves
 - R: read the redraw bell state
 - T: read the turn and phase
 - G: read your gold
+- Ctrl+C: read ally counters - who acts in how many turns
+- Ctrl+E: read enemy counters
+- Ctrl+H: read your companions' health - who needs recalling
+- Ctrl+Shift+H: read enemy health
 
 ### Inventory (P)
 
