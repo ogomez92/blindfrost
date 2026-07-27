@@ -462,6 +462,7 @@ namespace WildfrostAccessibility
             Add("en", "speech_bubble", "{0} says: {1}");
             Add("en", "narrate_miniboss", "A powerful enemy slams onto the battlefield: {0}!");
             Add("en", "narrate_wave", "The wave bell tolls! New enemies charge onto the battlefield.");
+            Add("en", "narrate_wave_enter", "{0} enters at {1}.");
             Add("en", "narrate_boss_transform", "{0} explodes and transforms! The battle enters a new phase.");
             Add("en", "narrate_shade_flee", "A dark wisp rises from the fallen guardian and flees into the storm.");
             Add("en", "narrate_shade_possess", "A dark wisp rises from the fallen guardian and dives toward your leader!");
@@ -478,7 +479,7 @@ namespace WildfrostAccessibility
             Add("en", "companion_limit_can_continue", "You can continue now.");
             Add("en", "companion_limit_row_active", "active row");
             Add("en", "companion_limit_row_reserve", "reserve row");
-            Add("en", "charselect_tribes", "Select a tribe. Use the up and down arrow keys to move between the tribes; each tribe's name and playstyle are read as you land on it. Press the right arrow to hear that tribe's leaders and companions, or hold Control and press up to step through them. Press Enter to choose the focused tribe, or Escape to go back.");
+            Add("en", "charselect_tribes", "Select a tribe. Use the up and down arrow keys to move between the tribes; each tribe's name and playstyle are read as you land on it. Press the right arrow to hear that tribe's leaders and starting deck, or hold Control and press up to step through them. Press Enter to choose the focused tribe, or Escape to go back.");
 
             // ----- German ------------------------------------------------------
             Add("de", "scene_CardFramesUnlocked", "Kartenrahmen freigeschaltet!");
@@ -520,6 +521,7 @@ namespace WildfrostAccessibility
             Add("de", "speech_bubble", "{0} sagt: {1}");
             Add("de", "narrate_miniboss", "Ein maechtiger Gegner kracht aufs Schlachtfeld: {0}!");
             Add("de", "narrate_wave", "Die Wellenglocke laeutet! Neue Gegner stuermen aufs Schlachtfeld.");
+            Add("de", "narrate_wave_enter", "{0} erscheint bei {1}.");
             Add("de", "narrate_boss_transform", "{0} explodiert und verwandelt sich! Der Kampf tritt in eine neue Phase.");
             Add("de", "narrate_shade_flee", "Ein dunkler Schemen steigt aus dem gefallenen Waechter und flieht in den Sturm.");
             Add("de", "narrate_shade_possess", "Ein dunkler Schemen steigt aus dem gefallenen Waechter und stuerzt sich auf deinen Anfuehrer!");
@@ -536,7 +538,7 @@ namespace WildfrostAccessibility
             Add("de", "companion_limit_can_continue", "Du kannst jetzt fortfahren.");
             Add("de", "companion_limit_row_active", "aktive Reihe");
             Add("de", "companion_limit_row_reserve", "Reserve-Reihe");
-            Add("de", "charselect_tribes", "Waehle einen Stamm. Mit den Pfeiltasten hoch und runter wechselst du zwischen den Staemmen; Name und Spielstil jedes Stammes werden vorgelesen. Die Pfeiltaste rechts liest Anfuehrer und Gefaehrten des Stammes vor, oder halte Strg und druecke hoch, um sie durchzugehen. Eingabe waehlt den fokussierten Stamm, Escape geht zurueck.");
+            Add("de", "charselect_tribes", "Waehle einen Stamm. Mit den Pfeiltasten hoch und runter wechselst du zwischen den Staemmen; Name und Spielstil jedes Stammes werden vorgelesen. Die Pfeiltaste rechts liest Anfuehrer und Startdeck des Stammes vor, oder halte Strg und druecke hoch, um sie durchzugehen. Eingabe waehlt den fokussierten Stamm, Escape geht zurueck.");
 
             // ----- Spanish -----------------------------------------------------
             Add("es", "scene_CardFramesUnlocked", "Marcos de carta desbloqueados!");
@@ -578,6 +580,7 @@ namespace WildfrostAccessibility
             Add("es", "speech_bubble", "{0} dice: {1}");
             Add("es", "narrate_miniboss", "Un enemigo poderoso se estrella en el campo de batalla: {0}!");
             Add("es", "narrate_wave", "Suena la campana de oleada! Nuevos enemigos cargan al campo de batalla.");
+            Add("es", "narrate_wave_enter", "{0} entra en {1}.");
             Add("es", "narrate_boss_transform", "{0} explota y se transforma! La batalla entra en una nueva fase.");
             Add("es", "narrate_shade_flee", "Una voluta oscura surge del guardian caido y huye hacia la tormenta.");
             Add("es", "narrate_shade_possess", "Una voluta oscura surge del guardian caido y se lanza hacia tu lider!");
@@ -594,7 +597,7 @@ namespace WildfrostAccessibility
             Add("es", "companion_limit_can_continue", "Ya puedes continuar.");
             Add("es", "companion_limit_row_active", "fila activa");
             Add("es", "companion_limit_row_reserve", "fila de reserva");
-            Add("es", "charselect_tribes", "Elige una tribu. Usa las flechas arriba y abajo para moverte entre las tribus; se lee el nombre y el estilo de cada tribu al enfocarla. Pulsa la flecha derecha para oir los lideres y companeros de esa tribu, o manten Control y pulsa arriba para recorrerlos. Pulsa Intro para elegir la tribu enfocada, o Escape para volver atras.");
+            Add("es", "charselect_tribes", "Elige una tribu. Usa las flechas arriba y abajo para moverte entre las tribus; se lee el nombre y el estilo de cada tribu al enfocarla. Pulsa la flecha derecha para oir los lideres y el mazo inicial de esa tribu, o manten Control y pulsa arriba para recorrerlos. Pulsa Intro para elegir la tribu enfocada, o Escape para volver atras.");
 
             // ----- French ------------------------------------------------------
             Add("fr", "scene_CardFramesUnlocked", "Cadres de carte debloques!");
@@ -636,13 +639,14 @@ namespace WildfrostAccessibility
             Add("fr", "speech_bubble", "{0} dit: {1}");
             Add("fr", "narrate_miniboss", "Un ennemi puissant s'ecrase sur le champ de bataille: {0}!");
             Add("fr", "narrate_wave", "La cloche de vague sonne! De nouveaux ennemis chargent sur le champ de bataille.");
+            Add("fr", "narrate_wave_enter", "{0} arrive en {1}.");
             Add("fr", "narrate_boss_transform", "{0} explose et se transforme! La bataille entre dans une nouvelle phase.");
             Add("fr", "narrate_shade_flee", "Une volute sombre s'eleve du gardien tombe et s'enfuit dans la tempete.");
             Add("fr", "narrate_shade_possess", "Une volute sombre s'eleve du gardien tombe et fonce vers votre chef!");
             Add("fr", "narrate_shade_blocked", "{0} bloque la volute sombre! Le Givre est scelle.");
             Add("fr", "narrate_frost_eyes", "Les yeux de {0} brillent de givre. Le Givre s'est empare de lui.");
             Add("fr", "narrate_combine", "Vos cartes tourbillonnent et fusionnent en quelque chose de nouveau!");
-            Add("fr", "charselect_tribes", "Choisissez une tribu. Utilisez les fleches haut et bas pour passer d'une tribu a l'autre; le nom et le style de chaque tribu sont lus. La fleche droite lit les chefs et compagnons de la tribu, ou maintenez Controle et appuyez sur haut pour les parcourir. Entree choisit la tribu selectionnee, ou Echap pour revenir en arriere.");
+            Add("fr", "charselect_tribes", "Choisissez une tribu. Utilisez les fleches haut et bas pour passer d'une tribu a l'autre; le nom et le style de chaque tribu sont lus. La fleche droite lit les chefs et le deck de depart de la tribu, ou maintenez Controle et appuyez sur haut pour les parcourir. Entree choisit la tribu selectionnee, ou Echap pour revenir en arriere.");
         }
 
         /// <summary>
@@ -913,7 +917,7 @@ namespace WildfrostAccessibility
             Add("en", "charselect_pets", "Choose your starting pet. Arrow keys browse, Enter selects.");
             Add("en", "charselect_starting", "Let's go! Starting the journey.");
             Add("en", "inspect_no_confirm", "This panel cannot be confirmed here. Escape puts the card back.");
-            Add("en", "help_charselect", "Character selection, in three stages. First a tribe: up and down arrows move between the tribes and read each tribe's name and playstyle, the right arrow reads that tribe's recruitable companions and starting deck, and Control plus up steps through them in the review buffer. Enter chooses the focused tribe. Then a leader and a starting pet, browsed with the arrow keys, Enter to pick. After choosing a card, Enter confirms and continues, Escape puts it back. I inspects the focused card.");
+            Add("en", "help_charselect", "Character selection, in three stages. First a tribe: up and down arrows move between the tribes and read each tribe's name and playstyle, the right arrow reads that tribe's leaders and starting deck, and Control plus up steps through them in the review buffer. Enter chooses the focused tribe. Then a leader and a starting pet, browsed with the arrow keys, Enter to pick. After choosing a card, Enter confirms and continues, Escape puts it back. I inspects the focused card.");
 
             // Tribe names and playstyle blurbs, keyed by the ClassData internal id.
             // The game has no readable tribe name or description, so the mod supplies
@@ -924,11 +928,10 @@ namespace WildfrostAccessibility
             Add("en", "tribe_desc_Magic", "An aggressive, high risk tribe built around Shade and Spice. They stack up temporary attack to hit fast and hard, but their units are fragile.");
             Add("en", "tribe_name_Clunk", "Clunkmasters");
             Add("en", "tribe_desc_Clunk", "Tinkerers who fight with Clunkers, heavy scrap units, and Junk. They overwhelm the enemy with sheer mass and machinery.");
-            Add("en", "tribe_companions", "Companions you can recruit: {0}.");
             Add("en", "tribe_leaders", "Leaders: {0}.");
             Add("en", "tribe_leaders_random", "Leaders are randomly generated: you choose from three after picking this tribe.");
             Add("en", "tribe_starting_deck", "Starting deck: {0}.");
-            Add("en", "tribe_no_companions", "No companions or leaders listed for this tribe.");
+            Add("en", "tribe_no_roster", "No leaders or starting deck listed for this tribe.");
             Add("en", "charselect_back", "Go back");
 
             // Main menu
@@ -1003,6 +1006,11 @@ namespace WildfrostAccessibility
             Add("en", "map_overview", "Map overview, {0} known locations.");
             Add("en", "map_hidden_nodes", "{0} more locations not yet revealed");
             Add("en", "map_wave_enemies", "Wave {0}: {1}");
+            Add("en", "map_fork_here", "The path splits here and the branches never meet again: choosing one gives the others up.");
+            Add("en", "map_fork_rejoins", "the routes rejoin, so nothing is given up");
+            Add("en", "map_fork_gives_up", "taking this gives up: {0}");
+            Add("en", "map_fork_gives_up_more", "taking this gives up: {0}, and {1} more");
+            Add("en", "map_fork_gives_up_unseen", "taking this gives up {0} locations further along the other branch");
             Add("en", "help_map", "Campaign map. Your journey is a path of locations. Left and right arrows move between locations. Enter travels to an available location. Up and down arrows reach your deck piles and other controls. M reads the whole map, I reads details of the focused location including enemies, G reads your gold. P opens your inventory with your deck and charms.");
 
             // Inventory overlay (deckpack): deck, reserve, charms, crowns
@@ -1291,7 +1299,7 @@ namespace WildfrostAccessibility
             Add("de", "charselect_pets", "Waehle dein Start-Haustier. Pfeiltasten wechseln, Enter waehlt aus.");
             Add("de", "charselect_starting", "Los geht's! Die Reise beginnt.");
             Add("de", "inspect_no_confirm", "Dieses Fenster kann hier nicht bestaetigt werden. Escape legt die Karte zurueck.");
-            Add("de", "help_charselect", "Charakterauswahl in drei Schritten. Zuerst ein Stamm: Pfeiltasten hoch und runter wechseln zwischen den Staemmen und lesen Name und Spielstil vor, die Pfeiltaste rechts liest die Gefaehrten des Stammes, und Strg plus hoch geht Gefaehrten und Anfuehrer im Lesepuffer durch. Enter waehlt den fokussierten Stamm. Danach ein Anfuehrer und ein Start-Haustier, mit den Pfeiltasten durchgesehen, Enter waehlt aus. Nach dem Auswaehlen einer Karte bestaetigt Enter und setzt fort, Escape legt sie zurueck. I untersucht die fokussierte Karte.");
+            Add("de", "help_charselect", "Charakterauswahl in drei Schritten. Zuerst ein Stamm: Pfeiltasten hoch und runter wechseln zwischen den Staemmen und lesen Name und Spielstil vor, die Pfeiltaste rechts liest Anfuehrer und Startdeck des Stammes, und Strg plus hoch geht sie im Lesepuffer durch. Enter waehlt den fokussierten Stamm. Danach ein Anfuehrer und ein Start-Haustier, mit den Pfeiltasten durchgesehen, Enter waehlt aus. Nach dem Auswaehlen einer Karte bestaetigt Enter und setzt fort, Escape legt sie zurueck. I untersucht die fokussierte Karte.");
             Add("de", "help_main_menu", "Hauptmenue. Pfeiltasten hoch und runter wechseln die Knoepfe, Enter waehlt aus. F1 wiederholt diese Hilfe, F10 schaltet den Debug-Modus um.");
             Add("de", "screen_town", "Stadt, dein Lager.");
             Add("de", "town_hint", "Pfeiltasten wechseln zwischen Gebaeuden, Enter waehlt aus, I beschreibt das fokussierte Gebaeude. F1 fuer Hilfe.");
@@ -1338,6 +1346,11 @@ namespace WildfrostAccessibility
             Add("de", "map_overview", "Kartenuebersicht, {0} bekannte Orte.");
             Add("de", "map_hidden_nodes", "{0} weitere Orte noch nicht aufgedeckt");
             Add("de", "map_wave_enemies", "Welle {0}: {1}");
+            Add("de", "map_fork_here", "Der Pfad teilt sich hier und die Zweige treffen nie wieder aufeinander: eine Wahl gibt die anderen auf.");
+            Add("de", "map_fork_rejoins", "die Wege treffen wieder zusammen, es geht nichts verloren");
+            Add("de", "map_fork_gives_up", "das gibt auf: {0}");
+            Add("de", "map_fork_gives_up_more", "das gibt auf: {0}, und {1} weitere");
+            Add("de", "map_fork_gives_up_unseen", "das gibt {0} Orte weiter hinten im anderen Zweig auf");
             Add("de", "help_map", "Reisekarte. Deine Reise ist ein Pfad aus Orten. Pfeiltasten links und rechts wechseln zwischen Orten. Enter reist zu einem verfuegbaren Ort. Hoch und runter erreichen Kartenstapel und weitere Elemente. M liest die ganze Karte, I liest Details samt Gegnern, G liest dein Gold. P oeffnet dein Inventar mit Deck und Talismanen.");
 
             // Inventar-Overlay (Deckpack): Deck, Reserve, Talismane, Kronen
@@ -1619,7 +1632,7 @@ namespace WildfrostAccessibility
             Add("es", "charselect_pets", "Elige tu mascota inicial. Las flechas cambian, Enter selecciona.");
             Add("es", "charselect_starting", "Vamos! Comienza el viaje.");
             Add("es", "inspect_no_confirm", "Este panel no se puede confirmar aqui. Escape devuelve la carta.");
-            Add("es", "help_charselect", "Seleccion de personaje, en tres etapas. Primero una tribu: las flechas arriba y abajo cambian entre las tribus y leen el nombre y el estilo de cada una, la flecha derecha lee los companeros de la tribu, y Control mas arriba recorre companeros y lideres en el bufer de revision. Enter elige la tribu enfocada. Luego un lider y una mascota inicial, explorados con las flechas, Enter para elegir. Tras elegir una carta, Enter confirma y continua, Escape la devuelve. I inspecciona la carta enfocada.");
+            Add("es", "help_charselect", "Seleccion de personaje, en tres etapas. Primero una tribu: las flechas arriba y abajo cambian entre las tribus y leen el nombre y el estilo de cada una, la flecha derecha lee los lideres y el mazo inicial de la tribu, y Control mas arriba los recorre en el bufer de revision. Enter elige la tribu enfocada. Luego un lider y una mascota inicial, explorados con las flechas, Enter para elegir. Tras elegir una carta, Enter confirma y continua, Escape la devuelve. I inspecciona la carta enfocada.");
             Add("es", "help_main_menu", "Menu principal. Flechas arriba y abajo cambian de boton, Enter selecciona. F1 repite esta ayuda, F10 alterna el modo de depuracion.");
             Add("es", "screen_town", "Pueblo, tu campamento base.");
             Add("es", "town_hint", "Las flechas cambian de edificio, Enter selecciona, I describe el edificio seleccionado. F1 para ayuda.");
@@ -1666,6 +1679,11 @@ namespace WildfrostAccessibility
             Add("es", "map_overview", "Resumen del mapa, {0} lugares conocidos.");
             Add("es", "map_hidden_nodes", "{0} lugares mas sin revelar");
             Add("es", "map_wave_enemies", "Oleada {0}: {1}");
+            Add("es", "map_fork_here", "El camino se divide aqui y las ramas no vuelven a unirse: elegir una renuncia a las otras.");
+            Add("es", "map_fork_rejoins", "las rutas vuelven a unirse, no se pierde nada");
+            Add("es", "map_fork_gives_up", "elegir esto renuncia a: {0}");
+            Add("es", "map_fork_gives_up_more", "elegir esto renuncia a: {0}, y {1} mas");
+            Add("es", "map_fork_gives_up_unseen", "elegir esto renuncia a {0} lugares mas adelante en la otra rama");
             Add("es", "help_map", "Mapa del viaje. Tu viaje es un camino de lugares. Flechas izquierda y derecha cambian de lugar. Enter viaja a un lugar disponible. Arriba y abajo alcanzan los mazos y otros controles. M lee todo el mapa, I lee detalles del lugar seleccionado incluidos enemigos, G lee tu oro. P abre tu inventario con el mazo y los amuletos.");
 
             // Inventario (deckpack): mazo, reserva, amuletos, coronas
@@ -1947,7 +1965,7 @@ namespace WildfrostAccessibility
             Add("fr", "charselect_pets", "Choisissez votre familier de depart. Les fleches changent, Entree selectionne.");
             Add("fr", "charselect_starting", "C'est parti! Le voyage commence.");
             Add("fr", "inspect_no_confirm", "Ce panneau ne peut pas etre confirme ici. Echap remet la carte.");
-            Add("fr", "help_charselect", "Selection du personnage, en trois etapes. D'abord une tribu: les fleches haut et bas passent d'une tribu a l'autre et lisent le nom et le style de chacune, la fleche droite lit les compagnons de la tribu, et Controle plus haut parcourt compagnons et chefs dans le tampon de lecture. Entree choisit la tribu selectionnee. Ensuite un chef et un familier de depart, parcourus avec les fleches, Entree pour choisir. Apres avoir choisi une carte, Entree confirme et continue, Echap la remet. I inspecte la carte selectionnee.");
+            Add("fr", "help_charselect", "Selection du personnage, en trois etapes. D'abord une tribu: les fleches haut et bas passent d'une tribu a l'autre et lisent le nom et le style de chacune, la fleche droite lit les chefs et le deck de depart de la tribu, et Controle plus haut les parcourt dans le tampon de lecture. Entree choisit la tribu selectionnee. Ensuite un chef et un familier de depart, parcourus avec les fleches, Entree pour choisir. Apres avoir choisi une carte, Entree confirme et continue, Echap la remet. I inspecte la carte selectionnee.");
             Add("fr", "help_main_menu", "Menu principal. Fleches haut et bas pour changer de bouton, Entree pour selectionner. F1 repete cette aide, F10 bascule le mode debogage.");
             Add("fr", "screen_town", "Village, votre camp de base.");
             Add("fr", "town_hint", "Les fleches changent de batiment, Entree selectionne, I decrit le batiment selectionne. F1 pour l'aide.");
@@ -1994,6 +2012,11 @@ namespace WildfrostAccessibility
             Add("fr", "map_overview", "Apercu de la carte, {0} lieux connus.");
             Add("fr", "map_hidden_nodes", "{0} autres lieux non reveles");
             Add("fr", "map_wave_enemies", "Vague {0}: {1}");
+            Add("fr", "map_fork_here", "Le chemin se separe ici et les branches ne se rejoignent jamais: en choisir une abandonne les autres.");
+            Add("fr", "map_fork_rejoins", "les routes se rejoignent, rien n'est perdu");
+            Add("fr", "map_fork_gives_up", "ce choix abandonne: {0}");
+            Add("fr", "map_fork_gives_up_more", "ce choix abandonne: {0}, et {1} de plus");
+            Add("fr", "map_fork_gives_up_unseen", "ce choix abandonne {0} lieux plus loin sur l'autre branche");
             Add("fr", "help_map", "Carte du voyage. Votre voyage est un chemin de lieux. Fleches gauche et droite changent de lieu. Entree voyage vers un lieu disponible. Haut et bas atteignent les piles de cartes et autres controles. M lit toute la carte, I lit les details du lieu selectionne, ennemis compris, G lit votre or. P ouvre votre inventaire avec le deck et les talismans.");
 
             // Inventaire (deckpack): deck, reserve, talismans, couronnes

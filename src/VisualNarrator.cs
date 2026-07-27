@@ -65,6 +65,37 @@ namespace WildfrostAccessibility
             ScreenReader.SayEvent(Loc.Get("narrate_miniboss", title), interrupt: true);
         }
 
+        /// <summary>
+        /// A single enemy landing on the board as the wave bell deploys it.
+        /// Called per unit, before its move animation runs, so the placement is
+        /// read from the row and column the game chose rather than from the
+        /// card's transform — which is still in the reserve container here.
+        /// </summary>
+        internal static void OnWaveUnitDeployed(Entity entity, int row, int column)
+        {
+            string title = entity?.data?.title;
+            if (string.IsNullOrEmpty(title))
+                return;
+            Narrate("narrate_wave_enter", title, DescribeDeploySlot(entity, row, column));
+        }
+
+        /// <summary>
+        /// Where a deploying unit lands, worded exactly as when browsing that
+        /// slot ("Enemy row 1 2"). Resolves the real slot so the side is named;
+        /// falls back to the bare indices if the row is not a slot lane.
+        /// </summary>
+        private static string DescribeDeploySlot(Entity entity, int row, int column)
+        {
+            var battle = References.Battle;
+            if (battle != null && entity?.owner != null && row >= 0 && column >= 0)
+            {
+                if (battle.GetRow(entity.owner, row) is CardSlotLane lane
+                    && column < lane.slots.Count)
+                    return ItemDescriber.GetSlotPosition(lane.slots[column]);
+            }
+            return Loc.Get("slot_enemy_row", row + 1) + " " + (column + 1);
+        }
+
         internal static void Narrate(string locKey, params object[] args)
         {
             ScreenReader.SayEvent(Loc.Get(locKey, args));
@@ -99,6 +130,29 @@ namespace WildfrostAccessibility
         private static void Prefix()
         {
             VisualNarrator.Narrate("narrate_wave");
+        }
+    }
+
+    /// <summary>
+    /// Which enemy arrives where. The bell line above only says that enemies
+    /// charged in; Deploy runs once per unit that actually found a slot, with
+    /// the row and column it takes, so each arrival can be placed on the board
+    /// by ear. Units the wave could not fit never reach Deploy and so are not
+    /// announced — nothing entered for them.
+    /// </summary>
+    [HarmonyPatch(typeof(WaveDeploySystem), "Deploy")]
+    internal static class WaveDeployPlacementPatch
+    {
+        private static void Postfix(Entity entity, int targetRow, int targetColumn)
+        {
+            try
+            {
+                VisualNarrator.OnWaveUnitDeployed(entity, targetRow, targetColumn);
+            }
+            catch
+            {
+                // Board state mid-teardown — the arrival passes unnarrated
+            }
         }
     }
 

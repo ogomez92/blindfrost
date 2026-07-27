@@ -898,38 +898,6 @@ namespace WildfrostAccessibility
         }
 
         /// <summary>
-        /// The companions a tribe can recruit over a run, read from its unit
-        /// reward pools. This — not the starting deck — is a tribe's real
-        /// roster: runs begin with no companions besides the leader (the
-        /// Snowdweller and Clunkmaster decks hold a Clunker, not a companion,
-        /// and the Shademancer deck holds only items).
-        /// </summary>
-        private static List<CardData> GetTribeRecruitableCompanions(ClassData tribe)
-        {
-            var result = new List<CardData>();
-            try
-            {
-                var pools = tribe?.rewardPools;
-                if (pools == null) return result;
-                foreach (var pool in pools)
-                {
-                    if (pool == null || pool.list == null) continue;
-                    if (!string.Equals(pool.type, "Units", System.StringComparison.OrdinalIgnoreCase))
-                        continue;
-                    foreach (var entry in pool.list)
-                    {
-                        if (entry is CardData card && card.cardType != null
-                            && card.cardType.unit && !card.cardType.item
-                            && !result.Contains(card))
-                            result.Add(card);
-                    }
-                }
-            }
-            catch { /* pools not loaded */ }
-            return result;
-        }
-
-        /// <summary>
         /// The cards a tribe's runs start with — the whole starting deck, in
         /// deck order, duplicates aggregated ("Scrappy Sword, 3 copies").
         /// </summary>
@@ -973,10 +941,14 @@ namespace WildfrostAccessibility
         }
 
         /// <summary>
-        /// A one-line spoken summary of who a tribe fields: its leaders, the
-        /// companions it can recruit, and its starting deck. What the right
-        /// arrow reads on the tribe-select screen. Null only if a tribe
-        /// somehow lists none of the three.
+        /// A one-line spoken summary of who a tribe fields: its leaders and its
+        /// starting deck. What the right arrow reads on the tribe-select
+        /// screen. Null only if a tribe lists neither.
+        ///
+        /// The companions a tribe can recruit are deliberately left out: the
+        /// tribe stage draws nothing but flags, so that roster is information
+        /// no sighted player can reach from here, and reading a dozen names
+        /// buried the two lines that matter.
         /// </summary>
         public static string DescribeTribeRoster(ClassData tribe)
         {
@@ -987,16 +959,6 @@ namespace WildfrostAccessibility
             string leaders = DescribeTribeLeaders(tribe);
             if (!string.IsNullOrEmpty(leaders))
                 segments.Add(leaders);
-
-            var names = new List<string>();
-            foreach (var card in GetTribeRecruitableCompanions(tribe))
-            {
-                string title = SafeTitle(card);
-                if (!string.IsNullOrEmpty(title) && !names.Contains(title))
-                    names.Add(title);
-            }
-            if (names.Count > 0)
-                segments.Add(Loc.Get("tribe_companions", string.Join(", ", names)));
 
             string deck = DescribeTribeStartingDeck(tribe);
             if (!string.IsNullOrEmpty(deck))
@@ -1046,27 +1008,11 @@ namespace WildfrostAccessibility
             catch { return false; }
         }
 
-        /// <summary>Name, plus attack and health if it has them, from card data alone.</summary>
-        private static string DescribeCardDataShort(CardData data)
-        {
-            if (data == null) return null;
-
-            var parts = new List<string>();
-            string title = SafeTitle(data);
-            if (!string.IsNullOrEmpty(title))
-                parts.Add(title);
-            if (data.hasAttack && data.damage > 0)
-                parts.Add(Loc.Get("stat_attack", data.damage));
-            if (data.hasHealth && data.hp > 0)
-                parts.Add(Loc.Get("stat_health", data.hp));
-
-            return parts.Count > 0 ? string.Join(", ", parts) : null;
-        }
-
         /// <summary>
         /// Detail-buffer parts for a focused tribe flag (Ctrl+Up steps through
-        /// them): the tribe's name and playstyle, its leaders, then one line
-        /// per recruitable companion (with stats), then the starting deck.
+        /// them): the tribe's name and playstyle, its leaders, then the
+        /// starting deck. Recruitable companions are left out for the same
+        /// reason as in <see cref="DescribeTribeRoster"/>.
         /// </summary>
         public static List<string> BuildTribeDetailParts(TribeFlagDisplay flag)
         {
@@ -1082,13 +1028,6 @@ namespace WildfrostAccessibility
             string leaders = DescribeTribeLeaders(tribe);
             if (!string.IsNullOrEmpty(leaders))
                 parts.Add(leaders);
-
-            foreach (var card in GetTribeRecruitableCompanions(tribe))
-            {
-                string line = DescribeCardDataShort(card);
-                if (!string.IsNullOrEmpty(line))
-                    parts.Add(line);
-            }
 
             string deckLine = DescribeTribeStartingDeck(tribe);
             if (!string.IsNullOrEmpty(deckLine))

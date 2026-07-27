@@ -41,6 +41,11 @@ namespace WildfrostAccessibility
             if (destinations.Count > 0)
                 parts.Add(Loc.Get("map_destinations", destinations.Count, string.Join("; ", destinations)));
 
+            // A fork where the branches never meet again is the one map decision
+            // that cannot be walked back, so it is flagged before anything else
+            if (IsOneWayFork(current))
+                parts.Add(Loc.Get("map_fork_here"));
+
             string hint = HintOnce("map_hint");
             if (hint != null)
                 parts.Add(hint);
@@ -200,7 +205,14 @@ namespace WildfrostAccessibility
             else if (node.cleared)
                 parts.Add(Loc.Get("map_node_cleared"));
             else if (IsDirectDestination(current, node))
+            {
                 parts.Add(includeHints ? Loc.Get("map_node_available") : Loc.Get("map_node_available_short"));
+
+                // At a fork, what this branch costs — the map gives no second chances
+                string consequence = DescribeForkConsequence(current, node);
+                if (consequence != null)
+                    parts.Add(consequence);
+            }
             else if (mapNode.reachable)
                 parts.Add(Loc.Get("map_node_ahead"));
             else
@@ -236,6 +248,147 @@ namespace WildfrostAccessibility
                 return localized;
 
             return ScreenHandler.CleanName(typeName);
+        }
+
+        /// <summary>How many forfeited locations are named before falling back to a count.</summary>
+        private const int ForkNamesMax = 5;
+
+        /// <summary>
+        /// The cost of taking one branch of a fork, as a single phrase: either
+        /// the locations it gives up for good, or the reassurance that the
+        /// routes rejoin. Null when this node is not one of several options,
+        /// so a straight path stays silent.
+        /// </summary>
+        private static string DescribeForkConsequence(CampaignNode current, CampaignNode destination)
+        {
+            var lost = GetForfeitedNodes(current, destination);
+            if (lost == null)
+                return null;
+            if (lost.Count == 0)
+                return Loc.Get("map_fork_rejoins");
+
+            // Locations the player has actually seen can be named; the rest,
+            // still hidden further down the branch, can only be counted
+            var names = new List<string>();
+            foreach (CampaignNode node in lost)
+            {
+                if (node.revealed && names.Count < ForkNamesMax)
+                    names.Add(DescribeForfeitedNode(node));
+            }
+            int extra = lost.Count - names.Count;
+
+            if (names.Count == 0)
+                return Loc.Get("map_fork_gives_up_unseen", lost.Count);
+
+            string listed = string.Join(", ", names);
+            return extra > 0
+                ? Loc.Get("map_fork_gives_up_more", listed, extra)
+                : Loc.Get("map_fork_gives_up", listed);
+        }
+
+        /// <summary>
+        /// Whether any branch out of this node closes off locations the others
+        /// still reach — the difference between "pick an order" and "pick one".
+        /// </summary>
+        private static bool IsOneWayFork(CampaignNode current)
+        {
+            if (current?.connections == null || current.connections.Count < 2)
+                return false;
+
+            foreach (var connection in current.connections)
+            {
+                var lost = GetForfeitedNodes(current, SafeGetNode(connection.otherId));
+                if (lost != null && lost.Count > 0)
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Locations that choosing <paramref name="destination"/> gives up for
+        /// good. Map connections only ever lead onward, so everything still
+        /// attainable after a move is what is forward-reachable from the node
+        /// moved to; anything reachable through the fork's other branches but
+        /// not through this one is gone the moment the choice is made.
+        /// Empty when the branches rejoin and nothing is actually lost, null
+        /// when there is no choice to make.
+        /// </summary>
+        private static List<CampaignNode> GetForfeitedNodes(CampaignNode current, CampaignNode destination)
+        {
+            if (current?.connections == null || current.connections.Count < 2 || destination == null)
+                return null;
+
+            HashSet<int> kept = ReachableFrom(destination);
+            var lost = new List<CampaignNode>();
+            var seen = new HashSet<int>();
+
+            foreach (var connection in current.connections)
+            {
+                CampaignNode sibling = SafeGetNode(connection.otherId);
+                if (sibling == null || sibling == destination)
+                    continue;
+
+                foreach (int id in ReachableFrom(sibling))
+                {
+                    if (kept.Contains(id) || !seen.Add(id))
+                        continue;
+
+                    CampaignNode node = SafeGetNode(id);
+                    // Area labels are not places you travel to, and a cleared
+                    // node is spent whichever way the player goes
+                    if (node == null || node.type == null || !node.type.interactable || node.cleared)
+                        continue;
+                    lost.Add(node);
+                }
+            }
+
+            lost.Sort((a, b) => a.tier != b.tier
+                ? a.tier.CompareTo(b.tier)
+                : a.positionIndex.CompareTo(b.positionIndex));
+            return lost;
+        }
+
+        /// <summary>Every node reachable by travelling onward, the start included.</summary>
+        private static HashSet<int> ReachableFrom(CampaignNode start)
+        {
+            var seen = new HashSet<int>();
+            if (start == null)
+                return seen;
+
+            var pending = new Queue<CampaignNode>();
+            seen.Add(start.id);
+            pending.Enqueue(start);
+
+            while (pending.Count > 0)
+            {
+                CampaignNode node = pending.Dequeue();
+                if (node.connections == null)
+                    continue;
+                foreach (var connection in node.connections)
+                {
+                    CampaignNode next = SafeGetNode(connection.otherId);
+                    if (next != null && seen.Add(next.id))
+                        pending.Enqueue(next);
+                }
+            }
+            return seen;
+        }
+
+        /// <summary>
+        /// A forfeited location named by its kind ("treasure", "charm event"),
+        /// which is what the choice actually turns on — the banner label would
+        /// add a squad name nobody is weighing up.
+        /// </summary>
+        private static string DescribeForfeitedNode(CampaignNode node)
+        {
+            string category = GetNodeCategory(node);
+            if (!string.IsNullOrEmpty(category))
+                return category;
+
+            MapNode mapNode = References.Map != null ? References.Map.FindNode(node) : null;
+            return mapNode != null
+                ? ItemDescriber.GetMapNodeName(mapNode)
+                : ScreenHandler.CleanName(node.name);
         }
 
         /// <summary>Can the player travel directly to this node right now?</summary>

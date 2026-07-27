@@ -1055,13 +1055,18 @@ namespace WildfrostAccessibility
         {
             if (IsTargeting())
             {
+                // The game moves focus on its own too (its default-item system),
+                // and then nothing has mirrored the mouse's hover onto it yet —
+                // so the drop target is armed before it is described
+                NavigationHelper.MirrorCardHoverToFocus(item);
+
                 string target = ItemDescriber.DescribeTarget(item);
                 if (string.IsNullOrEmpty(target))
                     target = base.GetItemDescription(item);
                 // Naming a cell the held card cannot be played on, with no hint
                 // that Enter will not take it, is how a card ends up somewhere
                 // the player never chose
-                if (!string.IsNullOrEmpty(target) && !HoverFollowedFocus(item))
+                if (!string.IsNullOrEmpty(target) && !TargetAccepted(item))
                     target += " " + Loc.Get("battle_not_a_target");
                 return target;
             }
@@ -1069,17 +1074,33 @@ namespace WildfrostAccessibility
         }
 
         /// <summary>
-        /// Whether the game's own drop target followed our focus onto this item.
+        /// Whether releasing the held card here would actually play it.
         /// CardControllerBattle.Release plays onto its hoverEntity / hoverSlot /
-        /// hoverContainer, and the game silently refuses to move those onto
-        /// anything the held card cannot take — so focus can sit on a cell that
-        /// is no target at all. Browsing there is useful (it still reads out
-        /// what is in the slot), but the readout has to say so.
+        /// hoverContainer, so the drop target having followed our focus is most
+        /// of the answer — the game refuses to move hoverEntity or hoverSlot onto
+        /// anything the held card cannot take, so those two are self-checking.
+        /// Containers are not: HoverContainer accepts any lane it is handed, so a
+        /// lane still has to be put to the game's own CanPlayOn.
+        ///
+        /// Focus is free to sit on a cell that is no target at all — browsing
+        /// there still reads out what stands in it — but the readout has to say
+        /// so, or a card ends up somewhere the player never chose.
         /// </summary>
-        private bool HoverFollowedFocus(UINavigationItem item)
+        private bool TargetAccepted(UINavigationItem item)
         {
             var controller = Battle.instance?.playerCardController;
-            if (controller == null || item == null) return true;
+            Entity held = controller?.dragging;
+            if (held == null || item == null) return true;
+
+            // A card that needs no target plays wherever it is released (bar its
+            // own container), so no cell it can be browsed onto is a wrong one
+            try
+            {
+                if (held.data != null && held.data.playType == Card.PlayType.Play
+                    && !held.NeedsTarget)
+                    return true;
+            }
+            catch { /* data not ready */ }
 
             GameObject handler = item.clickHandler != null ? item.clickHandler : item.gameObject;
             if (handler == null) return true;
@@ -1090,11 +1111,32 @@ namespace WildfrostAccessibility
             CardSlot slot = GetTargetSlot(item);
             if (slot != null && controller.hoverSlot == slot) return true;
 
-            // The recall zone and the play-without-target anchor are containers
+            // Lanes and the recall zone hover unconditionally
             var container = handler.GetComponentInParent<CardContainer>();
-            if (container != null && controller.hoverContainer == container) return true;
+            if (container != null && controller.hoverContainer == container)
+                return CanReleaseOn(held, container);
 
             return false;
+        }
+
+        /// <summary>
+        /// The game's verdict on releasing a held card onto a container: the
+        /// recall zone takes anything recallable, everything else answers
+        /// through Entity.CanPlayOn — the same call Release makes.
+        /// </summary>
+        private static bool CanReleaseOn(Entity held, CardContainer container)
+        {
+            try
+            {
+                var player = Battle.instance?.player;
+                if (player != null && container == player.discardContainer)
+                    return container.canBePlacedOn && held.owner == player && held.CanRecall();
+                return held.CanPlayOn(container);
+            }
+            catch
+            {
+                return true; // never invent a warning we cannot stand behind
+            }
         }
 
         /// <summary>

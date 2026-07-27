@@ -228,7 +228,61 @@ namespace WildfrostAccessibility
                 eventSystem.Unhover(hovered);
             }
 
+            MirrorCardHoverToFocus(item);
             ClearUnitySelection();
+        }
+
+        /// <summary>
+        /// Hover the containers a mouse would have hovered, while a card is held.
+        ///
+        /// The game's own pointer is Hover3dSystem: it raycasts the cursor and
+        /// hovers EVERY collider the ray passes through, so a mouse resting on a
+        /// unit that stands in a slot hovers the unit, its slot AND its lane at
+        /// once. Our focus goes through CustomEventSystem.Hover, whose
+        /// ExecuteHierarchy stops at the first handler it finds — the unit — so
+        /// the slot and lane underneath were never hovered.
+        ///
+        /// CardControllerBattle.Release plays onto hoverSlot / hoverContainer, so
+        /// a card that lands on a slot (a summon such as Junjun Mask) could not be
+        /// played onto an occupied slot at all: Enter did nothing and the readout
+        /// called every occupied slot "not a valid target". Row-target cards had
+        /// the same hole whenever focus sat on a unit rather than on bare ground.
+        ///
+        /// The game's own gates still apply — HoverSlot refuses a slot the held
+        /// card cannot play on — so nothing here makes an illegal target legal.
+        /// Both are cleared first so a refused hover fails closed rather than
+        /// leaving the previously focused slot armed.
+        /// </summary>
+        public static void MirrorCardHoverToFocus(UINavigationItem item)
+        {
+            if (item == null) return;
+
+            CardController controller;
+            try { controller = Battle.instance?.playerCardController; }
+            catch { return; }
+            if (controller == null || controller.dragging == null) return;
+
+            GameObject handler = item.clickHandler != null ? item.clickHandler : item.gameObject;
+            if (handler == null) return;
+
+            CardSlot slot = handler.GetComponent<CardSlot>() ?? handler.GetComponentInParent<CardSlot>();
+            CardContainer group = slot != null
+                ? slot.Group
+                : handler.GetComponentInParent<CardContainer>();
+
+            // Already matching: re-hovering would fire the game's hover events
+            // again every frame for no change
+            if (controller.hoverSlot == slot
+                && controller.hoverContainer == (group != slot ? group : null))
+                return;
+
+            controller.UnHoverSlot();
+            controller.UnHoverContainer();
+
+            if (slot != null)
+                slot.ForceHover();
+            if (group != null && group != slot)
+                group.Hover();
         }
 
         /// <summary>

@@ -524,7 +524,7 @@ namespace WildfrostAccessibility
         {
             string text = ItemDescriber.DescribeTribeRoster(tribe);
             ScreenReader.Say(
-                !string.IsNullOrEmpty(text) ? text : Loc.Get("tribe_no_companions"),
+                !string.IsNullOrEmpty(text) ? text : Loc.Get("tribe_no_roster"),
                 interrupt: true);
         }
     }
