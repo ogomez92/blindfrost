@@ -1281,6 +1281,20 @@ namespace WildfrostAccessibility
                 if (!items.Contains(note))
                     items.Add(note);
             }
+
+            // What a summon puts on the board, and what "Trigger when ..."
+            // does once its condition is met — both are hover-panel knowledge
+            // a sighted player gets for free and the card text never states
+            foreach (string note in BuildSummonNotes(entity))
+            {
+                if (!items.Contains(note))
+                    items.Add(note);
+            }
+            foreach (string note in BuildTriggerReactionNotes(entity))
+            {
+                if (!items.Contains(note))
+                    items.Add(note);
+            }
             return items;
         }
 
@@ -1482,6 +1496,194 @@ namespace WildfrostAccessibility
                 if (!string.IsNullOrEmpty(note) && !notes.Contains(note))
                     notes.Add(note);
             }
+            return notes;
+        }
+
+        /// <summary>
+        /// Every status effect a card carries, gathered from the four places
+        /// the game keeps them: the live statuses on the entity, the effects
+        /// its attack applies, the effects it starts play with, and the passive
+        /// effects behind its traits. A card sitting in hand has not had its
+        /// starting effects applied yet, so on those the data-side lists are
+        /// the only ones with anything in them — reading only entity
+        /// statusEffects would find nothing on the very cards being browsed.
+        /// </summary>
+        private static List<StatusEffectData> CollectCardEffects(Entity entity)
+        {
+            var found = new List<StatusEffectData>();
+            if (entity == null)
+                return found;
+
+            void Take(StatusEffectData effect)
+            {
+                if (effect != null && !found.Contains(effect))
+                    found.Add(effect);
+            }
+
+            try
+            {
+                if (entity.statusEffects != null)
+                    foreach (var effect in entity.statusEffects)
+                        Take(effect);
+
+                if (entity.attackEffects != null)
+                    foreach (var stack in entity.attackEffects)
+                        Take(stack?.data);
+
+                foreach (var trait in entity.traits)
+                {
+                    if (trait?.data?.effects != null)
+                        foreach (var effect in trait.data.effects)
+                            Take(effect);
+                }
+
+                CardData data = entity.data;
+                if (data?.attackEffects != null)
+                    foreach (var stack in data.attackEffects)
+                        Take(stack?.data);
+                if (data?.startWithEffects != null)
+                    foreach (var stack in data.startWithEffects)
+                        Take(stack?.data);
+                if (data?.traits != null)
+                {
+                    foreach (var trait in data.traits)
+                    {
+                        if (trait?.data?.effects != null)
+                            foreach (var effect in trait.data.effects)
+                                Take(effect);
+                    }
+                }
+            }
+            catch { /* effects not initialized yet */ }
+
+            return found;
+        }
+
+        /// <summary>
+        /// What the cards a summon puts on the board actually are. "Summon
+        /// Leech" names the card and stops; a sighted player hovers the summon
+        /// keyword and reads Leech's stats off the panel, so leaving them out
+        /// keeps the one number the decision turns on a secret. One note per
+        /// distinct summoned card, in the same wording a card focus uses.
+        /// </summary>
+        public static List<string> BuildSummonNotes(Entity entity)
+        {
+            var notes = new List<string>();
+            var described = new List<CardData>();
+
+            foreach (var effect in CollectCardEffects(entity))
+            {
+                CardData summoned = GetSummonedCard(effect);
+                if (summoned == null || described.Contains(summoned))
+                    continue;
+
+                // A card that summons a copy of itself (Split and friends) says
+                // nothing the player is not already reading
+                if (entity.data != null && summoned.name == entity.data.name)
+                    continue;
+
+                described.Add(summoned);
+                string line = DescribeSummonedCard(summoned);
+                if (!string.IsNullOrEmpty(line) && !notes.Contains(line))
+                    notes.Add(line);
+            }
+            return notes;
+        }
+
+        /// <summary>
+        /// The card a summon effect brings in, whether the effect is the summon
+        /// itself or an instant that delegates to one.
+        /// </summary>
+        private static CardData GetSummonedCard(StatusEffectData effect)
+        {
+            try
+            {
+                if (effect is StatusEffectSummon summon)
+                    return summon.summonCard;
+                if (effect is StatusEffectInstantSummon instant)
+                    return instant.targetSummon?.summonCard;
+            }
+            catch { /* asset not loaded */ }
+            return null;
+        }
+
+        /// <summary>
+        /// A summoned card as "Summons Leech: Companion, 2 attack, 3 health,
+        /// acts every 3, Bloodsucker" — its stats read from card data, since a
+        /// card that has not been summoned yet has no entity to read from.
+        /// </summary>
+        private static string DescribeSummonedCard(CardData data)
+        {
+            string title = SafeTitle(data);
+            if (string.IsNullOrEmpty(title))
+                return null;
+
+            var parts = new List<string>();
+            try
+            {
+                string cardType = GetCardTypeName(data);
+                if (!string.IsNullOrEmpty(cardType))
+                    parts.Add(cardType);
+
+                if (data.hasAttack && data.damage > 0)
+                    parts.Add(Loc.Get("stat_attack", data.damage));
+                if (data.hasHealth && data.hp > 0)
+                    parts.Add(Loc.Get("stat_health", data.hp));
+                if (data.counter > 0)
+                    parts.Add(Loc.Get("mech_summon_counter", data.counter));
+
+                // What the summoned card itself does, by keyword name and amount
+                string summonedDesc = null;
+                try { summonedDesc = Card.GetDescription(data); } catch { }
+                foreach (string mention in TextProcessor.ExtractKeywordMentions(summonedDesc))
+                    parts.Add(mention);
+            }
+            catch { /* data not ready — the name alone still beats silence */ }
+
+            return parts.Count > 0
+                ? Loc.Get("mech_summons", title, string.Join(", ", parts))
+                : Loc.Get("mech_summons_bare", title);
+        }
+
+        /// <summary>
+        /// What "Trigger when ..." actually does. The card text names the
+        /// condition and stops there, so the part that decides whether the card
+        /// is worth playing — that triggering means attacking, right then, on
+        /// top of its own turn — goes unsaid. One note per card however many
+        /// reaction effects it carries: the conditions differ, the consequence
+        /// does not.
+        /// </summary>
+        public static List<string> BuildTriggerReactionNotes(Entity entity)
+        {
+            var notes = new List<string>();
+            bool retaliates = false;
+            bool reacts = false;
+
+            foreach (var effect in CollectCardEffects(entity))
+            {
+                if (effect == null) continue;
+                switch (effect.GetType().Name)
+                {
+                    case "StatusEffectTriggerAgainstAttackerWhenHit":
+                        retaliates = true;
+                        break;
+                    case "StatusEffectTriggerWhenAllyAttacks":
+                    case "StatusEffectTriggerWhenCardTypeUsedOnAlly":
+                    case "StatusEffectTriggerWhenStatusApplied":
+                    case "StatusEffectTriggerWhenDeployed":
+                        reacts = true;
+                        break;
+                }
+            }
+
+            // ActionTrigger runs the card's attack at its own targets and never
+            // touches counter.current — only the turn loop's ActionTriggerByCounter
+            // resets that — so a reaction really is an attack for free
+            if (reacts)
+                notes.Add(Loc.Get("mech_trigger_meaning"));
+            if (retaliates)
+                notes.Add(Loc.Get("mech_trigger_retaliate"));
+
             return notes;
         }
 

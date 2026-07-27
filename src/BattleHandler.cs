@@ -76,10 +76,7 @@ namespace WildfrostAccessibility
 
             var parts = new List<string> { Loc.Get("screen_battle") };
 
-            int waveCount = 0;
-            var waveManager = GetWaveManager();
-            if (waveManager?.list != null)
-                waveCount = waveManager.list.Count;
+            int waveCount = WaveDeployer.GetWaves(WaveDeployer.Find())?.Count ?? 0;
             if (waveCount > 0)
                 parts.Add(Loc.Get("battle_wave_total", waveCount));
 
@@ -115,7 +112,7 @@ namespace WildfrostAccessibility
                 case Battle.Phase.Play:
                     var battle = Battle.instance;
                     int hand = battle?.player?.handContainer?.Count ?? 0;
-                    string wave = GetWaveCounterText();
+                    string wave = GetWaveCounterText(atTurnStart: true);
                     string msg = Loc.Get("battle_your_turn", hand);
                     if (wave != null)
                         msg += " " + wave;
@@ -1372,62 +1369,51 @@ namespace WildfrostAccessibility
 
         private void AnnounceWaves()
         {
-            var waveManager = GetWaveManager();
-            if (waveManager?.list == null || waveManager.list.Count == 0)
+            var items = BuildWaveItems();
+            if (items == null || items.Count == 0)
             {
                 ScreenReader.Say(Loc.Get("battle_no_waves"), interrupt: true);
                 return;
             }
 
-            var parts = new List<string>();
-            string counterText = GetWaveCounterText();
-            if (counterText != null)
-                parts.Add(counterText);
+            ScreenReader.Say(string.Join(". ", items), interrupt: true);
+        }
 
-            int index = 0;
-            foreach (var wave in waveManager.list)
+        /// <summary>
+        /// "Next wave in N turns", read from the wave deploy HUD. The deployer
+        /// counts down from an action it queues when the turn starts, so at
+        /// that moment the field still holds last turn's number and the one
+        /// the player is about to see is a turn lower. An empty enemy board
+        /// deploys the wave immediately whatever the counter says. Either way,
+        /// a wave landing this very turn has no countdown worth speaking — the
+        /// arrival announcement follows a second behind it.
+        /// </summary>
+        private string GetWaveCounterText(bool atTurnStart = false)
+        {
+            int counter = WaveDeployer.GetCounter(WaveDeployer.Find());
+            if (atTurnStart)
             {
-                index++;
-                if (wave == null || wave.spawned) continue;
-
-                var names = new List<string>();
-                if (wave.units != null)
-                {
-                    foreach (CardData unit in wave.units)
-                    {
-                        if (unit != null)
-                            names.Add(unit.title);
-                    }
-                }
-
-                string desc = Loc.Get("battle_wave_n", index, string.Join(", ", names));
-                if (wave.isBossWave)
-                    desc += ", " + Loc.Get("battle_boss_wave");
-                parts.Add(desc);
+                if (EnemyBoardIsEmpty()) return null;
+                counter--;
             }
 
-            if (parts.Count == 0)
-                parts.Add(Loc.Get("battle_all_waves_spawned"));
-
-            ScreenReader.Say(string.Join(". ", parts), interrupt: true);
-        }
-
-        private BattleWaveManager GetWaveManager()
-        {
-            var enemy = Battle.instance?.enemy;
-            return enemy != null ? enemy.GetComponent<BattleWaveManager>() : null;
-        }
-
-        /// <summary>"Next wave in N turns", read from the wave deploy HUD.</summary>
-        private string GetWaveCounterText()
-        {
-            var deploy = Object.FindObjectOfType<WaveDeploySystem>();
-            if (deploy == null) return null;
-
-            int counter = ReflectionUtil.GetIntField(deploy, "counter", -1);
             if (counter <= 0) return null;
 
             return Loc.Get("battle_next_wave", counter);
+        }
+
+        /// <summary>No enemies left standing — the next wave deploys at once.</summary>
+        private static bool EnemyBoardIsEmpty()
+        {
+            try
+            {
+                var enemy = Battle.instance?.enemy;
+                return enemy != null && Battle.GetCardsOnBoard(enemy).Count <= 0;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         private void AnnounceBell()
@@ -1597,18 +1583,22 @@ namespace WildfrostAccessibility
         /// <summary>Waves buffer: the counter plus one item per remaining wave.</summary>
         internal List<string> BuildWaveItems()
         {
-            var waveManager = GetWaveManager();
-            if (waveManager?.list == null) return null;
+            var system = WaveDeployer.Find();
+            var waves = WaveDeployer.GetWaves(system);
+            if (waves == null) return null;
 
             var items = new List<string>();
             string counterText = GetWaveCounterText();
             if (counterText != null)
                 items.Add(counterText);
 
-            int index = 0;
-            foreach (var wave in waveManager.list)
+            // Everything before the current index has already landed. The
+            // overflow deployer never sets Wave.spawned, so its index is the
+            // only honest marker of what is still coming.
+            int remaining = 0;
+            for (int index = WaveDeployer.GetCurrentWave(system) + 1; index <= waves.Count; index++)
             {
-                index++;
+                var wave = waves[index - 1];
                 if (wave == null || wave.spawned) continue;
 
                 var names = new List<string>();
@@ -1625,7 +1615,11 @@ namespace WildfrostAccessibility
                 if (wave.isBossWave)
                     desc += ", " + Loc.Get("battle_boss_wave");
                 items.Add(desc);
+                remaining++;
             }
+
+            if (remaining == 0)
+                items.Add(Loc.Get("battle_all_waves_spawned"));
             return items;
         }
 

@@ -247,6 +247,9 @@ namespace WildfrostAccessibility
             // Route updates to the active screen handler
             ScreenManager.Update();
 
+            // A wave arrives over several frames — speak it once it has settled
+            VisualNarrator.Update();
+
             // Cinema bar text (event titles, story lines) — after ScreenManager,
             // so a handler's interrupting screen announcement speaks first and
             // can fold the bar text in via CinemaBarReader.SyncAnnounced()

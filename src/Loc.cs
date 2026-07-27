@@ -463,6 +463,7 @@ namespace WildfrostAccessibility
             Add("en", "narrate_miniboss", "A powerful enemy slams onto the battlefield: {0}!");
             Add("en", "narrate_wave", "The wave bell tolls! New enemies charge onto the battlefield.");
             Add("en", "narrate_wave_enter", "{0} enters at {1}.");
+            Add("en", "narrate_wave_no_room", "{0} more had no room and wait for the next wave.");
             Add("en", "narrate_boss_transform", "{0} explodes and transforms! The battle enters a new phase.");
             Add("en", "narrate_shade_flee", "A dark wisp rises from the fallen guardian and flees into the storm.");
             Add("en", "narrate_shade_possess", "A dark wisp rises from the fallen guardian and dives toward your leader!");
@@ -522,6 +523,7 @@ namespace WildfrostAccessibility
             Add("de", "narrate_miniboss", "Ein maechtiger Gegner kracht aufs Schlachtfeld: {0}!");
             Add("de", "narrate_wave", "Die Wellenglocke laeutet! Neue Gegner stuermen aufs Schlachtfeld.");
             Add("de", "narrate_wave_enter", "{0} erscheint bei {1}.");
+            Add("de", "narrate_wave_no_room", "{0} weitere hatten keinen Platz und warten auf die naechste Welle.");
             Add("de", "narrate_boss_transform", "{0} explodiert und verwandelt sich! Der Kampf tritt in eine neue Phase.");
             Add("de", "narrate_shade_flee", "Ein dunkler Schemen steigt aus dem gefallenen Waechter und flieht in den Sturm.");
             Add("de", "narrate_shade_possess", "Ein dunkler Schemen steigt aus dem gefallenen Waechter und stuerzt sich auf deinen Anfuehrer!");
@@ -581,6 +583,7 @@ namespace WildfrostAccessibility
             Add("es", "narrate_miniboss", "Un enemigo poderoso se estrella en el campo de batalla: {0}!");
             Add("es", "narrate_wave", "Suena la campana de oleada! Nuevos enemigos cargan al campo de batalla.");
             Add("es", "narrate_wave_enter", "{0} entra en {1}.");
+            Add("es", "narrate_wave_no_room", "{0} mas no cabian y esperan a la siguiente oleada.");
             Add("es", "narrate_boss_transform", "{0} explota y se transforma! La batalla entra en una nueva fase.");
             Add("es", "narrate_shade_flee", "Una voluta oscura surge del guardian caido y huye hacia la tormenta.");
             Add("es", "narrate_shade_possess", "Una voluta oscura surge del guardian caido y se lanza hacia tu lider!");
@@ -640,6 +643,7 @@ namespace WildfrostAccessibility
             Add("fr", "narrate_miniboss", "Un ennemi puissant s'ecrase sur le champ de bataille: {0}!");
             Add("fr", "narrate_wave", "La cloche de vague sonne! De nouveaux ennemis chargent sur le champ de bataille.");
             Add("fr", "narrate_wave_enter", "{0} arrive en {1}.");
+            Add("fr", "narrate_wave_no_room", "{0} autres n'avaient pas de place et attendent la prochaine vague.");
             Add("fr", "narrate_boss_transform", "{0} explose et se transforme! La bataille entre dans une nouvelle phase.");
             Add("fr", "narrate_shade_flee", "Une volute sombre s'eleve du gardien tombe et s'enfuit dans la tempete.");
             Add("fr", "narrate_shade_possess", "Une volute sombre s'eleve du gardien tombe et fonce vers votre chef!");
@@ -1198,6 +1202,11 @@ namespace WildfrostAccessibility
             Add("en", "mech_to_random_ally", "to a random ally");
             Add("en", "mech_to_random_enemy", "to a random enemy");
             Add("en", "mech_to_hand", "to cards in hand");
+            Add("en", "mech_summons", "Summons {0}: {1}.");
+            Add("en", "mech_summons_bare", "Summons {0}.");
+            Add("en", "mech_summon_counter", "acts every {0}");
+            Add("en", "mech_trigger_meaning", "Trigger means this card attacks the moment that happens, at its own target, on top of its normal turn. Its countdown is not reset, so the attack is free.");
+            Add("en", "mech_trigger_retaliate", "When something hits this card, it strikes back at the attacker straight away, on top of its normal turn.");
             Add("en", "card_injured_one", "Injured.");
             Add("en", "card_injured", "Injured x{0}.");
             Add("en", "card_mentions", "Mentions {0}");
@@ -1533,6 +1542,11 @@ namespace WildfrostAccessibility
             Add("de", "mech_to_random_ally", "an einen zufaelligen Verbuendeten");
             Add("de", "mech_to_random_enemy", "an einen zufaelligen Gegner");
             Add("de", "mech_to_hand", "an Karten auf der Hand");
+            Add("de", "mech_summons", "Beschwoert {0}: {1}.");
+            Add("de", "mech_summons_bare", "Beschwoert {0}.");
+            Add("de", "mech_summon_counter", "handelt alle {0}");
+            Add("de", "mech_trigger_meaning", "Ausloesen heisst: diese Karte greift sofort an, wenn das passiert, auf ihr eigenes Ziel, zusaetzlich zu ihrem normalen Zug. Ihr Zaehler wird nicht zurueckgesetzt, der Angriff ist also gratis.");
+            Add("de", "mech_trigger_retaliate", "Wird diese Karte getroffen, schlaegt sie sofort gegen den Angreifer zurueck, zusaetzlich zu ihrem normalen Zug.");
             Add("de", "card_injured_one", "Verletzt.");
             Add("de", "card_injured", "Verletzt x{0}.");
             Add("de", "card_mentions", "Erwaehnt {0}");
@@ -1866,6 +1880,11 @@ namespace WildfrostAccessibility
             Add("es", "mech_to_random_ally", "a un aliado al azar");
             Add("es", "mech_to_random_enemy", "a un enemigo al azar");
             Add("es", "mech_to_hand", "a las cartas de la mano");
+            Add("es", "mech_summons", "Invoca a {0}: {1}.");
+            Add("es", "mech_summons_bare", "Invoca a {0}.");
+            Add("es", "mech_summon_counter", "actua cada {0}");
+            Add("es", "mech_trigger_meaning", "Activarse significa que esta carta ataca en cuanto eso ocurre, a su propio objetivo, ademas de su turno normal. Su cuenta atras no se reinicia, asi que el ataque es gratis.");
+            Add("es", "mech_trigger_retaliate", "Cuando algo golpea a esta carta, contraataca al agresor de inmediato, ademas de su turno normal.");
             Add("es", "card_injured_one", "Herido.");
             Add("es", "card_injured", "Herido x{0}.");
             Add("es", "card_mentions", "Menciona a {0}");
@@ -2199,6 +2218,11 @@ namespace WildfrostAccessibility
             Add("fr", "mech_to_random_ally", "a un allie au hasard");
             Add("fr", "mech_to_random_enemy", "a un ennemi au hasard");
             Add("fr", "mech_to_hand", "aux cartes en main");
+            Add("fr", "mech_summons", "Invoque {0}: {1}.");
+            Add("fr", "mech_summons_bare", "Invoque {0}.");
+            Add("fr", "mech_summon_counter", "agit tous les {0}");
+            Add("fr", "mech_trigger_meaning", "Se declencher signifie que cette carte attaque des que cela arrive, sur sa propre cible, en plus de son tour normal. Son compte a rebours n'est pas remis a zero, l'attaque est donc gratuite.");
+            Add("fr", "mech_trigger_retaliate", "Quand quelque chose frappe cette carte, elle riposte aussitot contre l'attaquant, en plus de son tour normal.");
             Add("fr", "card_injured_one", "Blesse.");
             Add("fr", "card_injured", "Blesse x{0}.");
             Add("fr", "card_mentions", "Mentionne {0}");
