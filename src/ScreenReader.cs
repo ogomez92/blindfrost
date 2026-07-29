@@ -128,6 +128,12 @@ namespace WildfrostAccessibility
                 return;
             }
 
+            // Every spoken line, verbatim. Handlers log their own readouts, but
+            // review buffers and anything else that speaks without going through
+            // a handler left no trace — so a report of "it read this wrong" had
+            // nothing in the log to match it against.
+            DebugLogger.Log(DebugLogger.LogCategory.ScreenReader, $"Spoke: {text}");
+
             try
             {
                 Tolk_Output(text, false);

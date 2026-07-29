@@ -25,6 +25,7 @@ namespace WildfrostAccessibility
             if (_initialized) return;
             _initialized = true;
             Events.OnMinibossIntro += OnMinibossIntro;
+            Events.OnDropGold += OnDropGold;
         }
 
         public static void Shutdown()
@@ -32,6 +33,9 @@ namespace WildfrostAccessibility
             if (!_initialized) return;
             _initialized = false;
             Events.OnMinibossIntro -= OnMinibossIntro;
+            Events.OnDropGold -= OnDropGold;
+            _goldGained = 0;
+            _goldDue = false;
             _arrivals.Clear();
             _arrivalDeadline = 0f;
             _bellPending = false;
@@ -59,6 +63,8 @@ namespace WildfrostAccessibility
         {
             if (_arrivalDeadline > 0f && Time.unscaledTime >= _arrivalDeadline)
                 SpeakWave();
+            if (_goldDue)
+                SpeakGold();
         }
 
         /// <summary>
@@ -72,7 +78,9 @@ namespace WildfrostAccessibility
         {
             if (data == null || string.IsNullOrEmpty(data.text))
                 return;
-            string text = TextProcessor.StripRichText(data.text)?.Trim();
+            // Bubble text is the raw localized string, tags and all — the shop
+            // keeper's own name arrives as "<#7569CF Monchi>"
+            string text = TextProcessor.ProcessRawText(data.text)?.Trim();
             if (string.IsNullOrEmpty(text))
                 return;
 
@@ -84,6 +92,74 @@ namespace WildfrostAccessibility
             ScreenReader.SayEvent(line);
             DebugLogger.Log(DebugLogger.LogCategory.Handler, "VisualNarrator",
                 $"Speech bubble: {line}");
+        }
+
+        private static int _goldGained;
+        private static bool _goldDue;
+
+        /// <summary>
+        /// Gold gained outside combat: a treasure cave paying out on the map,
+        /// or the reward for skipping a card. Both arrive as coins flying into
+        /// the purse and say nothing anywhere — the map node never mentions the
+        /// amount even after it pays. BattleHandler speaks for gold dropped
+        /// during a fight and only then, so this covers the rest without ever
+        /// doubling up with it.
+        /// </summary>
+        private static void OnDropGold(int amount, string source, Character owner, Vector3 position)
+        {
+            if (amount <= 0 || InCombat())
+                return;
+            if (owner != null && References.Player != null && owner != References.Player)
+                return;
+
+            // Spoken from the next tick, not here: the coins are booked onto
+            // the purse by another listener on this same event, and which of
+            // us runs first is down to subscription order.
+            _goldGained += amount;
+            _goldDue = true;
+        }
+
+        private static bool InCombat()
+        {
+            var battle = Battle.instance;
+            return battle != null
+                && (battle.phase == Battle.Phase.Play || battle.phase == Battle.Phase.Battle);
+        }
+
+        private static void SpeakGold()
+        {
+            _goldDue = false;
+            int amount = _goldGained;
+            _goldGained = 0;
+            if (amount <= 0)
+                return;
+
+            string line = Loc.Get("narrate_gold_gained", amount);
+            int total = GetPurseTotal();
+            if (total > 0)
+                line += " " + Loc.Get("gold_amount", total);
+
+            ScreenReader.SayEvent(line);
+            DebugLogger.Log(DebugLogger.LogCategory.Handler, "VisualNarrator", line);
+        }
+
+        /// <summary>
+        /// What the purse holds once the coins land. Dropped gold is booked as
+        /// owed straight away and paid in as each coin particle arrives, so the
+        /// two added together are the settled total at any point during the
+        /// animation — the same sum the game itself writes to the save.
+        /// </summary>
+        private static int GetPurseTotal()
+        {
+            try
+            {
+                var inventory = References.Player?.data?.inventory;
+                return inventory != null ? inventory.gold.Value + inventory.goldOwed : 0;
+            }
+            catch
+            {
+                return 0;
+            }
         }
 
         /// <summary>A miniboss lands on the board with a zoom-and-shake cinematic.</summary>

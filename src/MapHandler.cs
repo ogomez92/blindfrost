@@ -618,7 +618,7 @@ namespace WildfrostAccessibility
                 string rewards = node.GetDesc();
                 if (!string.IsNullOrEmpty(rewards))
                 {
-                    string clean = TextProcessor.StripRichText(rewards);
+                    string clean = TextProcessor.ProcessRawText(rewards);
                     if (!string.IsNullOrEmpty(clean))
                         parts.Add(clean);
                 }

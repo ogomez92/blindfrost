@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -21,6 +22,13 @@ namespace WildfrostAccessibility
             public string Title;
             public string Description;
             public string Note;
+
+            /// <summary>
+            /// The game really has a keyword by this id. False means the lookup
+            /// missed and Title is only the id echoed back — good enough to read
+            /// where the game shows the tag text, but not proof of a keyword.
+            /// </summary>
+            public bool Found;
         }
 
         /// <summary>
@@ -106,9 +114,9 @@ namespace WildfrostAccessibility
                 seen.Add(kw.Title);
 
                 if (string.IsNullOrEmpty(kw.Description)) continue;
-                string explanation = $"{kw.Title}: {StripRichText(kw.Description)}";
+                string explanation = $"{kw.Title}: {ProcessRawText(kw.Description)}";
                 if (!string.IsNullOrEmpty(kw.Note))
-                    explanation += $". Note: {StripRichText(kw.Note)}";
+                    explanation += $". Note: {ProcessRawText(kw.Note)}";
                 explanations.Add(explanation);
             }
             return sb.ToString();
@@ -167,13 +175,26 @@ namespace WildfrostAccessibility
             {
                 string tag = match.Groups[1].Value.Trim();
                 int eqIdx = tag.IndexOf('=');
-                if (eqIdx <= 0 || tag.Substring(0, eqIdx).Trim() != "keyword")
+                if (eqIdx <= 0)
                     continue;
 
-                string[] parts = tag.Substring(eqIdx + 1).Trim().Split(' ');
-                if (parts.Length > 1 || !StatIconKeywords.Contains(parts[0].ToLowerInvariant()))
-                    return false;
-                sawStatGlyph = true;
+                string key = tag.Substring(0, eqIdx).Trim();
+                string value = tag.Substring(eqIdx + 1).Trim();
+
+                if (key == "keyword")
+                {
+                    string[] parts = value.Split(' ');
+                    if (parts.Length > 1 || !StatIconKeywords.Contains(parts[0].ToLowerInvariant()))
+                        return false;
+                    sawStatGlyph = true;
+                }
+                else if (IsSpriteKey(key))
+                {
+                    // The same three stats drawn as icons rather than keywords
+                    if (!StatIconKeywords.Contains(SpriteName(value).ToLowerInvariant()))
+                        return false;
+                    sawStatGlyph = true;
+                }
             }
             if (!sawStatGlyph)
                 return false;
@@ -264,20 +285,33 @@ namespace WildfrostAccessibility
         public static void CacheKeyword(KeywordData kwData)
         {
             if (kwData == null || string.IsNullOrEmpty(kwData.name)) return;
-            if (_keywordCache.ContainsKey(kwData.name)) return;
+            string key = CacheKey(kwData.name);
+            if (_keywordCache.ContainsKey(key)) return;
 
             // title/body/note are localized properties and can throw while
             // localization loads — don't cache on failure so a later call retries
             try
             {
-                _keywordCache[kwData.name] = new KeywordInfo
+                _keywordCache[key] = new KeywordInfo
                 {
                     Title = string.IsNullOrEmpty(kwData.title) ? kwData.name : kwData.title,
                     Description = kwData.body,
                     Note = kwData.note,
+                    Found = true,
                 };
             }
             catch { }
+        }
+
+        /// <summary>
+        /// AddressableLoader files keywords under their lower-cased name, so a
+        /// lookup only lands when the id is lower-cased too. The cache follows the
+        /// same rule, or an id cached from a KeywordData ("Snow") would never be
+        /// found again by the tag that names it ("snow").
+        /// </summary>
+        private static string CacheKey(string keywordName)
+        {
+            return keywordName.ToLowerInvariant();
         }
 
         /// <summary>Safe display title for a keyword, falling back to its id.</summary>
@@ -285,7 +319,7 @@ namespace WildfrostAccessibility
         {
             if (kwData == null) return null;
             CacheKeyword(kwData);
-            return _keywordCache.TryGetValue(kwData.name, out var info)
+            return _keywordCache.TryGetValue(CacheKey(kwData.name), out var info)
                 ? info.Title
                 : kwData.name;
         }
@@ -299,13 +333,13 @@ namespace WildfrostAccessibility
             if (kwData == null) return null;
             CacheKeyword(kwData);
 
-            if (!_keywordCache.TryGetValue(kwData.name, out var info)
+            if (!_keywordCache.TryGetValue(CacheKey(kwData.name), out var info)
                 || string.IsNullOrEmpty(info.Description))
                 return null;
 
-            string text = $"{info.Title}: {StripRichText(info.Description)}";
+            string text = $"{info.Title}: {ProcessRawText(info.Description)}";
             if (!string.IsNullOrEmpty(info.Note))
-                text += $". Note: {StripRichText(info.Note)}";
+                text += $". Note: {ProcessRawText(info.Note)}";
             return text;
         }
 
@@ -391,8 +425,7 @@ namespace WildfrostAccessibility
                     case "sprite":
                     case "sprite name":
                     case "spr":
-                        // Sprite icons — skip entirely
-                        return null;
+                        return ProcessSpriteTag(value, keywords);
                     case "color":
                     case "size":
                         // Formatting tags — skip
@@ -406,8 +439,18 @@ namespace WildfrostAccessibility
             if (tag.Length <= 2)
                 return null;
 
-            // TMP shorthand colour (<#fff>) and formatting keywords — skip
-            if (tag[0] == '#' || _tmpFormattingTags.Contains(tag))
+            // TMP shorthand colour. <#fff> on its own is pure formatting, but the
+            // game also writes the colour and the words it paints in one tag —
+            // "You can feed <#7569CF Monchi> any items you don't need!". Dropping
+            // the whole tag there swallows the sentence's subject.
+            if (tag[0] == '#')
+            {
+                int spaceIdx = tag.IndexOf(' ');
+                return spaceIdx > 0 ? tag.Substring(spaceIdx + 1).Trim() : null;
+            }
+
+            // Formatting keywords — skip
+            if (_tmpFormattingTags.Contains(tag))
                 return null;
 
             // Any other word tag (<Not Charged>, <Redraw Bell>, <Charms>) is the
@@ -456,6 +499,63 @@ namespace WildfrostAccessibility
             return sb.ToString();
         }
 
+        /// <summary>True for the three spellings the game uses for a sprite tag.</summary>
+        private static bool IsSpriteKey(string key)
+        {
+            return key == "sprite" || key == "sprite name" || key == "spr";
+        }
+
+        /// <summary>
+        /// The icon name out of a sprite tag's value. Raw card text writes it bare
+        /// ("snow"); text the game has already rendered quotes it and appends
+        /// attributes ("\"snow\" color=#4B6A9CFF").
+        /// </summary>
+        private static string SpriteName(string value)
+        {
+            string name = value.Trim();
+            int spaceIdx = name.IndexOf(' ');
+            if (spaceIdx > 0)
+                name = name.Substring(0, spaceIdx);
+            return name.Trim('"');
+        }
+
+        /// <summary>
+        /// A sprite tag is usually the game drawing a keyword as its icon in the
+        /// middle of a sentence — "Gain a &lt;sprite name=crown&gt;", "Cannot trigger
+        /// until &lt;sprite name=ink&gt; is cleared", "add Frenzy to
+        /// &lt;sprite name=crown&gt;'d allies". A sighted player reads the icon as the
+        /// word, so it has to become the word here; dropping it leaves sentences
+        /// with no subject ("Gain a", "Cannot trigger until is cleared").
+        ///
+        /// Names that are not keywords are button glyphs and layout art
+        /// (&lt;sprite=26&gt;, the key icons ControllerButtonSystem splices in) — those
+        /// stay silent, since their names are not words anyone wants read aloud.
+        /// </summary>
+        private static string ProcessSpriteTag(string value, List<KeywordInfo> keywords)
+        {
+            // A coloured sprite tag is text the game has already rendered, and there
+            // it only draws the icon when it writes the keyword's name right after
+            // it (Text.ProcessTag). Reading the icon too would say "Snow Snow 2".
+            if (value.IndexOf("color=", StringComparison.OrdinalIgnoreCase) >= 0)
+                return null;
+
+            string name = SpriteName(value);
+            if (name.Length == 0 || char.IsDigit(name[0]))
+                return null;
+
+            var kwInfo = GetKeywordInfo(name);
+            if (!kwInfo.Found)
+                return null;
+
+            // Stat icons name a stat the readout already gives; the rest carry
+            // meaning worth explaining, exactly as a <keyword=...> tag would
+            if (!string.IsNullOrEmpty(kwInfo.Description)
+                && !StatIconKeywords.Contains(name.ToLowerInvariant()))
+                keywords.Add(kwInfo);
+
+            return kwInfo.Title;
+        }
+
         /// <summary>
         /// Process a card reference tag like "cardName".
         /// Returns the card's localized title and collects the card so a
@@ -481,19 +581,21 @@ namespace WildfrostAccessibility
         /// </summary>
         private static KeywordInfo GetKeywordInfo(string keywordName)
         {
-            if (_keywordCache.TryGetValue(keywordName, out var cached))
+            string key = CacheKey(keywordName);
+            if (_keywordCache.TryGetValue(key, out var cached))
                 return cached;
 
             var info = new KeywordInfo { Title = keywordName };
 
             try
             {
-                var kwData = AddressableLoader.Get<KeywordData>("KeywordData", keywordName);
+                var kwData = AddressableLoader.Get<KeywordData>("KeywordData", key);
                 if (kwData != null)
                 {
                     info.Title = kwData.title ?? keywordName;
                     info.Description = kwData.body;
                     info.Note = kwData.note;
+                    info.Found = true;
                 }
             }
             catch
@@ -502,12 +604,38 @@ namespace WildfrostAccessibility
                     $"Failed to load keyword: {keywordName}");
             }
 
-            _keywordCache[keywordName] = info;
+            // Only a hit is worth caching: a miss here can just mean addressables
+            // were not ready yet, and a cached miss would silence that keyword's
+            // icon for the rest of the session
+            if (info.Found)
+                _keywordCache[key] = info;
             return info;
         }
 
         /// <summary>
-        /// Strip all rich text / TMP tags from a string.
+        /// Plain text for a string the game has NOT rendered yet — a keyword body,
+        /// a speech bubble, anything straight off a LocalizedString. Those are
+        /// written in the same tag language as card text ("Add &lt;card=Junk&gt; to your
+        /// hand", "&lt;Combos&gt; give double &lt;keyword=blings&gt;"), and the tags hold the
+        /// nouns. StripRichText deletes them, which is right for text TMP already
+        /// rendered and disastrous here — it leaves "Add to your hand".
+        ///
+        /// Expanded one level: keywords the text names are read but not explained,
+        /// and cards it names are not summarized, so an explanation stays an
+        /// explanation instead of unfolding into every keyword it touches.
+        /// </summary>
+        public static string ProcessRawText(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return text;
+            try { return StripRichText(ExpandTags(text, new List<KeywordInfo>(), null)); }
+            catch { return StripRichText(text); }
+        }
+
+        /// <summary>
+        /// Strip all rich text / TMP tags from a string. For text the game has
+        /// already rendered, where the tags left are pure formatting — use
+        /// ProcessRawText for anything still carrying the game's own tags.
         /// Removes color, size, bold, italic, strikethrough, sprite, etc.
         /// </summary>
         public static string StripRichText(string text)

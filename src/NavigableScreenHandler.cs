@@ -234,7 +234,7 @@ namespace WildfrostAccessibility
             string greeting = ReflectionUtil.GetField<string>(panel, "greeting");
             if (!string.IsNullOrEmpty(greeting) && !string.IsNullOrEmpty(title))
             {
-                greeting = TextProcessor.StripRichText(
+                greeting = TextProcessor.ProcessRawText(
                     greeting.Replace("<name>", title))?.Trim();
                 if (!string.IsNullOrEmpty(greeting))
                     msg = greeting + " " + msg;
