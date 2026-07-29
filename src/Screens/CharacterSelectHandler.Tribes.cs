@@ -4,10 +4,11 @@ using UnityEngine;
 namespace WildfrostAccessibility
 {
     /// <summary>
-    /// Tribe-stage navigation: the TribeEntry model over SelectTribe's flags, the
+    /// The tribe stage alone: the TribeEntry model over SelectTribe's flags, the
     /// opening-focus correction onto the first playable tribe, the remapped arrows
     /// (up/down between tribes, left/right read the roster), the flag's detail
-    /// parts, and the Enter that refuses a tribe this save has not unlocked.
+    /// parts, and the Enter that refuses a tribe this save has not unlocked. The
+    /// screen-wide dispatch that routes here lives in CharacterSelectHandler.cs.
     /// </summary>
     public partial class CharacterSelectHandler
     {
@@ -17,7 +18,7 @@ namespace WildfrostAccessibility
         // arrows are remapped: up/down move between the tribes (and the back
         // button, as a final stop), left/right read the focused tribe's roster
         // (also in the Details buffer on Ctrl+Up). Escape and the back button run
-        // the screen's own Back(). The leader and pet stages keep base navigation.
+        // the screen's own Back().
 
         private sealed class TribeEntry
         {
@@ -122,35 +123,6 @@ namespace WildfrostAccessibility
             return -1;
         }
 
-        protected override void Navigate(NavDirection dir)
-        {
-            // While the chosen-card panel is up, Enter/Escape drive it — the
-            // arrows must not shuffle focus (and the pending Enter target)
-            // silently underneath it.
-            if (ActiveInspectPanel != null)
-                return;
-
-            if (TribeNavActive(out var entries))
-            {
-                NavigateTribes(entries, dir);
-                return;
-            }
-
-            // Leader and pet stages: the arrows cycle strictly through the
-            // choosable cards and the back button. The base spatial navigation
-            // could wander onto everything else registered in the scene (the
-            // off-screen pet hand, help button), the game's default-item
-            // system kept snatching focus back to a card the player had moved
-            // off, and Enter then chose that stale card.
-            if (StageCardNavActive(out var items))
-            {
-                CycleFocus(items, dir);
-                return;
-            }
-
-            base.Navigate(dir);
-        }
-
         /// <summary>
         /// Put the opening focus of the tribe stage on the first tribe the
         /// player can actually pick.
@@ -209,18 +181,6 @@ namespace WildfrostAccessibility
                 $"Opening tribe focus set to {target.Tribe?.name}");
         }
 
-        protected override UINavigationItem DefaultFocusItem()
-        {
-            if (TribeNavActive(out var entries))
-            {
-                // First tribe the player can pick — never a locked one, and
-                // never the trailing back button
-                var playable = FirstPlayableEntry(entries);
-                return playable != null ? playable.Nav : entries[0].Nav;
-            }
-            return base.DefaultFocusItem();
-        }
-
         private void NavigateTribes(List<TribeEntry> entries, NavDirection dir)
         {
             _tribeNavUsed = true;
@@ -254,20 +214,6 @@ namespace WildfrostAccessibility
             ScreenReader.Say(
                 !string.IsNullOrEmpty(text) ? text : Loc.Get("tribe_no_roster"),
                 interrupt: true);
-        }
-
-        protected override List<UINavigationItem> GetItems()
-        {
-            if (TribeNavActive(out var entries))
-            {
-                var navs = new List<UINavigationItem>(entries.Count);
-                foreach (var entry in entries)
-                    navs.Add(entry.Nav);
-                return navs;
-            }
-            if (StageCardNavActive(out var items))
-                return items;
-            return base.GetItems();
         }
 
         public override List<string> GetFocusedDetailParts(UINavigationItem item)

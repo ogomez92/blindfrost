@@ -37,6 +37,42 @@
 **Currently working on:** In-game testing of battle mechanics round 2 (unit move/swap/recall, triggers, pause menu/settings) — built + deployed 2026-07-13
 **Blocked by:** Nothing — needs an in-game test pass
 
+### Pending test: source refactor regression pass (added 2026-07-29)
+
+`src/` was reorganized and split. No behaviour was intended to change, and none was detected,
+but this touched every screen's file layout and deserves one confirming playthrough.
+
+What changed (commits fb91da2, 7611126, 6c1a673, 2e9f2c6):
+- 41 flat files became 96 across `Core/`, `Localization/`, `Description/`, `Navigation/`,
+  `Screens/`, `Narration/`. Largest file 2507 → 452 lines (`Loc.cs` alone was 203 KB).
+- The 11 oversized files were split into `partial class` parts named `<Class>.<Aspect>.cs`.
+- `Loc.RegisterHandlerStrings()` (1620 lines) became four per-language methods, called in the
+  original order. This is the only structural change to executable code.
+- `OverlayWatcher` and `WaveDeployer` moved to `Core/`, `TownUnlockReader` to `Description/`
+  (none of the three call `ScreenReader`).
+- 17 compiler-confirmed unused `using`s removed.
+
+How it was verified (all automated, all passing):
+- Both assemblies decompiled with ilspycmd and all 62 types diffed — identical modulo method
+  order. Field-initializer order unchanged in every type; no type declares a constructor.
+- `ScreenManager` handler registrations identical. All 18 `[HarmonyPatch]` attributes and their
+  targets identical. `Loc.Get` 492 → 492, `ScreenReader.Say` 216 → 216.
+- All 2128 `Loc.Add()` calls identical to pre-refactor, with no duplicate (language, key) pair,
+  so registration order cannot affect the resulting string table.
+- No comment or XML doc lost.
+
+Test protocol: a normal playthrough touching each screen — main menu, character select (incl. a
+locked tribe), town and its unlock buildings, campaign map, a battle (card play, targeting,
+review buffers), pause menu, battle win, boss reward, campaign end. Any screen that goes silent
+or reads the wrong thing is a regression.
+
+Known gaps deliberately left alone (logic changes, no test suite to catch mistakes):
+- `ScreenHandler._knownNames` hardcodes 78 English button labels instead of using `Loc.Get()`,
+  so non-English players hear English button names. Pre-existing.
+- The G-key gold readout is implemented three times; `MapHandler.cs` and
+  `BattleHandler.Readouts.cs` are byte-identical.
+- A "lazily find a scene object, retry on a throttle" idiom is copy-pasted about six times.
+
 ### Pending test: self-enable on first run (added 2026-07-13)
 
 The mod now enables itself on the first game start after installation — no Mods menu needed, save file untouched. Constructor writes the GUID into `lastSavedMods` before `Bootstrap.ModsSetup` reads it, then drops `autoenable.marker` in the mod folder so a deliberate disable in the Mods menu sticks. The release package no longer ships a replacement Save.sav; Install-Mod.ps1 no longer touches AppData.

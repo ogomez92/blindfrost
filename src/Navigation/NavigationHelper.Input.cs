@@ -11,11 +11,6 @@ namespace WildfrostAccessibility
     /// </summary>
     public static partial class NavigationHelper
     {
-        private static float _lastNavTime;
-        private static float _navRepeatDelay = 0.3f;
-        private static float _navRepeatRate = 0.1f;
-        private static bool _navHeld;
-
         /// <summary>
         /// Check for arrow key navigation input.
         /// Returns the navigation direction pressed, or None.

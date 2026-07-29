@@ -4,11 +4,96 @@ using System.Linq;
 namespace WildfrostAccessibility
 {
     /// <summary>
-    /// The map overview and detail readouts: every revealed location in
+    /// Everything the map says about a location: the description read out
+    /// when a node takes focus, the overview of every revealed location in
     /// journey order, and the waves/enemies/rewards behind one node.
     /// </summary>
     public partial class MapHandler
     {
+        protected override string GetItemDescription(UINavigationItem item)
+        {
+            var mapNode = GetMapNode(item);
+            if (mapNode != null)
+                return DescribeNode(mapNode, includeHints: true);
+
+            return base.GetItemDescription(item);
+        }
+
+        /// <summary>Describe a map node: name, type, state, and a short battle preview.</summary>
+        private string DescribeNode(MapNode mapNode, bool includeHints)
+        {
+            var node = mapNode.campaignNode;
+            if (node == null)
+                return ItemDescriber.GetMapNodeName(mapNode);
+
+            string name = ItemDescriber.GetMapNodeName(mapNode);
+            var parts = new List<string> { name };
+
+            // Node category (battle, boss, shop...) when the label doesn't already say it
+            string category = GetNodeCategory(node);
+            if (!string.IsNullOrEmpty(category)
+                && name.IndexOf(category, System.StringComparison.OrdinalIgnoreCase) < 0)
+                parts.Add(category);
+
+            // State relative to the player
+            CampaignNode current = GetPlayerNode();
+            if (node == current)
+            {
+                parts.Add(Loc.Get("map_node_here"));
+                // Standing on an uncleared node (run start): Enter is how you begin it
+                if (!node.cleared && includeHints)
+                    parts.Add(Loc.Get("map_node_enter"));
+            }
+            else if (node.cleared)
+                parts.Add(Loc.Get("map_node_cleared"));
+            else if (IsDirectDestination(current, node))
+            {
+                parts.Add(includeHints ? Loc.Get("map_node_available") : Loc.Get("map_node_available_short"));
+
+                // At a fork, what this branch costs — the map gives no second chances
+                string consequence = DescribeForkConsequence(current, node);
+                if (consequence != null)
+                    parts.Add(consequence);
+            }
+            else if (mapNode.reachable)
+                parts.Add(Loc.Get("map_node_ahead"));
+            else
+                parts.Add(Loc.Get("map_node_not_reachable"));
+
+            // Short battle preview: number of waves
+            if (node.type != null && node.type.isBattle)
+            {
+                try
+                {
+                    var waves = node.data?.GetSaveCollection<BattleWaveManager.WaveData>("waves");
+                    if (waves != null && waves.Length > 0)
+                        parts.Add(Loc.Get("map_battle_waves", waves.Length));
+                }
+                catch { /* wave data not present for this node */ }
+            }
+
+            return string.Join(", ", parts);
+        }
+
+        /// <summary>Category word derived from the CampaignNodeType subclass name.</summary>
+        private static string GetNodeCategory(CampaignNode node)
+        {
+            if (node.type == null) return null;
+
+            if (node.type.isBoss)
+                return Loc.Get("node_type_boss");
+
+            string typeName = node.type.GetType().Name.Replace("CampaignNodeType", "");
+            if (string.IsNullOrEmpty(typeName)) return null;
+
+            if (Loc.TryGet("node_type_" + typeName.ToLowerInvariant(), out string localized))
+                return localized;
+
+            return ScreenHandler.CleanName(typeName);
+        }
+
+        // ---- Overview and details -------------------------------------------
+
         /// <summary>M: read every revealed location in journey order with its state.</summary>
         private void AnnounceOverview()
         {

@@ -7,8 +7,8 @@ namespace WildfrostAccessibility
 {
     /// <summary>
     /// What each item is read out as: item descriptions, journal tab labels,
-    /// help text, and reading the current value of a setting row (dropdowns,
-    /// sliders) or falling back to the row texts.
+    /// and reading the current value of a setting row (dropdowns, sliders)
+    /// or falling back to the row texts.
     /// </summary>
     public partial class PauseMenuHandler
     {
@@ -87,11 +87,6 @@ namespace WildfrostAccessibility
             }
 
             return GetButtonText(item);
-        }
-
-        public override string GetHelpText()
-        {
-            return Loc.Get("help_pause");
         }
 
         // ---- Setting rows -------------------------------------------------

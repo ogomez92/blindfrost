@@ -174,6 +174,11 @@ namespace WildfrostAccessibility
             return true;
         }
 
+        public override string GetHelpText()
+        {
+            return Loc.Get("help_pause");
+        }
+
         // GetItems: intentionally NOT overridden. The base implementation returns
         // the items on the game's active navigation layer — the same set the
         // game itself allows focus on while the menu is open. Anything else gets

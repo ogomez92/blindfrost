@@ -7,9 +7,13 @@ using UnityEngine.Localization.Settings;
 namespace WildfrostAccessibility
 {
     /// <summary>
-    /// Localization system for screen reader strings.
-    /// Uses the game's active locale to serve translations.
-    /// Falls back: current language -> English -> key name.
+    /// The lookup engine for screen reader strings: the language-keyed string
+    /// table, the reads against it (Get, TryGet) and the writes into it (Add,
+    /// AddForAll). Serves translations for the game's active locale, falling
+    /// back current language -> English -> key name. Also holds the language
+    /// override read from language.txt, which lets the mod speak a language
+    /// the game itself does not offer. The string data lives in the
+    /// Loc.Strings.* parts.
     /// </summary>
     public static partial class Loc
     {
@@ -169,19 +173,6 @@ namespace WildfrostAccessibility
                 // Localization system not ready yet
             }
             return "en";
-        }
-
-        /// <summary>
-        /// Strings for the dedicated screen handlers (Town, ContinueRun, Map, Battle)
-        /// and shared item descriptions. English, German, Spanish and French;
-        /// other locales fall back to English until translated.
-        /// </summary>
-        private static void RegisterHandlerStrings()
-        {
-            RegisterHandlerStringsEnglish();
-            RegisterHandlerStringsGerman();
-            RegisterHandlerStringsSpanish();
-            RegisterHandlerStringsFrench();
         }
     }
 }

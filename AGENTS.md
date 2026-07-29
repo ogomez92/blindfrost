@@ -73,14 +73,17 @@ add a source file.
 
 - **`src/Core/`** — mod entry point, the handler base classes, and the cross-cutting services
   every screen uses: `Main`, `ScreenManager`, `ScreenReader`, `ScreenHandler`,
-  `NavigableScreenHandler`, `ReviewBuffers`, `DebugLogger`, `ReflectionUtil`, `OverlayWatcher`,
-  `WaveDeployer`.
+  `NavigableScreenHandler`, `ReviewBuffers`, `DebugLogger`, `ReflectionUtil`, `WaveDeployer`,
+  and the two input-ownership routers `OverlayWatcher` and `HelpPanelRouter` (both expose
+  `Reset()` + `RouteInput()` and are consulted from the same expression in
+  `NavigableScreenHandler.OnUpdate`, so they belong together).
 - **`src/Localization/`** — `Loc` and its string tables.
 - **`src/Description/`** — turning game objects into spoken text: `ItemDescriber`,
   `TextProcessor`, `TownUnlockReader`.
 - **`src/Navigation/`** — input and focus movement: `NavigationHelper`, `NavDirection`,
   `SelectSimulator`, `DeckpackNavigator` (the inventory overlay).
-- **`src/Screens/`** — one `[Feature]Handler` per game screen, plus `HelpPanelRouter`.
+- **`src/Screens/`** — one `[Feature]Handler` per game screen. Nothing else belongs here: if a
+  class is not registered in `ScreenManager`, it is not a screen.
 - **`src/Narration/`** — things that speak on their own schedule rather than on focus:
   `VisualNarrator`, `PopupReader`, `CinemaBarReader`, and the `*Narrator` event narrators.
 

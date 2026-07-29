@@ -10,7 +10,10 @@ namespace WildfrostAccessibility
     /// panel that NavigableScreenHandler drives (Enter/Escape). This screen's
     /// panel confirms through CharacterSelectScreen.Continue() — the base
     /// TakeCard() path has no card selector here — and the handler announces
-    /// the stage flow: leaders, pet choice, journey start.
+    /// the stage flow: leaders, pet choice, journey start. The arrows, the
+    /// opening focus and the item list are dispatched from here into whichever
+    /// stage is running: the tribe flags in CharacterSelectHandler.Tribes.cs,
+    /// the leader and pet cards in CharacterSelectHandler.CardStages.cs.
     /// </summary>
     public partial class CharacterSelectHandler : NavigableScreenHandler
     {
@@ -179,6 +182,67 @@ namespace WildfrostAccessibility
                 ? null
                 : ReflectionUtil.GetField<List<SelectLeader.Character>>(
                     _leaderSelection, "characters");
+        }
+
+        // ---- Screen-wide navigation dispatch ---------------------------------
+        // Every stage of this screen navigates by its own rules, so the three
+        // overrides the base drives all start here and hand off: the tribe flags
+        // to CharacterSelectHandler.Tribes.cs, the leader and pet cards to
+        // CharacterSelectHandler.CardStages.cs.
+
+        protected override void Navigate(NavDirection dir)
+        {
+            // While the chosen-card panel is up, Enter/Escape drive it — the
+            // arrows must not shuffle focus (and the pending Enter target)
+            // silently underneath it.
+            if (ActiveInspectPanel != null)
+                return;
+
+            if (TribeNavActive(out var entries))
+            {
+                NavigateTribes(entries, dir);
+                return;
+            }
+
+            // Leader and pet stages: the arrows cycle strictly through the
+            // choosable cards and the back button. The base spatial navigation
+            // could wander onto everything else registered in the scene (the
+            // off-screen pet hand, help button), the game's default-item
+            // system kept snatching focus back to a card the player had moved
+            // off, and Enter then chose that stale card.
+            if (StageCardNavActive(out var items))
+            {
+                CycleFocus(items, dir);
+                return;
+            }
+
+            base.Navigate(dir);
+        }
+
+        protected override UINavigationItem DefaultFocusItem()
+        {
+            if (TribeNavActive(out var entries))
+            {
+                // First tribe the player can pick — never a locked one, and
+                // never the trailing back button
+                var playable = FirstPlayableEntry(entries);
+                return playable != null ? playable.Nav : entries[0].Nav;
+            }
+            return base.DefaultFocusItem();
+        }
+
+        protected override List<UINavigationItem> GetItems()
+        {
+            if (TribeNavActive(out var entries))
+            {
+                var navs = new List<UINavigationItem>(entries.Count);
+                foreach (var entry in entries)
+                    navs.Add(entry.Nav);
+                return navs;
+            }
+            if (StageCardNavActive(out var items))
+                return items;
+            return base.GetItems();
         }
 
         /// <summary>
