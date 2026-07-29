@@ -65,17 +65,45 @@ Routes to dedicated ScreenHandler (MainMenuHandler) or GenericScreenHandler fall
 Handler: arrow key nav via NavigationHelper → focus UINavigationItem → announce via ScreenReader
 ```
 
+## Source Layout
+
+`src/` is organized by responsibility. The csproj is SDK-style with no explicit `<Compile>`
+items, so new files and folders are picked up automatically — never edit the project file to
+add a source file.
+
+- **`src/Core/`** — mod entry point, the handler base classes, and the cross-cutting services
+  every screen uses: `Main`, `ScreenManager`, `ScreenReader`, `ScreenHandler`,
+  `NavigableScreenHandler`, `ReviewBuffers`, `DebugLogger`, `ReflectionUtil`, `OverlayWatcher`,
+  `WaveDeployer`.
+- **`src/Localization/`** — `Loc` and its string tables.
+- **`src/Description/`** — turning game objects into spoken text: `ItemDescriber`,
+  `TextProcessor`, `TownUnlockReader`.
+- **`src/Navigation/`** — input and focus movement: `NavigationHelper`, `NavDirection`,
+  `SelectSimulator`, `DeckpackNavigator` (the inventory overlay).
+- **`src/Screens/`** — one `[Feature]Handler` per game screen, plus `HelpPanelRouter`.
+- **`src/Narration/`** — things that speak on their own schedule rather than on focus:
+  `VisualNarrator`, `PopupReader`, `CinemaBarReader`, and the `*Narrator` event narrators.
+
+Large classes are split into `partial` parts named `<Class>.<Aspect>.cs` — e.g.
+`BattleHandler.cs` plus `BattleHandler.CardPlay.cs`, `.FocusGroups.cs`, `.Input.cs`,
+`.Narration.cs`, `.Readouts.cs`, `.ReviewBuffers.cs`, `.TargetGrid.cs`. The unsuffixed file
+holds the entry points and lifecycle; the suffix says what the part covers. When adding to a
+class, put the code in the part whose name already describes it, or add a new part — do not let
+a file grow past ~450 lines.
+
 ## Key Classes
 
-- **Main.cs** — `WildfrostAccessibilityMod : WildfrostMod` entry point. Creates `ModUpdateBehaviour` for Update loop.
-- **ScreenManager.cs** — Static. Detects scene changes, routes to registered handlers or `GenericScreenHandler` fallback.
-- **ScreenHandler.cs** — Abstract base. `GetButtonText()` resolves labels via: TMP_Text → known names dict → hierarchy walk → component type check (OpenURL, HelpPanelShower, BattleLogButton) → sprite name → cleaned GameObject name. Skips generic names like "ButtonSheet".
-- **GenericScreenHandler.cs** — Fallback for any unregistered scene. Finds screen title via TitleSetter/object name/heuristic. Describes Entity cards with stats + keyword-expanded descriptions. Handles both vertical and horizontal navigation.
-- **NavigationHelper.cs** — Arrow key input with hold-to-repeat. `FocusItem()` forces controller mode (`Cursor3d.usingMouse = false`) then calls `UINavigationSystem.SetCurrentNavigationItem()`. `ActivateCurrent()` uses `ExecuteEvents` directly (CustomEventSystem.Press is private).
-- **TextProcessor.cs** — Expands game text tags for screen reader. Converts `<keyword=shell>` to "Shell" + appends keyword description. Handles `<3>` amounts, `<card=name>` references. Strips all rich text. Caches keyword lookups.
-- **ScreenReader.cs** — Tolk wrapper. `Say(text, interrupt)`. Requires `SetDllDirectory(Modded/)` before init.
-- **Loc.cs** — Mod's own localization (13 languages). `Loc.Get(key)` with game language detection and English fallback.
-- **DebugLogger.cs** — Categorized logging, zero overhead when disabled. Active via F10.
+- **Core/Main.cs** — `WildfrostAccessibilityMod : WildfrostMod` entry point. Creates `ModUpdateBehaviour` for Update loop.
+- **Core/ScreenManager.cs** — Static. Detects scene changes, routes to registered handlers or `GenericScreenHandler` fallback.
+- **Core/ScreenHandler.cs** — Abstract base: the handler contract only (`Name`, `OnEnter`, `OnExit`, `OnUpdate`, `GetHelpText`, `GetFocusedDetailParts`, `HintOnce`).
+- **Core/ScreenHandler.ButtonText.cs** — the button-label engine. `GetButtonText()` resolves labels via: TMP_Text → known names dict → hierarchy walk → component type check (OpenURL, HelpPanelShower, BattleLogButton) → sprite name → cleaned GameObject name. Skips generic names like "ButtonSheet". Also home to `CleanName`, which is called from all over.
+- **Core/NavigableScreenHandler.cs** — Base for screens with arrow-key navigation. Owns the announce lifecycle (`AnnounceDelay`, `TryAnnounceScreen`, timeout fallback); `.Navigation.cs` has input/focus tracking, `.Inspect.cs` the inspect surfaces.
+- **Screens/GenericScreenHandler.cs** — Fallback for any unregistered scene. Finds screen title via TitleSetter/object name/heuristic. Describes Entity cards with stats + keyword-expanded descriptions. Handles both vertical and horizontal navigation.
+- **Navigation/NavigationHelper.\*.cs** — Arrow key input with hold-to-repeat. `FocusItem()` forces controller mode (`Cursor3d.usingMouse = false`) then calls `UINavigationSystem.SetCurrentNavigationItem()`. `ActivateCurrent()` uses `ExecuteEvents` directly (CustomEventSystem.Press is private).
+- **Description/TextProcessor.\*.cs** — Expands game text tags for screen reader. Converts `<keyword=shell>` to "Shell" + appends keyword description. Handles `<3>` amounts, `<card=name>` references. Strips all rich text. Caches keyword lookups.
+- **Core/ScreenReader.cs** — Tolk wrapper. `Say(text, interrupt)`. Requires `SetDllDirectory(Modded/)` before init.
+- **Localization/Loc.cs** — Mod's own localization (13 languages). `Loc.Get(key)` with game language detection and English fallback. String tables live in the `Loc.Strings.*.cs` parts; `RegisterHandlerStrings` dispatches to one method per language.
+- **Core/DebugLogger.cs** — Categorized logging, zero overhead when disabled. Active via F10.
 
 ## Navigation Approach
 
@@ -132,7 +160,7 @@ Patterns: `docs/ACCESSIBILITY_MODDING_GUIDE.md`
 2. Search `game_dll_code/Assembly-CSharp/` for real class/method names — NEVER guess
 3. Check `docs/game-api.md` for keys, methods, patterns
 4. Only use safe mod keys (game-api.md → "Safe Mod Keys")
-5. Files >500 lines: targeted search first, don't auto-read fully
+5. Files are all under ~450 lines now — read the whole part you're changing rather than grepping blind. Use the `<Class>.<Aspect>.cs` names to find the right one.
 
 # Critical Warnings
 
