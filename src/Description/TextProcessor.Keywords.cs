@@ -1,14 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.RegularExpressions;
-using UnityEngine;
-
 namespace WildfrostAccessibility
 {
     /// <summary>
-    /// The keyword cache and its lookups: seeding it from a KeywordData,
-    /// resolving a keyword id to title/body/note, and the explanation text.
+    /// Keyword lookups over the cache declared in TextProcessor.cs: seeding it
+    /// from a KeywordData, resolving a keyword id to title/body/note through
+    /// addressables, and the "Title: body. Note: note" explanation text.
     /// </summary>
     public static partial class TextProcessor
     {

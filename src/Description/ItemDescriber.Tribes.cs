@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Localization;
 
 namespace WildfrostAccessibility
 {
@@ -215,13 +214,6 @@ namespace WildfrostAccessibility
                         : title);
                 return Loc.Get("tribe_starting_deck", string.Join(", ", parts));
             }
-            catch { return null; }
-        }
-
-        /// <summary>CardData.title, guarded against a localization miss.</summary>
-        private static string SafeTitle(CardData card)
-        {
-            try { return card?.title; }
             catch { return null; }
         }
 

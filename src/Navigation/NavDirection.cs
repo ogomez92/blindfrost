@@ -1,7 +1,3 @@
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.EventSystems;
-
 namespace WildfrostAccessibility
 {
     /// <summary>Navigation direction for arrow key input.</summary>

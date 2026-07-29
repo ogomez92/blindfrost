@@ -156,12 +156,6 @@ namespace WildfrostAccessibility
             _lastFocused = null;
         }
 
-        /// <summary>
-        /// Announce this screen (name, context, hints). Return false to retry next frame
-        /// while content is still loading; return true once announced.
-        /// </summary>
-        protected abstract bool TryAnnounceScreen();
-
         /// <summary>Called when the active navigation layer changes (panel/popup opened).</summary>
         protected virtual void OnNavigationLayerChanged(UINavigationLayer layer)
         {
@@ -185,6 +179,17 @@ namespace WildfrostAccessibility
         /// browse — the focus is still tracked, it just isn't announced.
         /// </summary>
         protected virtual bool ShouldAnnounceFocus(UINavigationItem item) => true;
+
+        /// <summary>
+        /// Keep focus changes silent for a moment so they don't talk over an
+        /// announcement that matters more (deckpack pickups, menu openings).
+        /// Focus is still tracked — the item is just not spoken.
+        /// </summary>
+        internal void SuppressFocusFor(float seconds)
+        {
+            _inspectSuppressUntil = Mathf.Max(
+                _inspectSuppressUntil, Time.unscaledTime + seconds);
+        }
 
         /// <summary>Announce the focused item when it changes.</summary>
         private void CheckAndAnnounceFocus()

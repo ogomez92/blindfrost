@@ -1,15 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using UnityEngine;
-using UnityEngine.Localization;
-using UnityEngine.Localization.Settings;
-
 namespace WildfrostAccessibility
 {
     /// <summary>
-    /// The German half of the screen handler string table (Town, ContinueRun,
-    /// Map, Battle and the shared item descriptions).
+    /// The German part of the screen handler string table: Town, ContinueRun,
+    /// Map, Battle, CharacterSelect and its tribes, MainMenu, BattleWin,
+    /// CampaignEnd, the Daily Voyage balloon, the deckpack inventory, the map
+    /// node categories, the pause menu, the story events, and the shared item
+    /// descriptions.
     /// </summary>
     public static partial class Loc
     {
@@ -54,6 +50,7 @@ namespace WildfrostAccessibility
             Add("de", "battlewin_injuries", "In diesem Kampf verletzt: {0}.");
             Add("de", "battlewin_not_ready", "Der Siegesbildschirm erscheint noch, einen Moment.");
             Add("de", "help_battlewin", "Siegesbildschirm nach einem gewonnenen Kampf. Zeigt gegebenenfalls im Kampf verletzte Gefaehrten. Enter setzt die Reise fort.");
+            Add("de", "charselect_tribes", "Waehle einen Stamm. Mit den Pfeiltasten hoch und runter wechselst du zwischen den Staemmen; Name und Spielstil jedes Stammes werden vorgelesen. Die Pfeiltaste rechts liest Anfuehrer und Startdeck des Stammes vor, oder halte Strg und druecke hoch, um sie durchzugehen. Eingabe waehlt den fokussierten Stamm, Escape geht zurueck.");
             Add("de", "charselect_leaders", "Waehle deinen Anfuehrer. Pfeiltasten wechseln zwischen den Anfuehrern, Enter waehlt aus.");
             Add("de", "charselect_chosen", "{0} gewaehlt. Enter bestaetigt, Escape legt die Karte zurueck.");
             Add("de", "charselect_chosen_generic", "Karte gewaehlt. Enter bestaetigt, Escape legt sie zurueck.");
@@ -163,6 +160,7 @@ namespace WildfrostAccessibility
             Add("de", "deckpack_crown_taken", "Krone von {0} abgenommen und ins Inventar gelegt.");
             Add("de", "deckpack_card_blocked", "Kartenoptionen sind gerade nicht verfuegbar.");
             Add("de", "help_deckpack", "Inventar. Dein Deck, Reservekarten und gesammelte Talismane und Kronen. Hoch und runter wechseln die Gruppen: Deck, Reserve, Talismane, Kronen und Schaltflaechen. Links und rechts bewegen sich innerhalb einer Gruppe. Enter auf einem Talisman oder einer Krone nimmt sie auf: Pfeiltasten wechseln dann zwischen den Karten, die sie tragen koennen, Enter befestigt dauerhaft, Escape legt zurueck. Enter auf einer Karte oeffnet ihre Optionen, etwa zwischen Deck und Reserve verschieben. I untersucht die fokussierte Karte. P oder Escape schliesst das Inventar.");
+            // Map node categories
             Add("de", "node_type_boss", "Bosskampf");
             Add("de", "node_type_battle", "Kampf");
             Add("de", "node_type_shop", "Laden");
@@ -179,6 +177,8 @@ namespace WildfrostAccessibility
             Add("de", "node_type_clunkshop", "Klunker-Laden");
             Add("de", "node_type_muncher", "Muncher");
             Add("de", "node_type_event", "Ereignis");
+            // Battle: turn flow, the four groups, playing and moving cards,
+            // combat events, in-fight card readouts and the navigation edge cue
             Add("de", "screen_battle", "Kampf!");
             Add("de", "battle_wave_total", "{0} Gegnerwellen.");
             Add("de", "battle_hand_count", "{0} Karten auf der Hand.");
@@ -269,6 +269,8 @@ namespace WildfrostAccessibility
             Add("de", "battle_health_none_enemy", "Keine Gegner auf dem Feld.");
             Add("de", "nav_edge", "Rand.");
             Add("de", "battle_not_a_target", "Kein gueltiges Ziel fuer diese Karte.");
+            // Taking an item from an event, then the mechanic wording the card
+            // description builder assembles: triggers, targets and summons
             Add("de", "event_item_taken", "{0} genommen.");
             Add("de", "status_mech_applies", "gibt {0} {1}");
             Add("de", "status_mech_damage", "verursacht {0} Schaden");
@@ -305,12 +307,15 @@ namespace WildfrostAccessibility
             Add("de", "mech_summon_counter", "handelt alle {0}");
             Add("de", "mech_trigger_meaning", "Ausloesen heisst: diese Karte greift sofort an, wenn das passiert, auf ihr eigenes Ziel, zusaetzlich zu ihrem normalen Zug. Ihr Zaehler wird nicht zurueckgesetzt, der Angriff ist also gratis.");
             Add("de", "mech_trigger_retaliate", "Wird diese Karte getroffen, schlaegt sie sofort gegen den Angreifer zurueck, zusaetzlich zu ihrem normalen Zug.");
+            // Card badges: injuries, mentioned keywords and upgrade kinds
             Add("de", "card_injured_one", "Verletzt.");
             Add("de", "card_injured", "Verletzt x{0}.");
             Add("de", "card_mentions", "Erwaehnt {0}");
             Add("de", "upgrade_charm", "Talisman");
             Add("de", "upgrade_crown", "Krone");
             Add("de", "upgrade_token", "Marke");
+            // Back on the battle screen: Last Stand, injuries, the crown
+            // holder, and the redraw, wave and modifier bells
             Add("de", "battle_last_stand", "Letztes Gefecht! {0} weigert sich zu fallen. Der Kampf entscheidet sich per Wuerfelwurf. Enter wuerfelt.");
             Add("de", "battle_last_stand_generic", "Letztes Gefecht! Der Kampf entscheidet sich per Wuerfelwurf. Enter wuerfelt.");
             Add("de", "battle_last_stand_rolling", "Die Wuerfel rollen.");
@@ -326,6 +331,7 @@ namespace WildfrostAccessibility
             Add("de", "battle_wave_call_reward", "Belohnung fuer sofortiges Laeuten: {0} Gold.");
             Add("de", "battle_no_modifiers", "Keine Modifikator-Glocken aktiv.");
             Add("de", "battle_modifier_bell", "Modifikator-Glocke.");
+            // Game menu (the pause screen): tabs, settings rows and lore pages
             Add("de", "screen_pause", "Spielmenue.");
             Add("de", "pause_hint", "Hoch und runter bewegen sich durch die Seite, Enter aktiviert. Links und rechts wechseln die Tabs oder aendern den Wert einer Einstellung. T springt zu den Tabs, Escape geht zurueck. O schliesst das Menue.");
             Add("de", "pause_no_tabs", "Hier sind keine Tabs erreichbar. Escape geht zurueck.");
@@ -346,6 +352,8 @@ namespace WildfrostAccessibility
             Add("de", "pause_lore_closed", "Seite geschlossen.");
             Add("de", "stat_no_value", "keine");
             Add("de", "help_pause", "Spielmenue. Hoch und runter bewegen sich durch die Seitenelemente, Enter aktiviert. Links und rechts bewegen sich durch die Tabs oder aendern den Wert einer Einstellung. T springt zur Tab-Leiste. Escape geht eine Ebene zurueck, zum Beispiel aus einer Einstellungskategorie. Tab und Umschalt Tab gehen ebenfalls durch die Seite. O schliesst das Menue.");
+            // Story events (Event scene, cinema bar text), the inspect view
+            // and the shared prompt panel
             Add("de", "event_prompt_action", "Enter druecken.");
             Add("de", "event_crack", "Riss {0} von 4.");
             Add("de", "select_blocked", "Das kann gerade nicht gewaehlt werden.");
@@ -355,9 +363,13 @@ namespace WildfrostAccessibility
             Add("de", "nothing_to_inspect", "Hier gibt es nichts zu untersuchen.");
             Add("de", "help_panel_hint", "Pfeiltasten links und rechts waehlen eine Schaltflaeche, Enter drueckt sie, Escape geht zurueck.");
             Add("de", "help_panel_no_back", "Diese Abfrage braucht eine Antwort. Links und rechts waehlen, dann Enter.");
-            // Town overlays, the tribe strings and the unlock buildings. Tribe
-            // names themselves stay as they are — Snowdwellers, Shademancers and
-            // Clunkmasters are proper nouns the game never translates either.
+            // Translated later and kept in key order: the town overlays and
+            // unlock buildings, the shrine challenges, the character select
+            // back and position labels, the Icebreaker Hut's map events, the
+            // tribe names, blurbs and hall, and the in-front placement
+            // tutorial hint. Tribe names themselves stay as they are —
+            // Snowdwellers, Shademancers and Clunkmasters are proper nouns
+            // the game never translates either.
             Add("de", "building_back", "Zurueck.");
             Add("de", "building_closed", "Geschlossen.");
             Add("de", "building_overlay_hint", "Pfeiltasten wechseln zwischen den Bannern, Enter oeffnet eines, Escape verlaesst, I liest erneut.");
@@ -406,6 +418,7 @@ namespace WildfrostAccessibility
             Add("de", "unlockhut_unlocked", "{0} von {1} freigeschaltet: {2}.");
             Add("de", "unlockhut_unlocked_none", "Noch keiner der {0} Plaetze ist offen.");
 
+            // Closing the prompt panel, and the event screen's F1 help
             Add("de", "help_panel_closed", "Geschlossen.");
             Add("de", "help_event", "Ereignis-Bildschirm. Ein Story-Ereignis auf deiner Reise; Titel und Text werden vorgelesen, sobald sie erscheinen. Pfeiltasten wechseln zwischen Elementen, Enter aktiviert. In einem Laden nennt jede Ware ihren Preis und ob du sie dir leisten kannst; druecke Enter darauf zum Kaufen und G, um deinen aktuellen Goldstand zu hoeren. I untersucht die fokussierte Karte, so wie Rechtsklick fuer sehende Spieler, Escape schliesst die Untersuchung. P oeffnet dein Inventar.");
 

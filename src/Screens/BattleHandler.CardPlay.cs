@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace WildfrostAccessibility
@@ -262,21 +261,6 @@ namespace WildfrostAccessibility
         {
             try { return ActionQueue.Empty; }
             catch { return true; }
-        }
-
-        /// <summary>How many cards in the player's hand carry a crown.</summary>
-        private static int CountCrownedInHand(Battle battle)
-        {
-            var hand = battle?.player?.handContainer;
-            if (hand == null) return 0;
-
-            int count = 0;
-            foreach (Entity entity in hand)
-            {
-                if (entity?.data != null && entity.data.HasCrown)
-                    count++;
-            }
-            return count;
         }
 
     }

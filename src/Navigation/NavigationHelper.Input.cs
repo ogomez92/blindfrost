@@ -1,12 +1,13 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace WildfrostAccessibility
 {
     /// <summary>
-    /// Shared keyboard navigation utilities.
-    /// Provides arrow key input that works with the game's UINavigationSystem.
+    /// Reading the keyboard: arrow keys with hold-to-repeat, confirm and back,
+    /// the text-field guard that mutes letter bindings while typing, and
+    /// forcing the game into controller mode so its UINavigationSystem keeps
+    /// processing navigation instead of clearing it.
     /// </summary>
     public static partial class NavigationHelper
     {

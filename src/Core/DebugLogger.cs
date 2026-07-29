@@ -4,7 +4,7 @@ using UnityEngine;
 namespace WildfrostAccessibility
 {
     /// <summary>
-    /// Categorized debug logging. Only active when debug mode is enabled (F12).
+    /// Categorized debug logging. Only active when debug mode is enabled (F10).
     /// Zero overhead when disabled — checks a bool before doing any work.
     /// </summary>
     public static class DebugLogger

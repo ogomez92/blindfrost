@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace WildfrostAccessibility
@@ -180,16 +179,5 @@ namespace WildfrostAccessibility
         /// </summary>
         private bool InspectPanelSuppression
             => _inspectWasRunning || Time.unscaledTime < _inspectSuppressUntil;
-
-        /// <summary>
-        /// Keep focus changes silent for a moment so they don't talk over an
-        /// announcement that matters more (deckpack pickups, menu openings).
-        /// Focus is still tracked — the item is just not spoken.
-        /// </summary>
-        internal void SuppressFocusFor(float seconds)
-        {
-            _inspectSuppressUntil = Mathf.Max(
-                _inspectSuppressUntil, Time.unscaledTime + seconds);
-        }
     }
 }

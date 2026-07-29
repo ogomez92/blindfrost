@@ -5,7 +5,8 @@ namespace WildfrostAccessibility
 {
     /// <summary>
     /// On-demand readout keys: hand, board, waves, bell, modifiers, gold
-    /// and turn, plus the wave-countdown text they share.
+    /// and turn, plus the hand count and wave-countdown text they share
+    /// with the screen announcement.
     /// </summary>
     public partial class BattleHandler
     {
@@ -29,6 +30,21 @@ namespace WildfrostAccessibility
             ScreenReader.Say(
                 Loc.Get("battle_hand_count", hand.Count) + " " + string.Join(", ", names),
                 interrupt: true);
+        }
+
+        /// <summary>How many cards in the player's hand carry a crown.</summary>
+        private static int CountCrownedInHand(Battle battle)
+        {
+            var hand = battle?.player?.handContainer;
+            if (hand == null) return 0;
+
+            int count = 0;
+            foreach (Entity entity in hand)
+            {
+                if (entity?.data != null && entity.data.HasCrown)
+                    count++;
+            }
+            return count;
         }
 
         private void AnnounceBoard()

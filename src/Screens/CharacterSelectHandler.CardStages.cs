@@ -4,9 +4,11 @@ using UnityEngine;
 namespace WildfrostAccessibility
 {
     /// <summary>
-    /// The leader and pet card stages: the strict focus cycle over the choosable
-    /// cards plus the back button, the focus and description overrides it feeds,
-    /// and the Enter/Escape handling (locked-tribe refusal, going back).
+    /// The leader and pet card stages, plus the back button every stage shares:
+    /// the strict focus cycle over the choosable cards (the back button as its
+    /// last stop), the "Leader 1 of 3" position each card is read with, and the
+    /// ways out — Enter on the back button is handled with the tribe stage's
+    /// Enter, Escape here.
     /// </summary>
     public partial class CharacterSelectHandler
     {
@@ -91,35 +93,6 @@ namespace WildfrostAccessibility
             return -1;
         }
 
-        protected override UINavigationItem DefaultFocusItem()
-        {
-            if (TribeNavActive(out var entries))
-            {
-                // First tribe the player can pick — never a locked one, and
-                // never the trailing back button
-                var playable = FirstPlayableEntry(entries);
-                return playable != null ? playable.Nav : entries[0].Nav;
-            }
-            return base.DefaultFocusItem();
-        }
-
-        public override List<string> GetFocusedDetailParts(UINavigationItem item)
-        {
-            if (item != null)
-            {
-                var flag = item.GetComponentInParent<TribeFlagDisplay>();
-                if (flag == null && item.clickHandler != null)
-                    flag = item.clickHandler.GetComponentInParent<TribeFlagDisplay>();
-                if (flag != null)
-                {
-                    var parts = ItemDescriber.BuildTribeDetailParts(flag);
-                    if (parts != null && parts.Count > 0)
-                        return parts;
-                }
-            }
-            return base.GetFocusedDetailParts(item);
-        }
-
         protected override string GetItemDescription(UINavigationItem item)
         {
             var backNav = GetBackButtonNav();
@@ -146,40 +119,22 @@ namespace WildfrostAccessibility
             return base.GetItemDescription(item);
         }
 
-        protected override void Confirm()
+        // ---- The back button, and backing out --------------------------------
+        // Every stage ends on the back button, so its nav item is looked up here
+        // for the tribe list as well as the card cycle.
+
+        /// <summary>The screen's back-button nav item, or null when the game hides
+        /// it (a run that cannot be backed out of).</summary>
+        private UINavigationItem GetBackButtonNav()
         {
-            var navSystem = MonoBehaviourSingleton<UINavigationSystem>.instance;
-            var current = navSystem?.currentNavigationItem;
-            var backNav = GetBackButtonNav();
-            if (backNav != null && current == backNav && _screen != null)
-            {
-                DebugLogger.LogInput(Name, "Back (Enter on back button)");
-                _screen.Back();
-                return;
-            }
+            EnsureRefs();
+            if (_screen == null) return null;
 
-            // A locked tribe is still fully pressable — the game's own filter
-            // never removed it (see the tribe-lock notes in ItemDescriber), and
-            // SelectTribe.Run cleared the padlock on every flag it was handed.
-            // Refuse it here and say what it takes to earn it instead of
-            // starting a run with a tribe this save never unlocked.
-            if (TribeNavActive(out var entries))
-            {
-                int index = CurrentTribeIndex(entries, current);
-                if (index >= 0 && entries[index].Locked)
-                {
-                    var tribe = entries[index].Tribe;
-                    DebugLogger.LogInput(Name, $"Blocked locked tribe: {tribe?.name}");
-                    ScreenReader.Say(
-                        Loc.Get("tribe_locked_blocked",
-                            ItemDescriber.GetTribeName(tribe),
-                            ItemDescriber.GetTribeLockReason(tribe)),
-                        interrupt: true);
-                    return;
-                }
-            }
+            var backButton = ReflectionUtil.GetField<GameObject>(_screen, "backButton");
+            if (backButton == null || !backButton.activeInHierarchy) return null;
 
-            base.Confirm();
+            return backButton.GetComponent<UINavigationItem>()
+                ?? backButton.GetComponentInChildren<UINavigationItem>(true);
         }
 
         protected override void HandleInput()
@@ -215,14 +170,6 @@ namespace WildfrostAccessibility
                 DebugLogger.LogInput(Name, "Back (Escape)");
                 _screen.Back();
             }
-        }
-
-        private void SpeakTribeRoster(ClassData tribe)
-        {
-            string text = ItemDescriber.DescribeTribeRoster(tribe);
-            ScreenReader.Say(
-                !string.IsNullOrEmpty(text) ? text : Loc.Get("tribe_no_roster"),
-                interrupt: true);
         }
     }
 }

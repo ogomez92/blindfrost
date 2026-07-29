@@ -1,22 +1,21 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using UnityEngine;
-using UnityEngine.Localization;
-using UnityEngine.Localization.Settings;
-
 namespace WildfrostAccessibility
 {
     /// <summary>
-    /// Strings for the overlay scenes and the visual-moment narration,
-    /// in every core language.
+    /// Strings for the overlay scenes, the visual-moment narration and the
+    /// companion limit screen, plus a few handler strings that belong to no
+    /// other part: the event card pickup, the CampaignEnd press-again prompt
+    /// and the generic screen help. English, German, Spanish and French only;
+    /// every other locale falls back to English.
     /// </summary>
     public static partial class Loc
     {
         /// <summary>
         /// Strings for the overlay scenes (boss rewards, card frames, town
-        /// unlocks, Frostoscope, journal, credits) and the visual-moment
-        /// narration (speech bubbles, miniboss arrivals, the final-boss shade).
+        /// unlocks, Frostoscope, journal, credits), the visual-moment
+        /// narration (speech bubbles, miniboss arrivals, waves, recoveries,
+        /// the final-boss shade), the companion limit screen, and the event
+        /// card pickup, CampaignEnd press-again and generic screen help
+        /// strings. Registered for English, German, Spanish and French.
         /// </summary>
         private static void RegisterOverlayAndNarrationStrings()
         {
@@ -83,7 +82,6 @@ namespace WildfrostAccessibility
             Add("en", "companion_limit_can_continue", "You can continue now.");
             Add("en", "companion_limit_row_active", "active row");
             Add("en", "companion_limit_row_reserve", "reserve row");
-            Add("en", "charselect_tribes", "Select a tribe. Use the up and down arrow keys to move between the tribes; each tribe's name and playstyle are read as you land on it. Press the right arrow to hear that tribe's leaders and starting deck, or hold Control and press up to step through them. Press Enter to choose the focused tribe, or Escape to go back.");
 
             // ----- German ------------------------------------------------------
             Add("de", "scene_CardFramesUnlocked", "Kartenrahmen freigeschaltet!");
@@ -148,7 +146,6 @@ namespace WildfrostAccessibility
             Add("de", "companion_limit_can_continue", "Du kannst jetzt fortfahren.");
             Add("de", "companion_limit_row_active", "aktive Reihe");
             Add("de", "companion_limit_row_reserve", "Reserve-Reihe");
-            Add("de", "charselect_tribes", "Waehle einen Stamm. Mit den Pfeiltasten hoch und runter wechselst du zwischen den Staemmen; Name und Spielstil jedes Stammes werden vorgelesen. Die Pfeiltaste rechts liest Anfuehrer und Startdeck des Stammes vor, oder halte Strg und druecke hoch, um sie durchzugehen. Eingabe waehlt den fokussierten Stamm, Escape geht zurueck.");
 
             // ----- Spanish -----------------------------------------------------
             Add("es", "scene_CardFramesUnlocked", "Marcos de carta desbloqueados!");
@@ -213,7 +210,6 @@ namespace WildfrostAccessibility
             Add("es", "companion_limit_can_continue", "Ya puedes continuar.");
             Add("es", "companion_limit_row_active", "fila activa");
             Add("es", "companion_limit_row_reserve", "fila de reserva");
-            Add("es", "charselect_tribes", "Elige una tribu. Usa las flechas arriba y abajo para moverte entre las tribus; se lee el nombre y el estilo de cada tribu al enfocarla. Pulsa la flecha derecha para oir los lideres y el mazo inicial de esa tribu, o manten Control y pulsa arriba para recorrerlos. Pulsa Intro para elegir la tribu enfocada, o Escape para volver atras.");
 
             // ----- French ------------------------------------------------------
             Add("fr", "scene_CardFramesUnlocked", "Cadres de carte debloques!");
@@ -268,7 +264,16 @@ namespace WildfrostAccessibility
             Add("fr", "narrate_shade_blocked", "{0} bloque la volute sombre! Le Givre est scelle.");
             Add("fr", "narrate_frost_eyes", "Les yeux de {0} brillent de givre. Le Givre s'est empare de lui.");
             Add("fr", "narrate_combine", "Vos cartes tourbillonnent et fusionnent en quelque chose de nouveau!");
-            Add("fr", "charselect_tribes", "Choisissez une tribu. Utilisez les fleches haut et bas pour passer d'une tribu a l'autre; le nom et le style de chaque tribu sont lus. La fleche droite lit les chefs et le deck de depart de la tribu, ou maintenez Controle et appuyez sur haut pour les parcourir. Entree choisit la tribu selectionnee, ou Echap pour revenir en arriere.");
+
+            Add("fr", "companion_limit_open", "Trop de compagnons! Vous en avez {0}, mais seuls {1} peuvent etre actifs. Les fleches naviguent entre les compagnons, Entree deplace celui qui est selectionne entre la rangee active et la reserve; les compagnons en reserve ne combattent pas. Appuyez sur Continuer quand vous avez fini.");
+            Add("fr", "companion_limit_active_list", "Actifs: {0}.");
+            Add("fr", "companion_limit_reserve_list", "En reserve: {0}.");
+            Add("fr", "companion_limit_moved_active", "{0} deplace dans la rangee active. {1} actifs sur {2}.");
+            Add("fr", "companion_limit_moved_reserve", "{0} deplace en reserve. {1} actifs sur {2}.");
+            Add("fr", "companion_limit_over", "Au-dessus de la limite; mettez un compagnon en reserve pour continuer.");
+            Add("fr", "companion_limit_can_continue", "Vous pouvez continuer maintenant.");
+            Add("fr", "companion_limit_row_active", "rangee active");
+            Add("fr", "companion_limit_row_reserve", "rangee de reserve");
         }
 
     }

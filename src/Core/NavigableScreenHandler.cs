@@ -1,13 +1,15 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace WildfrostAccessibility
 {
     /// <summary>
-    /// Base class for screen handlers with the standard accessibility loop:
-    /// announce the screen on entry, arrow key navigation, Enter to activate,
-    /// and announcing the focused item whenever it changes.
-    /// Subclasses customize via GetScreenAnnouncement / GetItemDescription / GetItems.
+    /// Base class for screen handlers with the standard accessibility loop.
+    /// This part holds the per-screen state, the enter/exit reset, the frame
+    /// loop that drives everything, and the screen-announcement lifecycle
+    /// (AnnounceDelay, TryAnnounceScreen, and the timeout that guarantees the
+    /// screen is eventually named). Input, arrow-key navigation and the focus
+    /// tracker live in NavigableScreenHandler.Navigation.cs; the inspect view
+    /// and the chosen-card confirm panel in NavigableScreenHandler.Inspect.cs.
     /// </summary>
     public abstract partial class NavigableScreenHandler : ScreenHandler
     {
@@ -116,5 +118,11 @@ namespace WildfrostAccessibility
             PumpRefocus();
             CheckAndAnnounceFocus();
         }
+
+        /// <summary>
+        /// Announce this screen (name, context, hints). Return false to retry next frame
+        /// while content is still loading; return true once announced.
+        /// </summary>
+        protected abstract bool TryAnnounceScreen();
     }
 }

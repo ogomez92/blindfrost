@@ -5,7 +5,8 @@ using UnityEngine;
 namespace WildfrostAccessibility
 {
     /// <summary>
-    /// The Daily Voyage balloon overlay: its real buttons, and the summary of the
+    /// The Daily Voyage balloon overlay: picking its two real buttons out of the
+    /// navigation items the deck cards also carry, and the summary of the
     /// daily's date, fixed deck and modifiers.
     /// </summary>
     public partial class TownHandler
@@ -213,6 +214,18 @@ namespace WildfrostAccessibility
             if (names.Count == 0)
                 return null;
             return Loc.Get("balloon_modifiers", names.Count, string.Join(", ", names));
+        }
+
+        /// <summary>Whether a navigation item belongs to the given GameObject's subtree.</summary>
+        private static bool IsPartOf(UINavigationItem item, GameObject root)
+        {
+            if (root == null || item == null)
+                return false;
+            Transform rootT = root.transform;
+            if (item.transform == rootT || item.transform.IsChildOf(rootT))
+                return true;
+            return item.clickHandler != null
+                && (item.clickHandler.transform == rootT || item.clickHandler.transform.IsChildOf(rootT));
         }
 
     }

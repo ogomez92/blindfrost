@@ -1,15 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using UnityEngine;
-using UnityEngine.Localization;
-using UnityEngine.Localization.Settings;
-
 namespace WildfrostAccessibility
 {
     /// <summary>
-    /// The French half of the screen handler string table (Town, ContinueRun,
-    /// Map, Battle and the shared item descriptions).
+    /// The French part of the screen handler string table: Town, ContinueRun,
+    /// Map, Battle, CharacterSelect and its tribes, MainMenu, BattleWin,
+    /// CampaignEnd, the Daily Voyage balloon, the deckpack inventory, the map
+    /// node categories, the pause menu, the story events, and the shared item
+    /// descriptions.
     /// </summary>
     public static partial class Loc
     {
@@ -54,6 +50,7 @@ namespace WildfrostAccessibility
             Add("fr", "battlewin_injuries", "Blesses dans cette bataille: {0}.");
             Add("fr", "battlewin_not_ready", "L'ecran de victoire est encore en train d'apparaitre, un instant.");
             Add("fr", "help_battlewin", "Ecran de victoire apres une bataille gagnee. Peut afficher les compagnons blesses au combat. Entree continue le voyage.");
+            Add("fr", "charselect_tribes", "Choisissez une tribu. Utilisez les fleches haut et bas pour passer d'une tribu a l'autre; le nom et le style de chaque tribu sont lus. La fleche droite lit les chefs et le deck de depart de la tribu, ou maintenez Controle et appuyez sur haut pour les parcourir. Entree choisit la tribu selectionnee, ou Echap pour revenir en arriere.");
             Add("fr", "charselect_leaders", "Choisissez votre chef. Les fleches changent de chef, Entree selectionne.");
             Add("fr", "charselect_chosen", "{0} choisi. Entree confirme, Echap remet la carte.");
             Add("fr", "charselect_chosen_generic", "Carte choisie. Entree confirme, Echap la remet.");
@@ -163,6 +160,7 @@ namespace WildfrostAccessibility
             Add("fr", "deckpack_crown_taken", "Couronne retiree de {0} et rangee dans l'inventaire.");
             Add("fr", "deckpack_card_blocked", "Les options de carte ne sont pas disponibles maintenant.");
             Add("fr", "help_deckpack", "Inventaire. Votre deck, vos cartes en reserve et les talismans et couronnes obtenus. Haut et bas changent de groupe: deck, reserve, talismans, couronnes et boutons. Gauche et droite se deplacent dans un groupe. Entree sur un talisman ou une couronne le prend: les fleches passent alors entre les cartes qui peuvent le porter, Entree le fixe definitivement, Echap le repose. Entree sur une carte ouvre ses options, comme la deplacer entre deck et reserve. I inspecte la carte selectionnee. P ou Echap ferme l'inventaire.");
+            // Map node categories
             Add("fr", "node_type_boss", "combat de boss");
             Add("fr", "node_type_battle", "combat");
             Add("fr", "node_type_shop", "boutique");
@@ -179,6 +177,8 @@ namespace WildfrostAccessibility
             Add("fr", "node_type_clunkshop", "boutique de bidules");
             Add("fr", "node_type_muncher", "muncher");
             Add("fr", "node_type_event", "evenement");
+            // Battle: turn flow, the four groups, playing and moving cards,
+            // combat events, in-fight card readouts and the navigation edge cue
             Add("fr", "screen_battle", "Bataille!");
             Add("fr", "battle_wave_total", "{0} vagues ennemies.");
             Add("fr", "battle_hand_count", "{0} cartes en main.");
@@ -269,6 +269,8 @@ namespace WildfrostAccessibility
             Add("fr", "battle_health_none_enemy", "Aucun ennemi sur le plateau.");
             Add("fr", "nav_edge", "Bord.");
             Add("fr", "battle_not_a_target", "Cible invalide pour cette carte.");
+            // Taking an item from an event, then the mechanic wording the card
+            // description builder assembles: triggers, targets and summons
             Add("fr", "event_item_taken", "{0} pris.");
             Add("fr", "status_mech_applies", "applique {0} {1}");
             Add("fr", "status_mech_damage", "inflige {0} degats");
@@ -305,12 +307,15 @@ namespace WildfrostAccessibility
             Add("fr", "mech_summon_counter", "agit tous les {0}");
             Add("fr", "mech_trigger_meaning", "Se declencher signifie que cette carte attaque des que cela arrive, sur sa propre cible, en plus de son tour normal. Son compte a rebours n'est pas remis a zero, l'attaque est donc gratuite.");
             Add("fr", "mech_trigger_retaliate", "Quand quelque chose frappe cette carte, elle riposte aussitot contre l'attaquant, en plus de son tour normal.");
+            // Card badges: injuries, mentioned keywords and upgrade kinds
             Add("fr", "card_injured_one", "Blesse.");
             Add("fr", "card_injured", "Blesse x{0}.");
             Add("fr", "card_mentions", "Mentionne {0}");
             Add("fr", "upgrade_charm", "talisman");
             Add("fr", "upgrade_crown", "couronne");
             Add("fr", "upgrade_token", "jeton");
+            // Back on the battle screen: Last Stand, injuries, the crown
+            // holder, and the redraw, wave and modifier bells
             Add("fr", "battle_last_stand", "Dernier combat! {0} refuse de tomber. La bataille se joue aux des. Appuyez sur Entree pour lancer les des.");
             Add("fr", "battle_last_stand_generic", "Dernier combat! La bataille se joue aux des. Appuyez sur Entree pour lancer les des.");
             Add("fr", "battle_last_stand_rolling", "Lancer des des.");
@@ -326,6 +331,7 @@ namespace WildfrostAccessibility
             Add("fr", "battle_wave_call_reward", "Recompense si sonnee maintenant: {0} d'or.");
             Add("fr", "battle_no_modifiers", "Aucune cloche de modificateur active.");
             Add("fr", "battle_modifier_bell", "Cloche de modificateur.");
+            // Game menu (the pause screen): tabs, settings rows and lore pages
             Add("fr", "screen_pause", "Menu du jeu.");
             Add("fr", "pause_hint", "Haut et bas parcourent la page, Entree active. Gauche et droite changent d'onglet, ou modifient la valeur d'un reglage. T va aux onglets, Echap revient en arriere. Appuyez sur O pour fermer le menu.");
             Add("fr", "pause_no_tabs", "Aucun onglet accessible ici. Echap revient en arriere.");
@@ -346,6 +352,8 @@ namespace WildfrostAccessibility
             Add("fr", "pause_lore_closed", "Page fermee.");
             Add("fr", "stat_no_value", "aucun");
             Add("fr", "help_pause", "Menu du jeu. Haut et bas parcourent les elements de la page, Entree active. Gauche et droite parcourent les onglets, ou modifient la valeur d'un reglage. T va aux onglets. Echap revient d'un niveau, par exemple hors d'une categorie de reglages. Tab et Maj Tab parcourent aussi la page. Appuyez sur O pour fermer le menu.");
+            // Story events (Event scene, cinema bar text), the inspect view
+            // and the shared prompt panel
             Add("fr", "event_prompt_action", "Appuyez sur Entree.");
             Add("fr", "event_crack", "Fissure {0} sur 4.");
             Add("fr", "select_blocked", "Impossible de choisir ceci pour le moment.");
@@ -355,19 +363,13 @@ namespace WildfrostAccessibility
             Add("fr", "nothing_to_inspect", "Rien a inspecter ici.");
             Add("fr", "help_panel_hint", "Les fleches gauche et droite choisissent un bouton, Entree l'active, Echap revient en arriere.");
             Add("fr", "help_panel_no_back", "Cette invite demande une reponse. Utilisez gauche et droite, puis Entree.");
-            // Town overlays, the tribe strings and the unlock buildings. Tribe
-            // names themselves stay as they are — Snowdwellers, Shademancers and
-            // Clunkmasters are proper nouns the game never translates either.
-            Add("fr", "companion_limit_open", "Trop de compagnons! Vous en avez {0}, mais seuls {1} peuvent etre actifs. Les fleches naviguent entre les compagnons, Entree deplace celui qui est selectionne entre la rangee active et la reserve; les compagnons en reserve ne combattent pas. Appuyez sur Continuer quand vous avez fini.");
-            Add("fr", "companion_limit_active_list", "Actifs: {0}.");
-            Add("fr", "companion_limit_reserve_list", "En reserve: {0}.");
-            Add("fr", "companion_limit_moved_active", "{0} deplace dans la rangee active. {1} actifs sur {2}.");
-            Add("fr", "companion_limit_moved_reserve", "{0} deplace en reserve. {1} actifs sur {2}.");
-            Add("fr", "companion_limit_over", "Au-dessus de la limite; mettez un compagnon en reserve pour continuer.");
-            Add("fr", "companion_limit_can_continue", "Vous pouvez continuer maintenant.");
-            Add("fr", "companion_limit_row_active", "rangee active");
-            Add("fr", "companion_limit_row_reserve", "rangee de reserve");
-
+            // Translated later and kept in key order: the town overlays and
+            // unlock buildings, the shrine challenges, the character select
+            // back and position labels, the Icebreaker Hut's map events, the
+            // tribe names, blurbs and hall, and the in-front placement
+            // tutorial hint. Tribe names themselves stay as they are —
+            // Snowdwellers, Shademancers and Clunkmasters are proper nouns
+            // the game never translates either.
             Add("fr", "building_back", "Retour.");
             Add("fr", "building_closed", "Ferme.");
             Add("fr", "building_overlay_hint", "Les fleches naviguent entre les bannieres, Entree en ouvre une, Echap quitte, I relit.");
@@ -416,6 +418,7 @@ namespace WildfrostAccessibility
             Add("fr", "unlockhut_unlocked", "{0} debloques sur {1}: {2}.");
             Add("fr", "unlockhut_unlocked_none", "Aucun de ses {0} emplacements n'est encore ouvert.");
 
+            // Closing the prompt panel, and the event screen's F1 help
             Add("fr", "help_panel_closed", "Ferme.");
             Add("fr", "help_event", "Ecran d'evenement. Un evenement d'histoire sur votre voyage; son titre et son texte sont lus quand ils apparaissent. Les fleches naviguent entre les elements, Entree active. Dans une boutique, chaque article annonce son prix et si vous pouvez vous le permettre; appuyez sur Entree dessus pour l'acheter, et sur G pour entendre votre or actuel. I inspecte la carte selectionnee, comme le clic droit pour les joueurs voyants, Echap ferme l'inspection. P ouvre votre inventaire.");
         }

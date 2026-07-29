@@ -4,9 +4,10 @@ using UnityEngine;
 namespace WildfrostAccessibility
 {
     /// <summary>
-    /// Tribe-stage navigation: the TribeEntry model over SelectTribe's flags,
-    /// the opening-focus correction onto the first playable tribe, and the
-    /// remapped arrows (up/down between tribes, left/right read the roster).
+    /// Tribe-stage navigation: the TribeEntry model over SelectTribe's flags, the
+    /// opening-focus correction onto the first playable tribe, the remapped arrows
+    /// (up/down between tribes, left/right read the roster), the flag's detail
+    /// parts, and the Enter that refuses a tribe this save has not unlocked.
     /// </summary>
     public partial class CharacterSelectHandler
     {
@@ -95,20 +96,6 @@ namespace WildfrostAccessibility
             foreach (var entry in entries)
                 if (entry.Tribe != null && !entry.Locked) return entry;
             return null;
-        }
-
-        /// <summary>The screen's back-button nav item, or null when the game hides
-        /// it (a run that cannot be backed out of).</summary>
-        private UINavigationItem GetBackButtonNav()
-        {
-            EnsureRefs();
-            if (_screen == null) return null;
-
-            var backButton = ReflectionUtil.GetField<GameObject>(_screen, "backButton");
-            if (backButton == null || !backButton.activeInHierarchy) return null;
-
-            return backButton.GetComponent<UINavigationItem>()
-                ?? backButton.GetComponentInChildren<UINavigationItem>(true);
         }
 
         /// <summary>True (with the entries) while the tribe-choice stage is the one
@@ -222,6 +209,18 @@ namespace WildfrostAccessibility
                 $"Opening tribe focus set to {target.Tribe?.name}");
         }
 
+        protected override UINavigationItem DefaultFocusItem()
+        {
+            if (TribeNavActive(out var entries))
+            {
+                // First tribe the player can pick — never a locked one, and
+                // never the trailing back button
+                var playable = FirstPlayableEntry(entries);
+                return playable != null ? playable.Nav : entries[0].Nav;
+            }
+            return base.DefaultFocusItem();
+        }
+
         private void NavigateTribes(List<TribeEntry> entries, NavDirection dir)
         {
             _tribeNavUsed = true;
@@ -249,6 +248,14 @@ namespace WildfrostAccessibility
             }
         }
 
+        private void SpeakTribeRoster(ClassData tribe)
+        {
+            string text = ItemDescriber.DescribeTribeRoster(tribe);
+            ScreenReader.Say(
+                !string.IsNullOrEmpty(text) ? text : Loc.Get("tribe_no_roster"),
+                interrupt: true);
+        }
+
         protected override List<UINavigationItem> GetItems()
         {
             if (TribeNavActive(out var entries))
@@ -263,5 +270,57 @@ namespace WildfrostAccessibility
             return base.GetItems();
         }
 
+        public override List<string> GetFocusedDetailParts(UINavigationItem item)
+        {
+            if (item != null)
+            {
+                var flag = item.GetComponentInParent<TribeFlagDisplay>();
+                if (flag == null && item.clickHandler != null)
+                    flag = item.clickHandler.GetComponentInParent<TribeFlagDisplay>();
+                if (flag != null)
+                {
+                    var parts = ItemDescriber.BuildTribeDetailParts(flag);
+                    if (parts != null && parts.Count > 0)
+                        return parts;
+                }
+            }
+            return base.GetFocusedDetailParts(item);
+        }
+
+        protected override void Confirm()
+        {
+            var navSystem = MonoBehaviourSingleton<UINavigationSystem>.instance;
+            var current = navSystem?.currentNavigationItem;
+            var backNav = GetBackButtonNav();
+            if (backNav != null && current == backNav && _screen != null)
+            {
+                DebugLogger.LogInput(Name, "Back (Enter on back button)");
+                _screen.Back();
+                return;
+            }
+
+            // A locked tribe is still fully pressable — the game's own filter
+            // never removed it (see the tribe-lock notes in ItemDescriber), and
+            // SelectTribe.Run cleared the padlock on every flag it was handed.
+            // Refuse it here and say what it takes to earn it instead of
+            // starting a run with a tribe this save never unlocked.
+            if (TribeNavActive(out var entries))
+            {
+                int index = CurrentTribeIndex(entries, current);
+                if (index >= 0 && entries[index].Locked)
+                {
+                    var tribe = entries[index].Tribe;
+                    DebugLogger.LogInput(Name, $"Blocked locked tribe: {tribe?.name}");
+                    ScreenReader.Say(
+                        Loc.Get("tribe_locked_blocked",
+                            ItemDescriber.GetTribeName(tribe),
+                            ItemDescriber.GetTribeLockReason(tribe)),
+                        interrupt: true);
+                    return;
+                }
+            }
+
+            base.Confirm();
+        }
     }
 }

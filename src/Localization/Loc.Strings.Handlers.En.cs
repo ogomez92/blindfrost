@@ -1,15 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using UnityEngine;
-using UnityEngine.Localization;
-using UnityEngine.Localization.Settings;
-
 namespace WildfrostAccessibility
 {
     /// <summary>
-    /// The English half of the screen handler string table (Town, ContinueRun,
-    /// Map, Battle and the shared item descriptions).
+    /// The English part of the screen handler string table: Town, ContinueRun,
+    /// Map, Battle, CharacterSelect and its tribes, MainMenu, BattleWin,
+    /// CampaignEnd, the Daily Voyage balloon, the deckpack inventory, the map
+    /// node categories, the pause menu, the story events, and the shared item
+    /// descriptions.
     /// </summary>
     public static partial class Loc
     {
@@ -63,6 +59,7 @@ namespace WildfrostAccessibility
             Add("en", "help_battlewin", "Victory screen after winning a battle. It may list companions injured in the fight. Press Enter to continue the journey.");
 
             // Character select
+            Add("en", "charselect_tribes", "Select a tribe. Use the up and down arrow keys to move between the tribes; each tribe's name and playstyle are read as you land on it. Press the right arrow to hear that tribe's leaders and starting deck, or hold Control and press up to step through them. Press Enter to choose the focused tribe, or Escape to go back.");
             Add("en", "charselect_leaders", "Choose your leader. Arrow keys browse the leaders, Enter selects one.");
             Add("en", "charselect_leader_pos", "Leader {0} of {1}: {2}");
             Add("en", "charselect_pet_pos", "Pet {0} of {1}: {2}");
@@ -259,7 +256,8 @@ namespace WildfrostAccessibility
             Add("en", "node_type_muncher", "muncher");
             Add("en", "node_type_event", "event");
 
-            // Battle
+            // Battle: turn flow, the four groups, playing and moving cards,
+            // combat events, in-fight card readouts and the navigation edge cue
             Add("en", "screen_battle", "Battle!");
             Add("en", "battle_wave_total", "{0} enemy waves.");
             Add("en", "battle_hand_count", "{0} cards in hand.");
@@ -351,6 +349,8 @@ namespace WildfrostAccessibility
             Add("en", "battle_health_none_enemy", "No enemies on the board.");
             Add("en", "nav_edge", "Edge.");
             Add("en", "battle_not_a_target", "Not a valid target for this card.");
+            // Taking an item from an event, then the mechanic wording the card
+            // description builder assembles: triggers, targets and summons
             Add("en", "event_item_taken", "Took {0}.");
             Add("en", "status_mech_applies", "applies {0} {1}");
             Add("en", "status_mech_damage", "deals {0} damage");
@@ -387,12 +387,15 @@ namespace WildfrostAccessibility
             Add("en", "mech_summon_counter", "acts every {0}");
             Add("en", "mech_trigger_meaning", "Trigger means this card attacks the moment that happens, at its own target, on top of its normal turn. Its countdown is not reset, so the attack is free.");
             Add("en", "mech_trigger_retaliate", "When something hits this card, it strikes back at the attacker straight away, on top of its normal turn.");
+            // Card badges: injuries, mentioned keywords and upgrade kinds
             Add("en", "card_injured_one", "Injured.");
             Add("en", "card_injured", "Injured x{0}.");
             Add("en", "card_mentions", "Mentions {0}");
             Add("en", "upgrade_charm", "charm");
             Add("en", "upgrade_crown", "crown");
             Add("en", "upgrade_token", "token");
+            // Back on the battle screen: Last Stand, injuries, the crown
+            // holder, and the redraw, wave and modifier bells
             Add("en", "battle_last_stand", "Last Stand! {0} refuses to fall. The battle comes down to a dice roll. Press Enter to roll the dice.");
             Add("en", "battle_last_stand_generic", "Last Stand! The battle comes down to a dice roll. Press Enter to roll the dice.");
             Add("en", "battle_last_stand_rolling", "Rolling the dice.");
@@ -408,6 +411,7 @@ namespace WildfrostAccessibility
             Add("en", "battle_wave_call_reward", "Reward for ringing now: {0} gold.");
             Add("en", "battle_no_modifiers", "No modifier bells active.");
             Add("en", "battle_modifier_bell", "Modifier bell.");
+            // Game menu (the pause screen): tabs, settings rows and lore pages
             Add("en", "screen_pause", "Game menu.");
             Add("en", "pause_hint", "Up and down arrows move through the page, Enter activates. Left and right arrows switch tabs, or change the value on a setting. T jumps to the tabs, Escape goes back. Press O to close the menu.");
             Add("en", "pause_no_tabs", "No tabs reachable here. Press Escape to go back.");
@@ -429,7 +433,8 @@ namespace WildfrostAccessibility
             Add("en", "stat_no_value", "none");
             Add("en", "help_pause", "Game menu. Up and down arrows move through the page items, Enter activates. Left and right arrows move through the tabs, or change the value when on a setting. T jumps to the tab strip. Escape goes back one level, for example out of a settings category. Tab and Shift Tab also step through the page. Press O to close the menu.");
 
-            // Story events (Event scene, cinema bar text)
+            // Story events (Event scene, cinema bar text), the inspect view
+            // and the shared prompt panel
             Add("en", "event_prompt_action", "Press Enter.");
             Add("en", "event_crack", "Crack {0} of 4.");
             Add("en", "select_blocked", "This cannot be chosen right now.");

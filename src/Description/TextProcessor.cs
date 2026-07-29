@@ -1,15 +1,15 @@
-using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
-using UnityEngine;
 
 namespace WildfrostAccessibility
 {
     /// <summary>
     /// Processes game card/effect text into screen-reader-friendly plain text.
-    /// Expands keyword tags into readable names with descriptions.
-    /// Strips all rich text formatting (color, size, sprites, bold, etc.)
+    /// This part holds the pipeline the rest of the mod calls — expand the game's
+    /// tags, strip rich text, append the keyword explanations — plus the
+    /// <see cref="KeywordInfo"/> record and the cache of it that the Keywords,
+    /// Tags and Mentions parts all read.
     /// </summary>
     public static partial class TextProcessor
     {

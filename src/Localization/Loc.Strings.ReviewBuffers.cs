@@ -1,21 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using UnityEngine;
-using UnityEngine.Localization;
-using UnityEngine.Localization.Settings;
-
 namespace WildfrostAccessibility
 {
     /// <summary>
     /// Strings for the review buffers (Ctrl+arrows) and the V verbosity
-    /// toggle, in every core language.
+    /// toggle, in all 13 registered languages.
     /// </summary>
     public static partial class Loc
     {
         /// <summary>
         /// Review buffer strings (Ctrl+arrows) and the V verbosity toggle,
-        /// for every core language.
+        /// for all 13 registered languages, plus the buffer hint appended to
+        /// every screen's F1 help.
         /// </summary>
         private static void RegisterReviewBufferStrings()
         {
