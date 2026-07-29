@@ -464,6 +464,11 @@ namespace WildfrostAccessibility
             Add("en", "narrate_wave", "The wave bell tolls! New enemies charge onto the battlefield.");
             Add("en", "narrate_wave_enter", "{0} enters at {1}.");
             Add("en", "narrate_wave_no_room", "{0} more had no room and wait for the next wave.");
+            Add("en", "narrate_gold_gained", "Gained {0} gold.");
+            Add("en", "recover_one", "{0} has recovered and can fight again.");
+            Add("en", "recover_many", "Recovered and able to fight again: {0}.");
+            Add("en", "injured_event", "An injured companion from an earlier journey: {0}. Taking them adds them to your party injured, and they must recover before they can fight.");
+            Add("en", "injured_event_unnamed", "An injured companion from an earlier journey. Taking them adds them to your party injured, and they must recover before they can fight.");
             Add("en", "narrate_boss_transform", "{0} explodes and transforms! The battle enters a new phase.");
             Add("en", "narrate_shade_flee", "A dark wisp rises from the fallen guardian and flees into the storm.");
             Add("en", "narrate_shade_possess", "A dark wisp rises from the fallen guardian and dives toward your leader!");
@@ -524,6 +529,11 @@ namespace WildfrostAccessibility
             Add("de", "narrate_wave", "Die Wellenglocke laeutet! Neue Gegner stuermen aufs Schlachtfeld.");
             Add("de", "narrate_wave_enter", "{0} erscheint bei {1}.");
             Add("de", "narrate_wave_no_room", "{0} weitere hatten keinen Platz und warten auf die naechste Welle.");
+            Add("de", "narrate_gold_gained", "{0} Gold erhalten.");
+            Add("de", "recover_one", "{0} ist genesen und kann wieder kaempfen.");
+            Add("de", "recover_many", "Genesen und wieder kampfbereit: {0}.");
+            Add("de", "injured_event", "Ein verletzter Begleiter aus einer frueheren Reise: {0}. Wenn du ihn mitnimmst, kommt er verletzt in deine Gruppe und muss erst genesen, bevor er kaempfen kann.");
+            Add("de", "injured_event_unnamed", "Ein verletzter Begleiter aus einer frueheren Reise. Wenn du ihn mitnimmst, kommt er verletzt in deine Gruppe und muss erst genesen, bevor er kaempfen kann.");
             Add("de", "narrate_boss_transform", "{0} explodiert und verwandelt sich! Der Kampf tritt in eine neue Phase.");
             Add("de", "narrate_shade_flee", "Ein dunkler Schemen steigt aus dem gefallenen Waechter und flieht in den Sturm.");
             Add("de", "narrate_shade_possess", "Ein dunkler Schemen steigt aus dem gefallenen Waechter und stuerzt sich auf deinen Anfuehrer!");
@@ -584,6 +594,11 @@ namespace WildfrostAccessibility
             Add("es", "narrate_wave", "Suena la campana de oleada! Nuevos enemigos cargan al campo de batalla.");
             Add("es", "narrate_wave_enter", "{0} entra en {1}.");
             Add("es", "narrate_wave_no_room", "{0} mas no cabian y esperan a la siguiente oleada.");
+            Add("es", "narrate_gold_gained", "Has ganado {0} de oro.");
+            Add("es", "recover_one", "{0} se ha recuperado y puede volver a luchar.");
+            Add("es", "recover_many", "Recuperados y listos para luchar: {0}.");
+            Add("es", "injured_event", "Un companero herido de un viaje anterior: {0}. Si te lo llevas, se une herido a tu grupo y tendra que recuperarse antes de poder luchar.");
+            Add("es", "injured_event_unnamed", "Un companero herido de un viaje anterior. Si te lo llevas, se une herido a tu grupo y tendra que recuperarse antes de poder luchar.");
             Add("es", "narrate_boss_transform", "{0} explota y se transforma! La batalla entra en una nueva fase.");
             Add("es", "narrate_shade_flee", "Una voluta oscura surge del guardian caido y huye hacia la tormenta.");
             Add("es", "narrate_shade_possess", "Una voluta oscura surge del guardian caido y se lanza hacia tu lider!");
@@ -644,6 +659,11 @@ namespace WildfrostAccessibility
             Add("fr", "narrate_wave", "La cloche de vague sonne! De nouveaux ennemis chargent sur le champ de bataille.");
             Add("fr", "narrate_wave_enter", "{0} arrive en {1}.");
             Add("fr", "narrate_wave_no_room", "{0} autres n'avaient pas de place et attendent la prochaine vague.");
+            Add("fr", "narrate_gold_gained", "{0} or obtenu.");
+            Add("fr", "recover_one", "{0} est retabli et peut se battre de nouveau.");
+            Add("fr", "recover_many", "Retablis et prets a se battre: {0}.");
+            Add("fr", "injured_event", "Un compagnon blesse d'un voyage precedent: {0}. Si vous l'emmenez, il rejoint votre groupe blesse et devra se retablir avant de pouvoir se battre.");
+            Add("fr", "injured_event_unnamed", "Un compagnon blesse d'un voyage precedent. Si vous l'emmenez, il rejoint votre groupe blesse et devra se retablir avant de pouvoir se battre.");
             Add("fr", "narrate_boss_transform", "{0} explose et se transforme! La bataille entre dans une nouvelle phase.");
             Add("fr", "narrate_shade_flee", "Une volute sombre s'eleve du gardien tombe et s'enfuit dans la tempete.");
             Add("fr", "narrate_shade_possess", "Une volute sombre s'eleve du gardien tombe et fonce vers votre chef!");
@@ -938,6 +958,15 @@ namespace WildfrostAccessibility
             Add("en", "tribe_no_roster", "No leaders or starting deck listed for this tribe.");
             Add("en", "charselect_back", "Go back");
 
+            // Tribes this save has not earned. The game still puts their flags on
+            // the select screen (its own filter compares the wrong ScriptableObject
+            // instances), so the mod marks them and refuses them on Enter.
+            Add("en", "tribe_locked", "{0}, locked");
+            Add("en", "tribe_locked_hint", "New tribes unlock as the town progress meter fills, so keep winning battles and finishing runs.");
+            Add("en", "tribe_locked_building", "The unlock shows up at the {0}.");
+            Add("en", "tribe_locked_blocked", "{0} is locked, so it cannot be chosen. {1}");
+            Add("en", "charselect_tribes_locked", "Tribes you have not unlocked yet are still shown: they are read out as locked and cannot be chosen.");
+
             // Main menu
             Add("en", "help_main_menu", "Main menu. Up and down arrows move between buttons, Enter selects. F1 repeats this help, F10 toggles debug mode.");
 
@@ -950,9 +979,29 @@ namespace WildfrostAccessibility
             Add("en", "overlay_item", "{0}, {1} of {2}");
             Add("en", "tribe_banner", "Tribe banner");
             Add("en", "tribe_unlock_intro", "Complete this challenge to unlock the next tribe:");
-            Add("en", "pethut_pets", "{0} of {1} pets unlocked: {2}");
-            Add("en", "pethut_unlock_intro", "Complete this challenge to unlock the next pet:");
-            Add("en", "pethut_hint", "Arrow keys move between your pets, Escape leaves, I reads again.");
+            // The town's unlock buildings: Tribe Hall, Pet House, Inventor's Hut,
+            // companion hut, Icebreaker Hut. All browsed the same way.
+            Add("en", "unlock_state_unlocked", "unlocked");
+            Add("en", "unlock_state_locked", "locked");
+            Add("en", "unlock_slot_locked", "Locked slot");
+            Add("en", "unlock_entry_locked", "{0} is still locked.");
+            Add("en", "unlock_next_intro", "Next unlock:");
+            Add("en", "unlock_all_done", "Everything here is unlocked.");
+            Add("en", "unlock_detail_back", "Escape goes back.");
+            Add("en", "unlockhut_unlocked", "{0} of {1} unlocked: {2}.");
+            Add("en", "unlockhut_unlocked_none", "None of its {0} slots are open yet.");
+            Add("en", "unlockhut_hint", "Arrow keys move between the slots, Escape leaves, I reads the summary again.");
+            Add("en", "tribehall_unlocked", "{0} of {1} tribes unlocked: {2}.");
+            Add("en", "tribehall_unlocked_none", "None of its {0} tribes are unlocked yet.");
+            Add("en", "tribehall_hint", "Arrow keys move between the tribe banners, Enter opens the focused tribe's page, Escape leaves, I reads the summary again.");
+            Add("en", "icebreaker_unlocked", "{0} of {1} map events unlocked: {2}.");
+            Add("en", "icebreaker_unlocked_none", "None of its {0} map events are unlocked yet.");
+            Add("en", "icebreaker_unlock_intro", "Complete this challenge to unlock the next map event:");
+            Add("en", "icebreaker_hint", "Arrow keys move between the map events, Enter reads what one does, Escape leaves, I reads the summary again.");
+            // Map events the Icebreaker Hut unlocks, keyed by asset name
+            Add("en", "event_node_CampaignNodeCopyItem", "Copy an item");
+            Add("en", "event_node_CampaignNodeCharmShop", "Charm shop");
+            Add("en", "event_node_CampaignNodeCurseItems", "Cursed items");
             Add("en", "overlay_browse", "{0} items. Use the arrow keys to browse them.");
             Add("en", "overlay_position", "{0} of {1}");
             Add("en", "challenge_stone", "Challenge");
@@ -1307,6 +1356,11 @@ namespace WildfrostAccessibility
             Add("de", "charselect_cancelled", "Auswahl abgebrochen, zurueck zur Uebersicht.");
             Add("de", "charselect_pets", "Waehle dein Start-Haustier. Pfeiltasten wechseln, Enter waehlt aus.");
             Add("de", "charselect_starting", "Los geht's! Die Reise beginnt.");
+            Add("de", "tribe_locked", "{0}, gesperrt");
+            Add("de", "tribe_locked_hint", "Neue Staemme werden freigeschaltet, waehrend sich die Fortschrittsanzeige der Stadt fuellt: gewinne weiter Kaempfe und beende Laeufe.");
+            Add("de", "tribe_locked_building", "Die Freischaltung erscheint beim {0}.");
+            Add("de", "tribe_locked_blocked", "{0} ist gesperrt und kann nicht gewaehlt werden. {1}");
+            Add("de", "charselect_tribes_locked", "Noch nicht freigeschaltete Staemme werden weiterhin angezeigt: sie werden als gesperrt vorgelesen und koennen nicht gewaehlt werden.");
             Add("de", "inspect_no_confirm", "Dieses Fenster kann hier nicht bestaetigt werden. Escape legt die Karte zurueck.");
             Add("de", "help_charselect", "Charakterauswahl in drei Schritten. Zuerst ein Stamm: Pfeiltasten hoch und runter wechseln zwischen den Staemmen und lesen Name und Spielstil vor, die Pfeiltaste rechts liest Anfuehrer und Startdeck des Stammes, und Strg plus hoch geht sie im Lesepuffer durch. Enter waehlt den fokussierten Stamm. Danach ein Anfuehrer und ein Start-Haustier, mit den Pfeiltasten durchgesehen, Enter waehlt aus. Nach dem Auswaehlen einer Karte bestaetigt Enter und setzt fort, Escape legt sie zurueck. I untersucht die fokussierte Karte.");
             Add("de", "help_main_menu", "Hauptmenue. Pfeiltasten hoch und runter wechseln die Knoepfe, Enter waehlt aus. F1 wiederholt diese Hilfe, F10 schaltet den Debug-Modus um.");
@@ -1597,6 +1651,57 @@ namespace WildfrostAccessibility
             Add("de", "nothing_to_inspect", "Hier gibt es nichts zu untersuchen.");
             Add("de", "help_panel_hint", "Pfeiltasten links und rechts waehlen eine Schaltflaeche, Enter drueckt sie, Escape geht zurueck.");
             Add("de", "help_panel_no_back", "Diese Abfrage braucht eine Antwort. Links und rechts waehlen, dann Enter.");
+            // Town overlays, the tribe strings and the unlock buildings. Tribe
+            // names themselves stay as they are — Snowdwellers, Shademancers and
+            // Clunkmasters are proper nouns the game never translates either.
+            Add("de", "building_back", "Zurueck.");
+            Add("de", "building_closed", "Geschlossen.");
+            Add("de", "building_overlay_hint", "Pfeiltasten wechseln zwischen den Bannern, Enter oeffnet eines, Escape verlaesst, I liest erneut.");
+            Add("de", "challenge_hidden", "{0}, verborgene Herausforderung");
+            Add("de", "challenge_stone", "Herausforderung");
+            Add("de", "charselect_back", "Zurueck");
+            Add("de", "charselect_leader_pos", "Anfuehrer {0} von {1}: {2}");
+            Add("de", "charselect_pet_pos", "Haustier {0} von {1}: {2}");
+            Add("de", "event_node_CampaignNodeCharmShop", "Zauber-Laden");
+            Add("de", "event_node_CampaignNodeCopyItem", "Gegenstand kopieren");
+            Add("de", "event_node_CampaignNodeCurseItems", "Verfluchte Gegenstaende");
+            Add("de", "icebreaker_hint", "Pfeiltasten wechseln zwischen den Karten-Ereignissen, Enter liest vor, was eines bewirkt, Escape verlaesst, I liest die Zusammenfassung erneut.");
+            Add("de", "icebreaker_unlock_intro", "Schliesse diese Herausforderung ab, um das naechste Karten-Ereignis freizuschalten:");
+            Add("de", "icebreaker_unlocked", "{0} von {1} Karten-Ereignissen freigeschaltet: {2}.");
+            Add("de", "icebreaker_unlocked_none", "Noch keines der {0} Karten-Ereignisse ist freigeschaltet.");
+            Add("de", "overlay_browse", "{0} Elemente. Nutze die Pfeiltasten, um sie durchzugehen.");
+            Add("de", "overlay_item", "{0}, {1} von {2}");
+            Add("de", "overlay_position", "{0} von {1}");
+            Add("de", "shrine_hint", "Hoch und runter wechseln zwischen offen und abgeschlossen, links und rechts blaettern.");
+            Add("de", "shrine_none_completed", "Keine abgeschlossenen Herausforderungen.");
+            Add("de", "shrine_none_incomplete", "Keine offenen Herausforderungen.");
+            Add("de", "shrine_row_completed", "Abgeschlossene Herausforderungen");
+            Add("de", "shrine_row_incomplete", "Offene Herausforderungen");
+            Add("de", "shrine_summary", "{0} offen, {1} abgeschlossen.");
+            Add("de", "tribe_banner", "Stammesbanner");
+            Add("de", "tribe_desc_Basic", "Der Startstamm und der anfaengerfreundlichste. Sie frieren Gegner mit Frost und Schnee ein, sodass diese Zuege aussetzen, und steigern ihren Angriff mit Bonus.");
+            Add("de", "tribe_desc_Clunk", "Tueftler, die mit Klunkern, schweren Schrott-Einheiten und Schrott kaempfen. Sie ueberwaeltigen den Gegner mit schierer Masse und Maschinerie.");
+            Add("de", "tribe_desc_Magic", "Ein aggressiver Stamm mit hohem Risiko, aufgebaut auf Schatten und Wuerze. Sie stapeln temporaeren Angriff, um schnell und hart zuzuschlagen, aber ihre Einheiten sind zerbrechlich.");
+            Add("de", "tribe_leaders", "Anfuehrer: {0}.");
+            Add("de", "tribe_leaders_random", "Die Anfuehrer werden zufaellig erzeugt: du waehlst aus dreien, nachdem du diesen Stamm gewaehlt hast.");
+            Add("de", "tribe_no_roster", "Fuer diesen Stamm sind keine Anfuehrer und kein Startdeck aufgefuehrt.");
+            Add("de", "tribe_starting_deck", "Startdeck: {0}.");
+            Add("de", "tribe_unlock_intro", "Schliesse diese Herausforderung ab, um den naechsten Stamm freizuschalten:");
+            Add("de", "tribehall_hint", "Pfeiltasten wechseln zwischen den Stammesbannern, Enter oeffnet die Seite des fokussierten Stammes, Escape verlaesst, I liest die Zusammenfassung erneut.");
+            Add("de", "tribehall_unlocked", "{0} von {1} Staemmen freigeschaltet: {2}.");
+            Add("de", "tribehall_unlocked_none", "Noch keiner der {0} Staemme ist freigeschaltet.");
+            Add("de", "tutorial_drag_hint_infront", "So geht das: druecke Enter auf der Karte, waehle mit den Pfeiltasten die Einheit, vor die sie soll, und druecke dann Enter — deine Karte nimmt diesen Platz ein und schiebt die Einheit nach hinten.");
+            Add("de", "unlock_all_done", "Hier ist alles freigeschaltet.");
+            Add("de", "unlock_detail_back", "Escape geht zurueck.");
+            Add("de", "unlock_entry_locked", "{0} ist noch gesperrt.");
+            Add("de", "unlock_next_intro", "Naechste Freischaltung:");
+            Add("de", "unlock_slot_locked", "Gesperrter Platz");
+            Add("de", "unlock_state_locked", "gesperrt");
+            Add("de", "unlock_state_unlocked", "freigeschaltet");
+            Add("de", "unlockhut_hint", "Pfeiltasten wechseln zwischen den Plaetzen, Escape verlaesst, I liest die Zusammenfassung erneut.");
+            Add("de", "unlockhut_unlocked", "{0} von {1} freigeschaltet: {2}.");
+            Add("de", "unlockhut_unlocked_none", "Noch keiner der {0} Plaetze ist offen.");
+
             Add("de", "help_panel_closed", "Geschlossen.");
             Add("de", "help_event", "Ereignis-Bildschirm. Ein Story-Ereignis auf deiner Reise; Titel und Text werden vorgelesen, sobald sie erscheinen. Pfeiltasten wechseln zwischen Elementen, Enter aktiviert. In einem Laden nennt jede Ware ihren Preis und ob du sie dir leisten kannst; druecke Enter darauf zum Kaufen und G, um deinen aktuellen Goldstand zu hoeren. I untersucht die fokussierte Karte, so wie Rechtsklick fuer sehende Spieler, Escape schliesst die Untersuchung. P oeffnet dein Inventar.");
 
@@ -1645,6 +1750,11 @@ namespace WildfrostAccessibility
             Add("es", "charselect_cancelled", "Eleccion cancelada, de vuelta a la lista.");
             Add("es", "charselect_pets", "Elige tu mascota inicial. Las flechas cambian, Enter selecciona.");
             Add("es", "charselect_starting", "Vamos! Comienza el viaje.");
+            Add("es", "tribe_locked", "{0}, bloqueada");
+            Add("es", "tribe_locked_hint", "Las tribus nuevas se desbloquean segun se llena la barra de progreso del pueblo: sigue ganando batallas y terminando partidas.");
+            Add("es", "tribe_locked_building", "El desbloqueo aparece en {0}.");
+            Add("es", "tribe_locked_blocked", "{0} esta bloqueada, asi que no se puede elegir. {1}");
+            Add("es", "charselect_tribes_locked", "Las tribus que aun no has desbloqueado se siguen mostrando: se leen como bloqueadas y no se pueden elegir.");
             Add("es", "inspect_no_confirm", "Este panel no se puede confirmar aqui. Escape devuelve la carta.");
             Add("es", "help_charselect", "Seleccion de personaje, en tres etapas. Primero una tribu: las flechas arriba y abajo cambian entre las tribus y leen el nombre y el estilo de cada una, la flecha derecha lee los lideres y el mazo inicial de la tribu, y Control mas arriba los recorre en el bufer de revision. Enter elige la tribu enfocada. Luego un lider y una mascota inicial, explorados con las flechas, Enter para elegir. Tras elegir una carta, Enter confirma y continua, Escape la devuelve. I inspecciona la carta enfocada.");
             Add("es", "help_main_menu", "Menu principal. Flechas arriba y abajo cambian de boton, Enter selecciona. F1 repite esta ayuda, F10 alterna el modo de depuracion.");
@@ -1935,6 +2045,57 @@ namespace WildfrostAccessibility
             Add("es", "nothing_to_inspect", "No hay nada que inspeccionar aqui.");
             Add("es", "help_panel_hint", "Las flechas izquierda y derecha eligen un boton, Enter lo pulsa, Escape vuelve atras.");
             Add("es", "help_panel_no_back", "Este aviso necesita una respuesta. Usa izquierda y derecha, luego Enter.");
+            // Town overlays, the tribe strings and the unlock buildings. Tribe
+            // names themselves stay as they are — Snowdwellers, Shademancers and
+            // Clunkmasters are proper nouns the game never translates either.
+            Add("es", "building_back", "Atras.");
+            Add("es", "building_closed", "Cerrado.");
+            Add("es", "building_overlay_hint", "Las flechas mueven entre los estandartes, Enter abre uno, Escape sale, I lee de nuevo.");
+            Add("es", "challenge_hidden", "{0}, reto oculto");
+            Add("es", "challenge_stone", "Reto");
+            Add("es", "charselect_back", "Volver");
+            Add("es", "charselect_leader_pos", "Lider {0} de {1}: {2}");
+            Add("es", "charselect_pet_pos", "Mascota {0} de {1}: {2}");
+            Add("es", "event_node_CampaignNodeCharmShop", "Tienda de amuletos");
+            Add("es", "event_node_CampaignNodeCopyItem", "Copiar un objeto");
+            Add("es", "event_node_CampaignNodeCurseItems", "Objetos malditos");
+            Add("es", "icebreaker_hint", "Las flechas mueven entre los eventos de mapa, Enter lee que hace uno, Escape sale, I repite el resumen.");
+            Add("es", "icebreaker_unlock_intro", "Completa este reto para desbloquear el siguiente evento de mapa:");
+            Add("es", "icebreaker_unlocked", "{0} de {1} eventos de mapa desbloqueados: {2}.");
+            Add("es", "icebreaker_unlocked_none", "Ninguno de sus {0} eventos de mapa esta desbloqueado todavia.");
+            Add("es", "overlay_browse", "{0} elementos. Usa las flechas para recorrerlos.");
+            Add("es", "overlay_item", "{0}, {1} de {2}");
+            Add("es", "overlay_position", "{0} de {1}");
+            Add("es", "shrine_hint", "Arriba y abajo cambian entre pendientes y completados, izquierda y derecha recorren.");
+            Add("es", "shrine_none_completed", "No hay retos completados.");
+            Add("es", "shrine_none_incomplete", "No hay retos pendientes.");
+            Add("es", "shrine_row_completed", "Retos completados");
+            Add("es", "shrine_row_incomplete", "Retos pendientes");
+            Add("es", "shrine_summary", "{0} pendientes, {1} completados.");
+            Add("es", "tribe_banner", "Estandarte de tribu");
+            Add("es", "tribe_desc_Basic", "La tribu inicial y la mas apta para principiantes. Congelan a los enemigos con Escarcha y Nieve para que pierdan turnos, y aumentan su ataque con Bonus.");
+            Add("es", "tribe_desc_Clunk", "Inventores que luchan con Chatarrunos, unidades pesadas de desguace, y Chatarra. Abruman al enemigo a base de masa y maquinaria.");
+            Add("es", "tribe_desc_Magic", "Una tribu agresiva y de alto riesgo construida en torno a Sombra y Especia. Acumulan ataque temporal para golpear rapido y fuerte, pero sus unidades son fragiles.");
+            Add("es", "tribe_leaders", "Lideres: {0}.");
+            Add("es", "tribe_leaders_random", "Los lideres se generan al azar: eliges entre tres despues de escoger esta tribu.");
+            Add("es", "tribe_no_roster", "Esta tribu no tiene lideres ni mazo inicial listados.");
+            Add("es", "tribe_starting_deck", "Mazo inicial: {0}.");
+            Add("es", "tribe_unlock_intro", "Completa este reto para desbloquear la siguiente tribu:");
+            Add("es", "tribehall_hint", "Las flechas mueven entre los estandartes de tribu, Enter abre la pagina de la tribu enfocada, Escape sale, I repite el resumen.");
+            Add("es", "tribehall_unlocked", "{0} de {1} tribus desbloqueadas: {2}.");
+            Add("es", "tribehall_unlocked_none", "Ninguna de sus {0} tribus esta desbloqueada todavia.");
+            Add("es", "tutorial_drag_hint_infront", "Como hacerlo: pulsa Enter sobre la carta, usa las flechas para elegir la unidad delante de la que quieres ponerla, y pulsa Enter — tu carta ocupa ese hueco y empuja a la unidad hacia atras.");
+            Add("es", "unlock_all_done", "Aqui esta todo desbloqueado.");
+            Add("es", "unlock_detail_back", "Escape vuelve atras.");
+            Add("es", "unlock_entry_locked", "{0} sigue bloqueado.");
+            Add("es", "unlock_next_intro", "Siguiente desbloqueo:");
+            Add("es", "unlock_slot_locked", "Hueco bloqueado");
+            Add("es", "unlock_state_locked", "bloqueado");
+            Add("es", "unlock_state_unlocked", "desbloqueado");
+            Add("es", "unlockhut_hint", "Las flechas mueven entre los huecos, Escape sale, I repite el resumen.");
+            Add("es", "unlockhut_unlocked", "{0} de {1} desbloqueados: {2}.");
+            Add("es", "unlockhut_unlocked_none", "Ninguno de sus {0} huecos esta abierto todavia.");
+
             Add("es", "help_panel_closed", "Cerrado.");
             Add("es", "help_event", "Pantalla de evento. Un evento de historia en tu viaje; su titulo y texto se leen cuando aparecen. Las flechas mueven entre elementos, Enter activa. En una tienda, cada articulo dice su precio y si puedes pagarlo; pulsa Enter sobre el para comprarlo, y G para oir tu oro actual. I inspecciona la carta enfocada, como el clic derecho para jugadores videntes, Escape cierra la inspeccion. P abre tu inventario.");
 
@@ -1983,6 +2144,11 @@ namespace WildfrostAccessibility
             Add("fr", "charselect_cancelled", "Choix annule, retour a la liste.");
             Add("fr", "charselect_pets", "Choisissez votre familier de depart. Les fleches changent, Entree selectionne.");
             Add("fr", "charselect_starting", "C'est parti! Le voyage commence.");
+            Add("fr", "tribe_locked", "{0}, verrouillee");
+            Add("fr", "tribe_locked_hint", "Les nouvelles tribus se debloquent a mesure que la jauge de progression du village se remplit: continuez a gagner des combats et a terminer des parties.");
+            Add("fr", "tribe_locked_building", "Le deblocage apparait au {0}.");
+            Add("fr", "tribe_locked_blocked", "{0} est verrouillee et ne peut pas etre choisie. {1}");
+            Add("fr", "charselect_tribes_locked", "Les tribus que vous n'avez pas encore debloquees restent affichees: elles sont annoncees comme verrouillees et ne peuvent pas etre choisies.");
             Add("fr", "inspect_no_confirm", "Ce panneau ne peut pas etre confirme ici. Echap remet la carte.");
             Add("fr", "help_charselect", "Selection du personnage, en trois etapes. D'abord une tribu: les fleches haut et bas passent d'une tribu a l'autre et lisent le nom et le style de chacune, la fleche droite lit les chefs et le deck de depart de la tribu, et Controle plus haut les parcourt dans le tampon de lecture. Entree choisit la tribu selectionnee. Ensuite un chef et un familier de depart, parcourus avec les fleches, Entree pour choisir. Apres avoir choisi une carte, Entree confirme et continue, Echap la remet. I inspecte la carte selectionnee.");
             Add("fr", "help_main_menu", "Menu principal. Fleches haut et bas pour changer de bouton, Entree pour selectionner. F1 repete cette aide, F10 bascule le mode debogage.");
@@ -2273,6 +2439,67 @@ namespace WildfrostAccessibility
             Add("fr", "nothing_to_inspect", "Rien a inspecter ici.");
             Add("fr", "help_panel_hint", "Les fleches gauche et droite choisissent un bouton, Entree l'active, Echap revient en arriere.");
             Add("fr", "help_panel_no_back", "Cette invite demande une reponse. Utilisez gauche et droite, puis Entree.");
+            // Town overlays, the tribe strings and the unlock buildings. Tribe
+            // names themselves stay as they are — Snowdwellers, Shademancers and
+            // Clunkmasters are proper nouns the game never translates either.
+            Add("fr", "companion_limit_open", "Trop de compagnons! Vous en avez {0}, mais seuls {1} peuvent etre actifs. Les fleches naviguent entre les compagnons, Entree deplace celui qui est selectionne entre la rangee active et la reserve; les compagnons en reserve ne combattent pas. Appuyez sur Continuer quand vous avez fini.");
+            Add("fr", "companion_limit_active_list", "Actifs: {0}.");
+            Add("fr", "companion_limit_reserve_list", "En reserve: {0}.");
+            Add("fr", "companion_limit_moved_active", "{0} deplace dans la rangee active. {1} actifs sur {2}.");
+            Add("fr", "companion_limit_moved_reserve", "{0} deplace en reserve. {1} actifs sur {2}.");
+            Add("fr", "companion_limit_over", "Au-dessus de la limite; mettez un compagnon en reserve pour continuer.");
+            Add("fr", "companion_limit_can_continue", "Vous pouvez continuer maintenant.");
+            Add("fr", "companion_limit_row_active", "rangee active");
+            Add("fr", "companion_limit_row_reserve", "rangee de reserve");
+
+            Add("fr", "building_back", "Retour.");
+            Add("fr", "building_closed", "Ferme.");
+            Add("fr", "building_overlay_hint", "Les fleches naviguent entre les bannieres, Entree en ouvre une, Echap quitte, I relit.");
+            Add("fr", "challenge_hidden", "{0}, defi cache");
+            Add("fr", "challenge_stone", "Defi");
+            Add("fr", "charselect_back", "Retour");
+            Add("fr", "charselect_leader_pos", "Chef {0} sur {1}: {2}");
+            Add("fr", "charselect_pet_pos", "Familier {0} sur {1}: {2}");
+            Add("fr", "event_node_CampaignNodeCharmShop", "Boutique de charmes");
+            Add("fr", "event_node_CampaignNodeCopyItem", "Copier un objet");
+            Add("fr", "event_node_CampaignNodeCurseItems", "Objets maudits");
+            Add("fr", "icebreaker_hint", "Les fleches naviguent entre les evenements de carte, Entree lit ce que fait l'un d'eux, Echap quitte, I relit le resume.");
+            Add("fr", "icebreaker_unlock_intro", "Terminez ce defi pour debloquer le prochain evenement de carte:");
+            Add("fr", "icebreaker_unlocked", "{0} evenements de carte debloques sur {1}: {2}.");
+            Add("fr", "icebreaker_unlocked_none", "Aucun de ses {0} evenements de carte n'est encore debloque.");
+            Add("fr", "overlay_browse", "{0} elements. Utilisez les fleches pour les parcourir.");
+            Add("fr", "overlay_item", "{0}, {1} sur {2}");
+            Add("fr", "overlay_position", "{0} sur {1}");
+            Add("fr", "shrine_hint", "Haut et bas basculent entre les defis en cours et termines, gauche et droite les parcourent.");
+            Add("fr", "shrine_none_completed", "Aucun defi termine.");
+            Add("fr", "shrine_none_incomplete", "Aucun defi en cours.");
+            Add("fr", "shrine_row_completed", "Defis termines");
+            Add("fr", "shrine_row_incomplete", "Defis en cours");
+            Add("fr", "shrine_summary", "{0} en cours, {1} termines.");
+            Add("fr", "tribe_banner", "Banniere de tribu");
+            Add("fr", "tribe_desc_Basic", "La tribu de depart et la plus accessible aux debutants. Elle gele les ennemis avec Givre et Neige pour leur faire sauter des tours, et augmente son attaque avec Bonus.");
+            Add("fr", "tribe_desc_Clunk", "Des bricoleurs qui combattent avec des Ferrailleurs, de lourdes unites de rebut, et de la Ferraille. Ils submergent l'ennemi par la masse et la machinerie.");
+            Add("fr", "tribe_desc_Magic", "Une tribu agressive et risquee batie sur l'Ombre et l'Epice. Elle accumule de l'attaque temporaire pour frapper vite et fort, mais ses unites sont fragiles.");
+            Add("fr", "tribe_leaders", "Chefs: {0}.");
+            Add("fr", "tribe_leaders_random", "Les chefs sont generes au hasard: vous en choisirez un parmi trois apres avoir choisi cette tribu.");
+            Add("fr", "tribe_no_roster", "Aucun chef ni deck de depart n'est indique pour cette tribu.");
+            Add("fr", "tribe_starting_deck", "Deck de depart: {0}.");
+            Add("fr", "tribe_unlock_intro", "Terminez ce defi pour debloquer la prochaine tribu:");
+            Add("fr", "tribehall_hint", "Les fleches naviguent entre les bannieres de tribu, Entree ouvre la page de la tribu selectionnee, Echap quitte, I relit le resume.");
+            Add("fr", "tribehall_unlocked", "{0} tribus debloquees sur {1}: {2}.");
+            Add("fr", "tribehall_unlocked_none", "Aucune de ses {0} tribus n'est encore debloquee.");
+            Add("fr", "tutorial_drag_hint_infront", "Pour faire cela: appuyez sur Entree sur la carte, choisissez avec les fleches l'unite devant laquelle la placer, puis appuyez sur Entree — votre carte prend cette place et repousse l'unite en arriere.");
+            Add("fr", "unlock_all_done", "Tout est debloque ici.");
+            Add("fr", "unlock_detail_back", "Echap revient en arriere.");
+            Add("fr", "unlock_entry_locked", "{0} est encore verrouille.");
+            Add("fr", "unlock_next_intro", "Prochain deblocage:");
+            Add("fr", "unlock_slot_locked", "Emplacement verrouille");
+            Add("fr", "unlock_state_locked", "verrouille");
+            Add("fr", "unlock_state_unlocked", "debloque");
+            Add("fr", "unlockhut_hint", "Les fleches naviguent entre les emplacements, Echap quitte, I relit le resume.");
+            Add("fr", "unlockhut_unlocked", "{0} debloques sur {1}: {2}.");
+            Add("fr", "unlockhut_unlocked_none", "Aucun de ses {0} emplacements n'est encore ouvert.");
+
             Add("fr", "help_panel_closed", "Ferme.");
             Add("fr", "help_event", "Ecran d'evenement. Un evenement d'histoire sur votre voyage; son titre et son texte sont lus quand ils apparaissent. Les fleches naviguent entre les elements, Entree active. Dans une boutique, chaque article annonce son prix et si vous pouvez vous le permettre; appuyez sur Entree dessus pour l'acheter, et sur G pour entendre votre or actuel. I inspecte la carte selectionnee, comme le clic droit pour les joueurs voyants, Echap ferme l'inspection. P ouvre votre inventaire.");
         }

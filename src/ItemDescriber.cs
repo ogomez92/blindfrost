@@ -439,7 +439,7 @@ namespace WildfrostAccessibility
                 string packed = building.type.helpKey.GetLocalizedString();
                 foreach (string segment in packed.Split('|'))
                 {
-                    string clean = TextProcessor.StripRichText(segment)?.Trim();
+                    string clean = TextProcessor.ProcessRawText(segment)?.Trim();
                     if (!string.IsNullOrEmpty(clean))
                         parts.Add(clean);
                 }
@@ -838,7 +838,15 @@ namespace WildfrostAccessibility
         /// </summary>
         public static string DescribeTribeFlag(TribeFlagDisplay flag)
         {
-            var tribe = FindTribeForFlag(flag);
+            return DescribeTribe(FindTribeForFlag(flag));
+        }
+
+        /// <summary>
+        /// The same read for a tribe reached without a flag: name (marked as
+        /// locked when the save has not earned it) plus the playstyle blurb.
+        /// </summary>
+        public static string DescribeTribe(ClassData tribe)
+        {
             if (tribe == null)
                 return null;
 
@@ -846,13 +854,15 @@ namespace WildfrostAccessibility
             if (string.IsNullOrEmpty(name))
                 return null;
 
+            string head = IsTribeLocked(tribe) ? Loc.Get("tribe_locked", name) : name;
+
             string internalName = tribe.name;
             if (!string.IsNullOrEmpty(internalName)
                 && Loc.TryGet("tribe_desc_" + internalName, out string desc)
                 && !string.IsNullOrEmpty(desc))
-                return name + ". " + desc;
+                return head + ". " + desc;
 
-            return name;
+            return head;
         }
 
         /// <summary>
@@ -895,6 +905,98 @@ namespace WildfrostAccessibility
                 return localized;
 
             return ScreenHandler.CleanName(internalName);
+        }
+
+        // ---- Tribe unlock state ---------------------------------------------
+        // The game means locked tribes to be unreachable: CharacterSelectScreen
+        // builds the flag list from Campaign.Data.GameMode.classes and removes
+        // MetaprogressionSystem.GetLockedClasses() from it first. That removal
+        // compares ScriptableObjects (DataFile.Equals is an instance-id test),
+        // and the ClassData instances behind References.Classes are NOT the
+        // ones serialized into GameMode.classes, so it removes nothing — the
+        // log reads "Locked Classes: [Magic, Clunk]" immediately followed by
+        // "Available Classes: [Basic, Magic, Clunk]", and SelectTribe.Run then
+        // calls SetAvailable()/SetUnlocked() on every flag it is given. The
+        // same mismatch makes the town hall show all three banners.
+        //
+        // Asset names are stable across both instance sets, so matching on the
+        // name still tells the truth about what the save has earned. The mod
+        // uses that to announce locked tribes as locked and to refuse them on
+        // Enter, rather than silently starting a run with a tribe the player
+        // never unlocked.
+
+        private static HashSet<string> _lockedTribeNames;
+        private static float _lockedTribesRead;
+
+        /// <summary>
+        /// Asset names of the tribes this save has not unlocked. Cached for a
+        /// few seconds: each rebuild reads the save file (and the unlock set
+        /// cannot change while a select screen is open). Empty when the lock
+        /// state can't be read — an unknown state must never block a tribe the
+        /// player has actually earned.
+        /// </summary>
+        private static HashSet<string> LockedTribeNames()
+        {
+            if (_lockedTribeNames != null && Time.unscaledTime - _lockedTribesRead < 5f)
+                return _lockedTribeNames;
+
+            var names = new HashSet<string>();
+            try
+            {
+                var locked = MetaprogressionSystem.GetLockedClasses();
+                if (locked != null)
+                {
+                    foreach (ClassData tribe in locked)
+                        if (tribe != null && !string.IsNullOrEmpty(tribe.name))
+                            names.Add(tribe.name);
+                }
+            }
+            catch (System.Exception ex)
+            {
+                names.Clear();
+                DebugLogger.Log(DebugLogger.LogCategory.Game, "ItemDescriber",
+                    $"Tribe lock state unreadable: {ex.Message}");
+            }
+
+            _lockedTribeNames = names;
+            _lockedTribesRead = Time.unscaledTime;
+            return names;
+        }
+
+        /// <summary>True when this save has not unlocked the tribe yet.</summary>
+        public static bool IsTribeLocked(ClassData tribe)
+        {
+            if (tribe == null || string.IsNullOrEmpty(tribe.name))
+                return false;
+            return LockedTribeNames().Contains(tribe.name);
+        }
+
+        /// <summary>
+        /// How the player earns a locked tribe. Wildfrost grants tribes off the
+        /// town progress meter (MetaprogressSequence fills it from battles won
+        /// and hands out the next unlock in line), so there is no per-tribe
+        /// challenge to quote; the unlock's related building is named when the
+        /// data has one.
+        /// </summary>
+        public static string GetTribeLockReason(ClassData tribe)
+        {
+            string reason = Loc.Get("tribe_locked_hint");
+
+            try
+            {
+                var building = tribe?.requiresUnlock?.relatedBuilding;
+                string title = building != null
+                    ? TextProcessor.ProcessRawText(building.titleKey.GetLocalizedString())
+                    : null;
+                if (!string.IsNullOrEmpty(title))
+                    reason += " " + Loc.Get("tribe_locked_building", title.Trim());
+            }
+            catch
+            {
+                // Localization may not be ready — the generic hint stands alone
+            }
+
+            return reason;
         }
 
         /// <summary>
@@ -1024,6 +1126,11 @@ namespace WildfrostAccessibility
             string head = DescribeTribeFlag(flag);
             if (!string.IsNullOrEmpty(head))
                 parts.Add(head);
+
+            // Why it can't be chosen comes before what's in it — the leaders and
+            // deck below are what the player is working towards, not an offer
+            if (IsTribeLocked(tribe))
+                parts.Add(GetTribeLockReason(tribe));
 
             string leaders = DescribeTribeLeaders(tribe);
             if (!string.IsNullOrEmpty(leaders))
@@ -1337,7 +1444,7 @@ namespace WildfrostAccessibility
             {
                 var key = data?.flavourKey;
                 if (key == null || key.IsEmpty) return null;
-                return TextProcessor.StripRichText(key.GetLocalizedString());
+                return TextProcessor.ProcessRawText(key.GetLocalizedString());
             }
             catch
             {

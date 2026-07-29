@@ -26,6 +26,14 @@ namespace WildfrostAccessibility
         private readonly List<UINavigationItem> _overlayItems = new List<UINavigationItem>();
         private UINavigationItem _overlaySelected;
 
+        // The unlock buildings (Tribe Hall, Pet House, Inventor's Hut, companion
+        // hut, Icebreaker Hut): their contents are browsed as named entries
+        // rather than dumped as loose text. _detailTitle names the entry whose
+        // detail panel is open, so the panel does not read out anonymously.
+        private List<TownUnlockReader.Entry> _unlockEntries = new List<TownUnlockReader.Entry>();
+        private int _unlockIndex;
+        private string _detailTitle;
+
         // The Daily Voyage balloon: its deck cards carry navigation items that
         // do nothing here, so focus must land only on the real buttons. Cache
         // the two the game keeps in private fields.
@@ -67,6 +75,9 @@ namespace WildfrostAccessibility
             _lastOverlayText = null;
             _overlayItems.Clear();
             _overlaySelected = null;
+            _unlockEntries.Clear();
+            _unlockIndex = 0;
+            _detailTitle = null;
             _balloonPlay = null;
             _balloonScores = null;
             _balloonAnnounced = false;
@@ -99,6 +110,9 @@ namespace WildfrostAccessibility
                 _lastOverlayText = null;
                 _overlayItems.Clear();
                 _overlaySelected = null;
+                _unlockEntries.Clear();
+                _unlockIndex = 0;
+                _detailTitle = null;
             }
 
             // Land focus on a building we scrolled toward last frame, once it has
@@ -336,6 +350,9 @@ namespace WildfrostAccessibility
                 _balloonLoadingSaid = false;
                 _lastOverlayText = null;
                 _overlaySelected = null;
+                _unlockEntries.Clear();
+                _unlockIndex = 0;
+                _detailTitle = null;
                 _shrineRow = 0;
                 _shrineStone = null;
             }
@@ -349,6 +366,7 @@ namespace WildfrostAccessibility
                     detail.SetActive(false);
                     _lastOverlayText = null; // re-read the hall behind it
                     _overlaySelected = null;
+                    _detailTitle = null;
                     ScreenReader.Say(Loc.Get("building_back"), interrupt: true);
                     return;
                 }
@@ -369,10 +387,11 @@ namespace WildfrostAccessibility
             if (HandleBalloonOverlay(overlay))
                 return;
 
-            // Pet House: its slots hold the unlocked pets as real cards, and its
-            // unlock challenge gates the next pet — the generic branch would read
-            // the card innards out of order and call it a tribe unlock.
-            if (HandlePetHutOverlay(overlay))
+            // The unlock buildings (Tribe Hall, Pet House, Inventor's Hut,
+            // companion hut, Icebreaker Hut): browsed entry by entry, because
+            // the generic text dump reads their challenge progress with nothing
+            // attached to it and cannot name a tribe banner at all.
+            if (HandleUnlockBuildingOverlay(overlay))
                 return;
 
             // Challenge shrine: dozens of stones split into completed / incomplete
@@ -524,11 +543,13 @@ namespace WildfrostAccessibility
         private static string DescribeChallengeStone(ChallengeStone stone)
         {
             string name = null, condition = null;
-            try { name = TextProcessor.StripRichText(stone.challenge.titleKey.GetLocalizedString()); }
+            // Raw localized text: a challenge condition names its subject in tags
+            // ("<Combos> give double <keyword=blings>"), so the tags must expand
+            try { name = TextProcessor.ProcessRawText(stone.challenge.titleKey.GetLocalizedString()); }
             catch { /* localization not ready */ }
             if (!stone.challenge.hidden)
             {
-                try { condition = TextProcessor.StripRichText(stone.challenge.textKey.GetLocalizedString()); }
+                try { condition = TextProcessor.ProcessRawText(stone.challenge.textKey.GetLocalizedString()); }
                 catch { /* localization not ready */ }
             }
 
@@ -635,39 +656,71 @@ namespace WildfrostAccessibility
                 : pa.x.CompareTo(pb.x);
         }
 
+        // ---- The town's unlock buildings -------------------------------------
+        // The Tribe Hall, Pet House, Inventor's Hut, companion hut and Icebreaker
+        // Hut are one design in five costumes: things earned, things not yet
+        // earned, and a challenge display for what comes next. TownUnlockReader
+        // turns each into named entries with a lock state; this drives them.
+
         /// <summary>
-        /// The Pet House. Summarize it once (pets unlocked so far, the challenge
-        /// that unlocks the next one, how many doors stay closed), then browse
-        /// the unlocked pets as cards with the arrows. Pets are only viewed
-        /// here — picking one happens at the start of a journey. Returns false
-        /// when this overlay is not the Pet House.
+        /// Which of the unlock buildings is open, if any. The Pet House, the
+        /// Inventor's Hut and the companion hut all lay their unlocks out as
+        /// cards in slots and are read identically.
         /// </summary>
-        private bool HandlePetHutOverlay(BuildingDisplay overlay)
+        private static bool IsCardHut(BuildingDisplay overlay)
         {
-            if (overlay.GetComponentInChildren<PetHutSequence>(includeInactive: false) == null)
+            return overlay.GetComponentInChildren<PetHutSequence>(includeInactive: false) != null
+                || overlay.GetComponentInChildren<InventorHutSequence>(includeInactive: false) != null
+                || overlay.GetComponentInChildren<BuildingCardUnlockSequence>(includeInactive: false) != null;
+        }
+
+        /// <summary>
+        /// Summarize an unlock building once (and on I), then browse its entries
+        /// one at a time with the arrows; Enter opens whatever the building has
+        /// to open. Returns false when this overlay is not one of them.
+        /// </summary>
+        private bool HandleUnlockBuildingOverlay(BuildingDisplay overlay)
+        {
+            var tribeHall = overlay.GetComponentInChildren<TribeHutSequence>(includeInactive: false);
+            var icebreaker = tribeHall == null
+                ? overlay.GetComponentInChildren<IcebreakerHutSequence>(includeInactive: false)
+                : null;
+            bool cardHut = tribeHall == null && icebreaker == null && IsCardHut(overlay);
+            if (tribeHall == null && icebreaker == null && !cardHut)
                 return false;
 
-            RefreshPetItems(overlay);
+            // A detail panel is open over the building — a tribe's lore page, an
+            // Icebreaker map-node preview. Read that panel alone: sweeping the
+            // whole overlay also picked up the unlock challenge sitting behind
+            // it, which is how a bare "51 of 100" arrived with nothing attached.
+            if (ReadOpenDetail(overlay))
+                return true;
+
+            _unlockEntries = tribeHall != null
+                ? TownUnlockReader.TribeHallEntries(tribeHall)
+                : icebreaker != null
+                    ? TownUnlockReader.IcebreakerEntries(icebreaker)
+                    : TownUnlockReader.CardHutEntries(overlay);
+
+            // Still building its slots — own the keys, try again next frame
+            if (_unlockEntries.Count == 0)
+                return true;
+            if (_unlockIndex >= _unlockEntries.Count)
+                _unlockIndex = _unlockEntries.Count - 1;
 
             NavDirection dir = NavigationHelper.GetNavigationInput();
-            if (dir != NavDirection.None && _overlayItems.Count > 0)
+            if (dir != NavDirection.None)
             {
-                bool vertical = dir == NavDirection.Up || dir == NavDirection.Down;
-                var next = NavigationHelper.NavigateLinear(_overlayItems, _overlaySelected, dir, vertical)
-                    ?? _overlayItems[0];
-                _overlaySelected = next;
-                // Really focus the card: the pet cards are registered on the
-                // game's active layer (unlike the tribe banners), and the review
-                // buffers read the Details of the game's focused item — without
-                // this, Ctrl+Up never sees the pet being browsed.
-                NavigationHelper.FocusItem(next);
-                int index = _overlayItems.IndexOf(next);
-                var entity = next.GetComponentInParent<Entity>();
-                string desc = entity != null
-                    ? ItemDescriber.DescribeEntityFocus(entity)
-                    : ScreenHandler.CleanName(next.gameObject.name);
-                ScreenReader.Say(desc + " " + Loc.Get("overlay_position", index + 1, _overlayItems.Count),
-                    interrupt: true);
+                bool forward = dir == NavDirection.Down || dir == NavDirection.Right;
+                _unlockIndex = (_unlockIndex + (forward ? 1 : -1) + _unlockEntries.Count)
+                    % _unlockEntries.Count;
+                ScreenReader.Say(DescribeUnlockEntry(_unlockIndex), interrupt: true);
+                return true;
+            }
+
+            if (NavigationHelper.IsConfirmPressed())
+            {
+                ActivateUnlockEntry(overlay, tribeHall, icebreaker);
                 return true;
             }
 
@@ -676,40 +729,141 @@ namespace WildfrostAccessibility
             if (_overlayAnnounced && !reRead)
                 return true;
 
-            string hint = _overlayAnnounced ? null : HintOnce("pethut_hint");
+            string hintKey = tribeHall != null ? "tribehall_hint"
+                : icebreaker != null ? "icebreaker_hint"
+                : "unlockhut_hint";
+            string hint = _overlayAnnounced ? null : HintOnce(hintKey);
             _overlayAnnounced = true;
             ScreenReader.SayEvent(
-                BuildPetHutSummary(overlay) + (hint != null ? " " + hint : ""),
+                BuildUnlockSummary(overlay, tribeHall != null, icebreaker != null)
+                    + (hint != null ? " " + hint : ""),
                 interrupt: true);
             return true;
         }
 
-        /// <summary>Collect the pet cards' navigation items in reading order.
-        /// Unlike the tribe banners they carry no click handler — the cards are
-        /// display-only here.</summary>
-        private void RefreshPetItems(BuildingDisplay overlay)
+        /// <summary>
+        /// Announce the browsed entry. A card entry reads as the card itself and
+        /// takes the game's focus with it: the review buffers (Ctrl+Up) show the
+        /// Details of whatever the game has focused, so without that the pet or
+        /// item being browsed was invisible to them.
+        /// </summary>
+        private string DescribeUnlockEntry(int index)
         {
-            _overlayItems.Clear();
-            foreach (var item in overlay.GetComponentsInChildren<UINavigationItem>(includeInactive: false))
-            {
-                if (item == null || !item.isSelectable || !item.gameObject.activeInHierarchy)
-                    continue;
-                if (item.GetComponentInParent<Entity>() == null)
-                    continue;
-                _overlayItems.Add(item);
-            }
-            _overlayItems.Sort((a, b) =>
-                Mathf.Abs(a.Position.y - b.Position.y) > 0.05f
-                    ? b.Position.y.CompareTo(a.Position.y)
-                    : a.Position.x.CompareTo(b.Position.x));
+            var entry = _unlockEntries[index];
+            if (entry.Card == null)
+                return TownUnlockReader.DescribeEntry(entry, index, _unlockEntries.Count);
 
-            if (_overlaySelected != null && !_overlayItems.Contains(_overlaySelected))
-                _overlaySelected = null;
+            var nav = entry.Card.GetComponentInChildren<UINavigationItem>(true);
+            if (nav != null)
+                NavigationHelper.FocusItem(nav);
+
+            string desc = ItemDescriber.DescribeEntityFocus(entry.Card) ?? entry.Label;
+            return desc + " " + Loc.Get("overlay_position", index + 1, _unlockEntries.Count);
         }
 
-        /// <summary>Name, pets unlocked out of all the doors, and the challenge
-        /// that opens the next door.</summary>
-        private static string BuildPetHutSummary(BuildingDisplay overlay)
+        /// <summary>
+        /// Enter on the browsed entry: open a tribe's lore page or an Icebreaker
+        /// node preview. A locked entry opens nothing — say what it is waiting on
+        /// instead of pressing into silence.
+        /// </summary>
+        private void ActivateUnlockEntry(BuildingDisplay overlay,
+            TribeHutSequence tribeHall, IcebreakerHutSequence icebreaker)
+        {
+            var entry = _unlockEntries[_unlockIndex];
+
+            if (!entry.Unlocked)
+            {
+                string next = TownUnlockReader.NextUnlockLine(overlay, UnlockIntroKey(tribeHall, icebreaker));
+                DebugLogger.LogInput(Name, $"Locked unlock entry: {entry.Label}");
+                ScreenReader.Say(
+                    Loc.Get("unlock_entry_locked", entry.Label)
+                        + (string.IsNullOrEmpty(next) ? "" : " " + next),
+                    interrupt: true);
+                return;
+            }
+
+            _lastOverlayText = null; // whatever opens should read out fresh
+            _detailTitle = entry.Label;
+
+            if (tribeHall != null)
+            {
+                // The banners fire this through a wired InputAction; calling it
+                // straight is exact and cannot miss the right tribe.
+                var display = overlay.GetComponentInChildren<TribeDisplaySequence>(includeInactive: true);
+                if (display != null)
+                {
+                    DebugLogger.LogInput(Name, $"Open tribe page: {entry.Label}");
+                    // Ask for the page by class name first — that cannot open the
+                    // wrong tribe. It matches against the panel's own name list
+                    // and does nothing at all when the name is absent (a modded
+                    // tribe), which the index call then covers.
+                    if (entry.Tribe != null)
+                        display.Run(entry.Tribe.name);
+                    if (!display.gameObject.activeInHierarchy)
+                        display.Run(_unlockIndex);
+                    return;
+                }
+            }
+            else if (icebreaker != null)
+            {
+                DebugLogger.LogInput(Name, $"Inspect map event: {entry.Label}");
+                // TryInspect indexes a list the hut fills in its own setup
+                // coroutine — pressing Enter before that lands would throw
+                try { icebreaker.TryInspect(_unlockIndex); }
+                catch (System.Exception ex)
+                {
+                    _detailTitle = null;
+                    DebugLogger.Log(DebugLogger.LogCategory.Game, Name,
+                        $"Map event inspect failed: {ex.Message}");
+                    ScreenReader.Say(Loc.Get("no_info_available"), interrupt: true);
+                }
+                return;
+            }
+
+            // A card hut has nothing to open — repeat the card instead of
+            // leaving Enter silent
+            _detailTitle = null;
+            ScreenReader.Say(DescribeUnlockEntry(_unlockIndex), interrupt: true);
+        }
+
+        /// <summary>Which "what's next" wording fits this building.</summary>
+        private static string UnlockIntroKey(TribeHutSequence tribeHall, IcebreakerHutSequence icebreaker)
+        {
+            if (tribeHall != null) return "tribe_unlock_intro";
+            if (icebreaker != null) return "icebreaker_unlock_intro";
+            return "unlock_next_intro";
+        }
+
+        /// <summary>
+        /// Read an open detail panel (a tribe's lore page, a map-node preview)
+        /// and nothing else, titled with the entry it was opened from. Returns
+        /// true while one is open, so the browse keys stay out of its way.
+        /// </summary>
+        private bool ReadOpenDetail(BuildingDisplay overlay)
+        {
+            var detail = ActiveDetail(overlay);
+            if (detail == null)
+            {
+                _detailTitle = null;
+                return false;
+            }
+
+            bool reRead = Input.GetKeyDown(KeyCode.I) && !NavigationHelper.IsTextInputFocused();
+            string text = ReadVisibleText(detail.transform);
+            if (string.IsNullOrEmpty(text) || (text == _lastOverlayText && !reRead))
+                return true;
+
+            _lastOverlayText = text;
+            ScreenReader.SayEvent(
+                (string.IsNullOrEmpty(_detailTitle) ? "" : _detailTitle + ". ")
+                    + text + " " + Loc.Get("unlock_detail_back"),
+                interrupt: true);
+            return true;
+        }
+
+        /// <summary>Building name, what this save has earned here, and the
+        /// challenge standing between it and the next unlock.</summary>
+        private string BuildUnlockSummary(BuildingDisplay overlay, bool tribeHall, bool icebreaker)
         {
             var parts = new List<string>();
 
@@ -717,26 +871,18 @@ namespace WildfrostAccessibility
             if (!string.IsNullOrEmpty(name))
                 parts.Add(name);
 
-            // Every pet has a door (a card slot); the unlocked ones hold a card.
-            var petNames = new List<string>();
-            foreach (var card in overlay.GetComponentsInChildren<Card>(includeInactive: false))
-            {
-                string title = card?.entity?.data?.title;
-                if (!string.IsNullOrEmpty(title))
-                    petNames.Add(title);
-            }
-            int doors = overlay.GetComponentsInChildren<CardContainer>(includeInactive: false).Length;
-            if (petNames.Count > 0)
-                parts.Add(Loc.Get("pethut_pets",
-                    petNames.Count, Mathf.Max(doors, petNames.Count), string.Join(", ", petNames)));
+            string countKey = tribeHall ? "tribehall_unlocked"
+                : icebreaker ? "icebreaker_unlocked"
+                : "unlockhut_unlocked";
+            string unlocked = TownUnlockReader.UnlockedLine(_unlockEntries, countKey);
+            if (!string.IsNullOrEmpty(unlocked))
+                parts.Add(unlocked);
 
-            var challenge = overlay.GetComponentInChildren<ChallengeProgressDisplay>(includeInactive: false);
-            if (challenge != null)
-            {
-                string progress = ItemDescriber.DescribeChallengeProgress(challenge);
-                if (!string.IsNullOrEmpty(progress))
-                    parts.Add(Loc.Get("pethut_unlock_intro") + " " + progress);
-            }
+            string next = TownUnlockReader.NextUnlockLine(overlay,
+                tribeHall ? "tribe_unlock_intro"
+                : icebreaker ? "icebreaker_unlock_intro"
+                : "unlock_next_intro");
+            parts.Add(string.IsNullOrEmpty(next) ? Loc.Get("unlock_all_done") : next);
 
             return string.Join(". ", parts);
         }
@@ -934,7 +1080,7 @@ namespace WildfrostAccessibility
                 if (m == null || !m.visible)
                     continue;
                 string n = null;
-                try { n = TextProcessor.StripRichText(m.titleKey.GetLocalizedString()); }
+                try { n = TextProcessor.ProcessRawText(m.titleKey.GetLocalizedString()); }
                 catch { /* localization not ready */ }
                 if (string.IsNullOrEmpty(n))
                     n = ScreenHandler.CleanName(m.name);
@@ -958,11 +1104,17 @@ namespace WildfrostAccessibility
                 && (item.clickHandler.transform == rootT || item.clickHandler.transform.IsChildOf(rootT));
         }
 
-        /// <summary>The open tribe-lore detail panel, or null.</summary>
+        /// <summary>The detail panel a building has opened over itself — a tribe's
+        /// lore page or the Icebreaker's map-node preview — or null. Both are
+        /// plain panels the game toggles active, so Escape closes either.</summary>
         private static GameObject ActiveDetail(BuildingDisplay overlay)
         {
-            var detail = overlay.GetComponentInChildren<TribeDisplaySequence>(includeInactive: false);
-            return detail != null ? detail.gameObject : null;
+            var tribePage = overlay.GetComponentInChildren<TribeDisplaySequence>(includeInactive: false);
+            if (tribePage != null)
+                return tribePage.gameObject;
+
+            var nodePreview = overlay.GetComponentInChildren<MapInspectSequence>(includeInactive: false);
+            return nodePreview != null ? nodePreview.gameObject : null;
         }
 
         /// <summary>Localized name of the building whose overlay is open, or null.</summary>

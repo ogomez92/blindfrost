@@ -19,6 +19,7 @@ namespace WildfrostAccessibility
         private CharacterSelectScreen _screen;
         private SelectLeader _leaderSelection;
         private SelectStartingPet _petSelection;
+        private SelectTribe _tribeSelection;
 
         private bool _petWasRunning;
         private bool _leaderWasRunning;
@@ -26,14 +27,27 @@ namespace WildfrostAccessibility
         private bool _leaderIntroPending;
         private float _leaderIntroSince;
 
+        private bool _tribeStageWasActive;
+        private bool _tribeFocusPending;
+        private bool _tribeNavUsed;
+        private float _tribeStageSince;
+
+        /// <summary>How long the tribe flags get to settle before the mod moves
+        /// focus onto the first playable one (the screen line lands first).</summary>
+        private const float TribeFocusDelay = 0.7f;
+
         public override void OnEnter()
         {
             base.OnEnter();
             _screen = null;
+            _tribeSelection = null;
             _petWasRunning = false;
             _leaderWasRunning = false;
             _startAnnounced = false;
             _leaderIntroPending = false;
+            _tribeStageWasActive = false;
+            _tribeFocusPending = false;
+            _tribeNavUsed = false;
             EnsureRefs();
         }
 
@@ -65,6 +79,11 @@ namespace WildfrostAccessibility
                 // Normal mode starts on the tribe choice; without this the
                 // player only heard the bare screen name and flag focus reads
                 msg = Loc.Get("charselect_tribes");
+                // The game shows flags for tribes this save has not unlocked
+                // (see the tribe-lock notes in ItemDescriber) — say so up front
+                // so "locked" on a flag isn't a surprise
+                if (AnyTribeLocked())
+                    msg += " " + Loc.Get("charselect_tribes_locked");
             }
             else if (Time.unscaledTime - EnterTime < 3f)
             {
@@ -95,6 +114,8 @@ namespace WildfrostAccessibility
             base.OnUpdate();
             EnsureRefs();
             if (_screen == null) return;
+
+            UpdateTribeStageFocus();
 
             // Leader stage started (after picking a tribe). The intro is
             // deferred until the candidates finish generating so it can also
@@ -193,6 +214,7 @@ namespace WildfrostAccessibility
             public TribeFlagDisplay Flag;   // null on the back-button entry
             public ClassData Tribe;         // null on the back-button entry
             public UINavigationItem Nav;
+            public bool Locked;             // tribe this save has not earned
         }
 
         /// <summary>
@@ -203,7 +225,7 @@ namespace WildfrostAccessibility
         private List<TribeEntry> GetTribeEntries()
         {
             var entries = new List<TribeEntry>();
-            var select = Object.FindObjectOfType<SelectTribe>();
+            var select = TribeSelection();
             if (select == null) return entries;
 
             var flags = ReflectionUtil.GetField<List<TribeFlagDisplay>>(select, "flags");
@@ -219,7 +241,13 @@ namespace WildfrostAccessibility
                 var nav = flag.GetComponentInChildren<UINavigationItem>(true);
                 if (nav == null) continue;
 
-                entries.Add(new TribeEntry { Flag = flag, Tribe = tribes[i], Nav = nav });
+                entries.Add(new TribeEntry
+                {
+                    Flag = flag,
+                    Tribe = tribes[i],
+                    Nav = nav,
+                    Locked = ItemDescriber.IsTribeLocked(tribes[i]),
+                });
             }
 
             // The back button as a final up/down stop, so it stays reachable and
@@ -231,6 +259,33 @@ namespace WildfrostAccessibility
                     entries.Add(new TribeEntry { Flag = null, Tribe = null, Nav = backNav });
             }
             return entries;
+        }
+
+        /// <summary>The scene's SelectTribe, cached — GetTribeEntries runs every
+        /// frame now that the tribe stage owns its own opening focus.</summary>
+        private SelectTribe TribeSelection()
+        {
+            if (_tribeSelection == null)
+                _tribeSelection = Object.FindObjectOfType<SelectTribe>();
+            return _tribeSelection;
+        }
+
+        /// <summary>True when any flag on screen belongs to a tribe this save has
+        /// not unlocked.</summary>
+        private bool AnyTribeLocked()
+        {
+            foreach (var entry in GetTribeEntries())
+                if (entry.Locked) return true;
+            return false;
+        }
+
+        /// <summary>The first tribe the player may actually choose, or null when
+        /// the list holds nothing but locked tribes and the back button.</summary>
+        private static TribeEntry FirstPlayableEntry(List<TribeEntry> entries)
+        {
+            foreach (var entry in entries)
+                if (entry.Tribe != null && !entry.Locked) return entry;
+            return null;
         }
 
         /// <summary>The screen's back-button nav item, or null when the game hides
@@ -300,8 +355,67 @@ namespace WildfrostAccessibility
             base.Navigate(dir);
         }
 
+        /// <summary>
+        /// Put the opening focus of the tribe stage on the first tribe the
+        /// player can actually pick.
+        ///
+        /// The game's UINavigationDefaultSystem chooses the flag nearest the 3d
+        /// cursor, which parks in the middle of the row — so focus opened on the
+        /// middle tribe, and because the game leaves unearned tribes on screen
+        /// (see the tribe-lock notes in ItemDescriber) that was often a tribe
+        /// the player has not unlocked. The correction is delayed until the
+        /// flags settle, and repeats while the default system keeps snatching
+        /// focus back onto a locked flag — but only until the player's first
+        /// arrow press, after which browsing locked tribes is their choice.
+        /// </summary>
+        private void UpdateTribeStageFocus()
+        {
+            if (!TribeNavActive(out var entries))
+            {
+                _tribeStageWasActive = false;
+                _tribeFocusPending = false;
+                return;
+            }
+
+            if (!_tribeStageWasActive)
+            {
+                // Stage opened (first entry, or returning here from the leaders)
+                _tribeStageWasActive = true;
+                _tribeStageSince = Time.unscaledTime;
+                _tribeFocusPending = true;
+                _tribeNavUsed = false;
+                // Don't read out the game's pick just to correct it a moment later
+                SuppressFocusFor(TribeFocusDelay + 0.05f);
+            }
+
+            if (_tribeNavUsed) return;
+            if (Time.unscaledTime - _tribeStageSince < TribeFocusDelay) return;
+
+            var target = FirstPlayableEntry(entries);
+            if (target == null)
+            {
+                _tribeFocusPending = false; // nothing playable to land on
+                return;
+            }
+
+            var navSystem = MonoBehaviourSingleton<UINavigationSystem>.instance;
+            var current = navSystem?.currentNavigationItem;
+            int index = CurrentTribeIndex(entries, current);
+            bool strayed = index < 0 || entries[index].Locked;
+            if (!_tribeFocusPending && !strayed) return;
+
+            _tribeFocusPending = false;
+            if (current == target.Nav) return;
+
+            NavigationHelper.FocusItem(target.Nav);
+            ResetFocusTracking(); // we moved it deliberately — announce it
+            DebugLogger.Log(DebugLogger.LogCategory.Handler, Name,
+                $"Opening tribe focus set to {target.Tribe?.name}");
+        }
+
         private void NavigateTribes(List<TribeEntry> entries, NavDirection dir)
         {
+            _tribeNavUsed = true;
             var navSystem = MonoBehaviourSingleton<UINavigationSystem>.instance;
             int index = CurrentTribeIndex(entries, navSystem?.currentNavigationItem);
 
@@ -424,7 +538,12 @@ namespace WildfrostAccessibility
         protected override UINavigationItem DefaultFocusItem()
         {
             if (TribeNavActive(out var entries))
-                return entries[0].Nav; // first tribe, never the trailing back button
+            {
+                // First tribe the player can pick — never a locked one, and
+                // never the trailing back button
+                var playable = FirstPlayableEntry(entries);
+                return playable != null ? playable.Nav : entries[0].Nav;
+            }
             return base.DefaultFocusItem();
         }
 
@@ -482,6 +601,28 @@ namespace WildfrostAccessibility
                 _screen.Back();
                 return;
             }
+
+            // A locked tribe is still fully pressable — the game's own filter
+            // never removed it (see the tribe-lock notes in ItemDescriber), and
+            // SelectTribe.Run cleared the padlock on every flag it was handed.
+            // Refuse it here and say what it takes to earn it instead of
+            // starting a run with a tribe this save never unlocked.
+            if (TribeNavActive(out var entries))
+            {
+                int index = CurrentTribeIndex(entries, current);
+                if (index >= 0 && entries[index].Locked)
+                {
+                    var tribe = entries[index].Tribe;
+                    DebugLogger.LogInput(Name, $"Blocked locked tribe: {tribe?.name}");
+                    ScreenReader.Say(
+                        Loc.Get("tribe_locked_blocked",
+                            ItemDescriber.GetTribeName(tribe),
+                            ItemDescriber.GetTribeLockReason(tribe)),
+                        interrupt: true);
+                    return;
+                }
+            }
+
             base.Confirm();
         }
 
