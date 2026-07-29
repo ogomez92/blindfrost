@@ -33,6 +33,35 @@ powershell -ExecutionPolicy Bypass -File scripts/Build-Mod.ps1
 powershell -ExecutionPolicy Bypass -File scripts/Deploy-Mod.ps1
 ```
 
+# Refactoring Safety Net
+
+This mod has no test suite, and a silent regression means a blind player loses a screen. Before
+any refactor that is supposed to preserve behaviour, use these — they turn "I moved code
+carefully" into something provable.
+
+```powershell
+# 1. Snapshot the assembly BEFORE touching anything (needs: dotnet tool install -g ilspycmd)
+./scripts/Build-Mod.ps1;  ./scripts/Verify-Equivalence.ps1 -MakeBaseline
+
+# 2. Refactor.
+
+# 3. Prove nothing changed: decompiles both assemblies and diffs all types
+./scripts/Build-Mod.ps1;  ./scripts/Verify-Equivalence.ps1
+```
+
+- **`Verify-Equivalence.ps1`** compares COMPILED output, so it ignores file layout, member order
+  and comments while catching any real code change. If it reports "members reordered", that is
+  inert in C# *unless* the type has field initializers or a constructor — check those by hand.
+- **`Check-Conservation.ps1`** proves a file split only MOVED lines: every code line from the
+  original must reappear exactly once across the new files.
+  `./scripts/Check-Conservation.ps1 -OriginalRef "HEAD:src/Screens/MapHandler.cs" -New "src/Screens/MapHandler*.cs"`
+- **`Trim-Usings.ps1`** removes unused `using`s by deleting each one and rebuilding, so the
+  compiler decides rather than a guess. Always run `Verify-Equivalence.ps1` after it.
+
+What these do NOT cover: comments and XML docs never reach IL, so a lost doc comment is
+invisible to them — diff those separately. And equivalence is not an in-game test; a screen can
+still break for reasons no static check sees.
+
 Deploy target: `C:\Program Files (x86)\Steam\steamapps\common\Wildfrost\Modded\Wildfrost_Data\StreamingAssets\Mods\WildfrostAccessibility\`
 
 # Environment
