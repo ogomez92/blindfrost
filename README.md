@@ -140,8 +140,8 @@ Available buffers (only those with content are offered when cycling):
 - R: read the redraw bell state
 - T: read the turn and phase
 - G: read your gold
-- Ctrl+C: read ally counters - who acts in how many turns
-- Ctrl+E: read enemy counters
+- Ctrl+C: read ally counters - who acts in how many turns, soonest first
+- Ctrl+Shift+C: read enemy counters
 - Ctrl+H: read your companions' health - who needs recalling
 - Ctrl+Shift+H: read enemy health
 

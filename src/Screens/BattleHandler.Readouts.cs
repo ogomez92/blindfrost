@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace WildfrostAccessibility
@@ -227,6 +228,8 @@ namespace WildfrostAccessibility
         /// <summary>
         /// One side's counters at a glance: each unit with a counter, its
         /// position, how many turns until it acts, and whether Snow froze it.
+        /// Ordered by how soon they act rather than by board position — the
+        /// question this readout answers is "what happens next?".
         /// </summary>
         private void AnnounceCounters(bool allies)
         {
@@ -234,7 +237,7 @@ namespace WildfrostAccessibility
             if (battle == null) return;
 
             var character = allies ? battle.player : battle.enemy;
-            var parts = new List<string>();
+            var entries = new List<KeyValuePair<int, string>>();
             for (int row = 0; row < 2; row++)
             {
                 CardSlotLane lane = GetLane(character, row);
@@ -251,9 +254,12 @@ namespace WildfrostAccessibility
                     cell += ", " + Loc.Get("battle_acts_in", occupant.counter.current);
                     if (occupant.IsSnowed)
                         cell += ", " + Loc.Get("counter_frozen");
-                    parts.Add(cell);
+                    entries.Add(new KeyValuePair<int, string>(occupant.counter.current, cell));
                 }
             }
+
+            // OrderBy is stable, so units sharing a counter stay in board order
+            var parts = entries.OrderBy(e => e.Key).Select(e => e.Value).ToList();
 
             if (parts.Count == 0)
             {

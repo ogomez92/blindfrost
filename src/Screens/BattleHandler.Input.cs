@@ -29,10 +29,15 @@ namespace WildfrostAccessibility
             bool ctrl = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
             bool shift = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
 
-            // Ctrl+C / Ctrl+E: quick counter status for one side — who acts
-            // in how many turns, without wading through the full board read
-            if (ctrl && Input.GetKeyDown(KeyCode.C)) { DebugLogger.LogInput(Name, "Ally counters"); AnnounceCounters(allies: true); return; }
-            if (ctrl && Input.GetKeyDown(KeyCode.E)) { DebugLogger.LogInput(Name, "Enemy counters"); AnnounceCounters(allies: false); return; }
+            // Ctrl+C / Ctrl+Shift+C: quick counter status for one side — who
+            // acts in how many turns, without wading through the full board
+            // read. Shift flips it to the enemies, same as the health keys
+            if (ctrl && Input.GetKeyDown(KeyCode.C))
+            {
+                DebugLogger.LogInput(Name, shift ? "Enemy counters" : "Ally counters");
+                AnnounceCounters(allies: !shift);
+                return;
+            }
             // Ctrl+H / Ctrl+Shift+H: who is hurt. Damage is narrated as it
             // lands, but after a few exchanges only a roll call answers
             // "who do I need to pull out?" — Shift flips it to the enemies
