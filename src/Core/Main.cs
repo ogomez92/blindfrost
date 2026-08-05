@@ -141,7 +141,7 @@ namespace WildfrostAccessibility
             Loc.LoadLanguageOverride(ModDirectory);
             ScreenManager.Initialize();
             VisualNarrator.Initialize();
-            LoadVerbosity();
+            SettingsMenu.LoadSettings();
             CreateUpdateHook();
 
             Debug.Log("[WildfrostAccessibility] All systems initialized, attempting speech");
@@ -191,9 +191,23 @@ namespace WildfrostAccessibility
         /// </summary>
         internal void OnUpdate()
         {
+            // The settings menu is modal: while it is open it owns every key,
+            // and the game's own input is locked so nothing underneath reacts.
+            if (SettingsMenu.RouteInput())
+                return;
+
+            // F2 opens the mod's settings (language, detail level, key repeat).
+            // A function key so it stays reachable on every screen, including
+            // the ones where every letter is already a game binding.
+            if (Input.GetKeyDown(KeyCode.F2) && !NavigationHelper.IsTextInputFocused())
+            {
+                SettingsMenu.Open();
+                return;
+            }
+
             if (Input.GetKeyDown(KeyCode.F10))
             {
-                debugMode = !debugMode;
+                SettingsMenu.SetDebug(!debugMode);
                 ScreenReader.Say(debugMode ? "Debug mode on" : "Debug mode off", interrupt: true);
             }
 
@@ -256,36 +270,12 @@ namespace WildfrostAccessibility
         }
 
         /// <summary>
-        /// Restore the focus verbosity chosen with V on a previous run.
-        /// Defaults to short reads (the review buffers carry the details).
+        /// V toggles the focus verbosity. The same setting sits in the settings
+        /// menu (F2), so both routes go through SettingsMenu to stay in sync.
         /// </summary>
-        private void LoadVerbosity()
-        {
-            try
-            {
-                // Stored as a string ("1"/"0"): SaveSystem.LoadProgressData<T>
-                // constrains T to a reference type, so bool can't be used directly.
-                string stored = SaveSystem.LoadProgressData<string>("accessibilityVerboseFocus");
-                ItemDescriber.VerboseFocus = stored == "1";
-            }
-            catch
-            {
-                ItemDescriber.VerboseFocus = false;
-            }
-        }
-
         private void ToggleVerbosity()
         {
-            ItemDescriber.VerboseFocus = !ItemDescriber.VerboseFocus;
-            try
-            {
-                SaveSystem.SaveProgressData("accessibilityVerboseFocus",
-                    ItemDescriber.VerboseFocus ? "1" : "0");
-            }
-            catch
-            {
-                // Not persisted this run; the toggle still applies until quit
-            }
+            SettingsMenu.SetVerboseFocus(!ItemDescriber.VerboseFocus);
             ScreenReader.Say(Loc.Get(ItemDescriber.VerboseFocus
                 ? "verbosity_verbose"
                 : "verbosity_short"), interrupt: true);
@@ -304,6 +294,10 @@ namespace WildfrostAccessibility
             // the global help, which already lists them)
             if (help != Loc.Get("help_text"))
                 help += " " + Loc.Get("help_buffers");
+
+            // So does the settings menu, and it is the only way to find the
+            // language switch without being told about it
+            help += " " + Loc.Get("settings_hint");
 
             ScreenReader.Say(help, interrupt: true);
         }

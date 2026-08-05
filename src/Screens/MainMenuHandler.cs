@@ -10,7 +10,12 @@ namespace WildfrostAccessibility
 
         protected override bool TryAnnounceScreen()
         {
-            ScreenReader.SayEvent(Loc.Get("screen_main_menu"), interrupt: true);
+            // The main menu is where a player who cannot read the mod's own
+            // language needs to hear that the settings menu exists — it holds
+            // the language switch, and nothing else advertises it.
+            ScreenReader.SayEvent(
+                Loc.Get("screen_main_menu") + " " + Loc.Get("settings_hint"),
+                interrupt: true);
             return true;
         }
 

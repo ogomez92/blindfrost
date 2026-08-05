@@ -62,7 +62,7 @@ If you ever disable the mod in the game's Mods menu, it stays disabled. To make 
 
 ## What the mod does
 
-Every screen announces itself when it opens, and every focused element is described. Tutorial popups and help panels are read aloud, with drag-and-drop instructions rephrased for keyboard play.
+Every screen announces itself when it opens, and every focused element is described. Tutorial popups and help panels are read aloud, with drag-and-drop instructions rephrased for keyboard play. The mod's own settings - language first among them - live in a spoken menu on F2, so nothing has to be configured by hand.
 
 - **Main menu** - up/down arrows move between buttons, Enter selects.
 - **Town (base camp)** - arrow keys move between buildings. Each building is announced with its name and state. The Gate says what Enter will do: start a new journey, continue the one in progress, or begin the tutorial.
@@ -78,6 +78,7 @@ Every screen announces itself when it opens, and every focused element is descri
 ### Global
 
 - F1: context help - explains the current screen and its keys
+- F2: open the mod's settings - language, detail level, key repeat speed (see Settings below)
 - F10: toggle debug mode
 - Arrow keys: navigate
 - Enter: activate / pick up / place
@@ -154,24 +155,33 @@ Available buffers (only those with content are offered when cycling):
 - I: inspect the focused card
 - P or Escape: close the inventory
 
+## Settings (F2)
+
+Press **F2** anywhere to open the mod's own settings. There is no visual menu - it is spoken, like everything else the mod does. Up and down arrows move between settings, left and right change the one you are on, Enter steps to the next value, Escape or F2 closes. Every change applies immediately and is saved, so there is nothing to confirm.
+
+While the settings are open the game underneath is frozen, so an arrow key cannot move a menu you cannot see and Enter cannot start a run by accident.
+
+- **Language** - what the mod speaks. Automatic, or any of the languages below.
+- **Detail level** - short focus reads with the details waiting in the buffers, or full descriptions on focus. Same setting as the V key.
+- **Key repeat speed** - how fast a held arrow key repeats: slow, normal, or fast.
+- **Debug logging** - writes what the mod does (and every line it speaks) to the game log. Same setting as F10.
+
 ## Supported Languages
 
-The mod follows the game's language automatically.
-
-- Core announcements: English, German, French, Spanish, Italian, Portuguese, Russian, Polish, Turkish, Japanese, Korean, Simplified Chinese, Traditional Chinese.
+- Core announcements and the settings menu: English, German, French, Spanish, Italian, Portuguese, Russian, Polish, Turkish, Japanese, Korean, Simplified Chinese, Traditional Chinese.
 - Screen-specific announcements (Town, map, battle, continue screen): English, German, Spanish, French for now.
 
-Anything not yet translated falls back to English.
+Anything not yet translated falls back to English, and the settings menu says so when you pick a partly translated language.
 
-### Choosing the mod language yourself
+### How the language is chosen
 
-The game itself only offers English, Japanese, Korean, and Chinese, so the mod's German, Spanish, and French speech cannot be reached through the game's own language setting. To pick the mod's language directly, create a plain text file called `language.txt` next to `WildfrostAccessibility.dll` in the mod folder:
+The game itself only offers English, Japanese, Korean, and Chinese, so the mod's German, Spanish, French, and the rest cannot be reached through the game's own language setting - pick them in the settings menu (F2) instead.
 
-    C:\Program Files (x86)\Steam\steamapps\common\Wildfrost\Modded\Wildfrost_Data\StreamingAssets\Mods\WildfrostAccessibility\language.txt
+Left on **Automatic**, the mod speaks your Windows language if it knows it, otherwise the game's language, otherwise English. The mod talks through your screen reader, so matching the system is usually right: on Spanish Windows the mod speaks Spanish out of the box, whatever language the game is in.
 
-The file must contain a single language code and nothing else, for example `es`. Supported codes: `en` English, `de` German, `es` Spanish, `fr` French, `it` Italian, `pt` Portuguese, `ru` Russian, `pl` Polish, `tr` Turkish, `ja` Japanese, `ko` Korean, `zh-Hans` Simplified Chinese, `zh-Hant` Traditional Chinese. Capitalization does not matter.
+This only changes what the mod speaks. The game's own card names and story text keep following the game's language setting, so on a language the game does not have, card text stays English.
 
-Restart the game after creating or changing the file. This only changes what the mod speaks - the game's own card and story text keeps following the game's language setting. Delete the file (or empty it) to follow the game's language again.
+Your choice is written to `language.txt` next to `WildfrostAccessibility.dll`, and you can edit that file by hand if you prefer. It holds one language code and nothing else - `auto`, or one of `en` English, `de` German, `es` Spanish, `fr` French, `it` Italian, `pt` Portuguese, `ru` Russian, `pl` Polish, `tr` Turkish, `ja` Japanese, `ko` Korean, `zh-Hans` Simplified Chinese, `zh-Hant` Traditional Chinese. Capitalization does not matter, and edits by hand take effect on the next start.
 
 ## Building from Source
 

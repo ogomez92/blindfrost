@@ -24,5 +24,23 @@ namespace WildfrostAccessibility
         private static float _navRepeatDelay = 0.3f;
         private static float _navRepeatRate = 0.1f;
         private static bool _navHeld;
+
+        /// <summary>
+        /// Seconds an arrow key must be held before it starts repeating.
+        /// Set from the settings menu (F2) — players who need longer to lift a
+        /// key overshoot every list otherwise.
+        /// </summary>
+        public static float NavRepeatDelay
+        {
+            get => _navRepeatDelay;
+            set => _navRepeatDelay = value;
+        }
+
+        /// <summary>Seconds between repeats once a held arrow key is repeating.</summary>
+        public static float NavRepeatRate
+        {
+            get => _navRepeatRate;
+            set => _navRepeatRate = value;
+        }
     }
 }

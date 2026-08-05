@@ -27,3 +27,5 @@ age-of-decadence-analyse.txt
 nul
 *.zip
 game_dll_code
+# Harmony debug log, written into the repo root when debug mode runs
+HarmonyLog.txt
